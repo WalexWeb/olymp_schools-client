@@ -1,50 +1,75 @@
-# React + TypeScript + Vite
+# 🏆 Олимпиадный сайт (Клиентская часть)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Этот репозиторий содержит код клиентской части сайта олимпиады для школьников с интеграцией умного чат-бота помощника.
 
-Currently, two official plugins are available:
+## 🚀 Стек технологий
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<p align="left">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" alt="Vite" />
+<img src='https://img.shields.io/badge/Zustand-FBA433?style=for-the-badge&logoColor=white' alt="Zustand"/>
+  <img src='https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white' alt="React-router-dom"/>
+  <img src="https://img.shields.io/badge/React_Query-FF4154?style=for-the-badge&logo=react-query&logoColor=white" alt="React Query" />
+  <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white" alt="Axios" />
+  <img src="https://img.shields.io/badge/React_Hook_Form-EC5990?style=for-the-badge&logo=reacthookform&logoColor=white" alt="React Hook Form" />
+<img src='https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white' alt="JWT"/>
+<img src='https://img.shields.io/badge/Tailwind_CSS-black?style=for-the-badge&logo=tailwind-css&logoColor=blue' alt="tailwindcss">
+  <img src='https://img.shields.io/badge/Framer motion-black?style=for-the-badge&logo=framer&logoColor=white' alt="Framer-motion"/>
+  <img src="https://img.shields.io/badge/Vitest-%236E9F18?style=for-the-badge&logo=Vitest&logoColor=%23fcd703" alt="Vitest" />
+</p>
 
-## Expanding the ESLint configuration
+## 🔧 Установка и запуск
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### 1️⃣ Установка зависимостей
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```sh
+npm install
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### 2️⃣ Запуск проекта в режиме разработки
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+```sh
+npm run dev
+```
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+### 3️⃣ Сборка проекта
+
+```sh
+npm run build
+```
+
+### 4️⃣ Запуск тестов
+
+```sh
+npm run test
+```
+
+## 🌟 Основные функции
+
+- 🔑 **Регистрация и авторизация** пользователя с использованием токенов при помощи **React Hook Form**
+- 📊 **Просмотр рейтинга** пользователей с общим количеством полученных баллов
+- 📂 **Просмотр проектов** пользователей
+- 📰 **Адаптивная новостная колонка** с возможностью редактирования и добавления мультимедиа
+- 🤖 **Интерактивное взаимодействие** с чат-ботом-помощником
+
+## 📂 Структура проекта
+
+```
+/src
+│── app/               # Основное приложение
+│   │── pages/         # Страницы приложения
+│   │   │── Home.tsx       # Главная страница
+│   │   │── Login.tsx      # Страница входа
+│   │   │── Registration.tsx   # Страница регистрации
+│   │   │── Profile.tsx    # Профиль пользователя
+│   │   │── Rankings.tsx   # Рейтинг пользователей
+│   │   │── News.tsx       # Новостная колонка
+│   │── components/    # Переиспользуемые компоненты
+│   │── hooks/         # Пользовательские хуки
+│   │── store/         # Глобальное состояние (Zustand)
+│   │── api/           # API-запросы (Axios)
+│   │── assets/        # Медиафайлы и стили
+│   │── App.tsx        # Основной компонент приложения с роутами
+│── main.tsx           # Точка входа
 ```
