@@ -1,12 +1,11 @@
 import Sidebar from "../components/ui/Sidebar/Sidebar"
 
-function News() {
+function Settings() {
   return (
     <div>
-      News
       <Sidebar/>
-    </div>
+      Settings</div>
   )
 }
 
-export default News
+export default Settings

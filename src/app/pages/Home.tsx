@@ -2,11 +2,15 @@ import { Button } from "../components/Button";
 import { m } from "framer-motion";
 import { Link } from "react-router-dom";
 import HomeButton from "../components/ui/HomeButton";
+import Sidebar from "../components/ui/Sidebar/Sidebar";
 
 export default function Home() {
   return (
     <main className="h-screen w-screen bg-gray-50 text-gray-900">
-      <section className="grid grid-cols-1 items-center gap-10 px-6 py-16 md:grid-cols-[2fr_1.3fr]">
+      <section className="grid grid-cols-3 items-center gap-10 px-6 py-16 md:grid-cols-[.2fr_2.5fr_1.2fr]">
+        <div>
+          <Sidebar />
+        </div>
         <m.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -16,13 +20,13 @@ export default function Home() {
             Университет цифровой полиции
           </h1>
           <p className="mb-8 text-lg text-gray-700 md:text-xl">
-            Всероссийская олимпиада школьников по информационной безопасности
+            Всероссийская олимпиада школьников
           </p>
           <div className="grid grid-rows-2 gap-4 sm:flex-row">
             <Link to="/registration" className="w-full sm:w-[17rem]">
               <Button className="w-full px-6 py-3 text-lg">Регистрация</Button>
             </Link>
-            <p className="mt-2 text-lg ml-7">
+            <p className="mt-2 ml-7 text-lg">
               Уже есть аккаунт?{" "}
               <Link to="/login" className="font-bold text-blue-800 underline">
                 Войти

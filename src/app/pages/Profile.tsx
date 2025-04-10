@@ -1,6 +1,10 @@
+import Sidebar from "../components/ui/Sidebar/Sidebar"
+
 function Profile() {
   return (
-    <div>Profile</div>
+    <div>
+      <Sidebar/>
+      Profile</div>
   )
 }
 

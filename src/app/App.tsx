@@ -5,6 +5,8 @@ import Login from "./pages/Login";
 import News from "./pages/News";
 import Rankings from "./pages/Rankings";
 import Profile from "./pages/Profile";
+import Olympiads from "./pages/Olympiads";
+import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -13,9 +15,11 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/olympiads" element={<Olympiads />} />
         <Route path="/news" element={<News />} />
         <Route path="/ranking" element={<Rankings />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </>
   );
