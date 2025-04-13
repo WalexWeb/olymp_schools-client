@@ -13,7 +13,7 @@ function Sidebar() {
   return (
     <m.aside
       className={cn(
-        "fixed top-4 left-4 w-56 overflow-hidden rounded-lg bg-neutral-50 py-2 whitespace-nowrap shadow-lg",
+        "fixed z-40 top-4 left-4 w-56 overflow-hidden rounded-lg bg-neutral-50 py-2 whitespace-nowrap shadow-lg",
         { "flex items-center p-2 first:pt-[2.7rem]": isCollapsed },
       )}
       animate={{ width: isCollapsed ? 50 : 224 }}

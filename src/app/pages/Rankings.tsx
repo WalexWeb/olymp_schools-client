@@ -1,4 +1,4 @@
-import Sidebar from "../components/ui/Sidebar/Sidebar"
+import Sidebar from "../components/layout/Sidebar/Sidebar"
 
 function Rankings() {
   return (

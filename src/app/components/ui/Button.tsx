@@ -14,7 +14,7 @@ export const Button = forwardRef<
   PropsWithChildren<ButtonProps>
 >(({ size = "md", className, children, ...rest }, ref) => {
   const base =
-    "inline-flex items-center justify-center text-white cursor-pointer rounded-2xl bg-blue-900 hover:bg-blue-800 focus:bg-blue-950 transition";
+    "rounded-lg cursor-pointer bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-500 hover:to-blue-600";
 
   const sizeMap: Record<ButtonSize, string> = {
     sm: "px-3 py-1.5 text-sm",
