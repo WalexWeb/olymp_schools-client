@@ -4,9 +4,11 @@ import { Button } from "../../ui/Button";
 function Navbar() {
   return (
     <header className="sticky top-0 z-100 flex items-center justify-between border-b border-[#2c313c] bg-[#0d1117]/70 px-4 py-6 backdrop-blur sm:px-6">
-      <h1 className="text-2xl font-bold md:text-3xl">
-        Университет <span className="text-blue-400">Цифровой Полиции</span>
-      </h1>
+      <Link to={"/"}>
+        <h1 className="text-2xl font-bold md:text-3xl">
+          Университет <span className="text-blue-400">Цифровой Полиции</span>
+        </h1>
+      </Link>
       <nav className="hidden gap-6 text-sm font-medium text-gray-300 md:flex md:gap-10">
         <a href="#about" className="text-base transition hover:text-blue-400">
           Олимпиада
