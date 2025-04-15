@@ -1,10 +1,12 @@
 import { BackgroundBlobs } from "../components/ui/BackgroundBlobs/BackgroundBlobs";
 import { Button } from "../components/ui/Button";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { m } from "framer-motion";
-import { fadeUp } from "../components/animations/fadeUp";
 import Navbar from "../components/layout/Navbar/Navbar";
 import Footer from "../components/layout/Footer/Footer";
+import Input from "../components/ui/Input";
+import Select from "../components/ui/Select";
+import { fadeUp } from "../components/animations/fadeUp";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { m } from "framer-motion";
 
 interface IForm {
   firstName: string;
@@ -41,36 +43,31 @@ function Registration() {
           className="grid grid-cols-3 gap-8 sm:grid-cols-1 md:grid-cols-3"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <m.section
-            className="grid grid-rows-5 gap-8"
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-          >
-            <input
+          <section className="grid grid-rows-5 gap-8">
+            <Input
               type="text"
               placeholder="Фамилия"
               className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("lastName", { required: true })}
             />
-            <input
+            <Input
               type="text"
               placeholder="Имя"
               className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("firstName", { required: true })}
             />
-            <input
+            <Input
               type="text"
               placeholder="Отчество"
               className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("patronymic", { required: true })}
             />
-            <input
+            <Input
               type="date"
               className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("dateOfBirth", { required: true })}
             />
-            <input
+            <Input
               type="text"
               placeholder="Электронная почта"
               className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
@@ -82,21 +79,16 @@ function Registration() {
                 },
               })}
             />
-          </m.section>
+          </section>
 
-          <m.section
-            className="grid grid-rows-5 gap-8"
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-          >
-            <input
+          <section className="grid grid-rows-5 gap-8">
+            <Input
               type="text"
               placeholder="Контактный телефон"
               className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("phone", { required: true })}
             />
-            <select
+            <Select
               required
               className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("region", { required: true })}
@@ -104,22 +96,27 @@ function Registration() {
               <option disabled selected>
                 Регион
               </option>
-            </select>
-            <input
+            </Select>
+            <Input
               type="text"
               placeholder="Населенный пункт"
               className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("city", { required: true })}
             />
-            <input
+            <Input
               type="text"
               placeholder="Образовательное учреждение"
               className="w-full rounded-lg border-blue-500 px-12 py-2 outline-2 outline-offset-2 outline-blue-500"
               {...register("institute", { required: true })}
             />
             <div className="flex flex-col gap-2">
-              <label className="flex items-center gap-2 text-sm">
-                <input
+              <m.label
+                className="flex items-center gap-2 text-sm"
+                variants={fadeUp}
+                initial="hidden"
+                animate="visible"
+              >
+                <Input
                   type="checkbox"
                   required
                   className="rounded border-blue-500 text-blue-500 focus:ring-blue-500"
@@ -128,10 +125,15 @@ function Registration() {
                 <a href="" className="text-blue-500">
                   обработку персональных данных
                 </a>
-              </label>
+              </m.label>
 
-              <label className="flex items-center gap-2 text-sm">
-                <input
+              <m.label
+                className="flex items-center gap-2 text-sm"
+                variants={fadeUp}
+                initial="hidden"
+                animate="visible"
+              >
+                <Input
                   type="checkbox"
                   required
                   className="rounded border-blue-500 text-blue-500 focus:ring-blue-500"
@@ -145,17 +147,12 @@ function Registration() {
                   Регламентом
                 </a>
                 Олимпиады
-              </label>
+              </m.label>
             </div>
-          </m.section>
+          </section>
 
-          <m.section
-            className="grid grid-rows-4 gap-8"
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-          >
-            <select
+          <section className="grid grid-rows-4 gap-8">
+            <Select
               required
               className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("gender", { required: true })}
@@ -165,8 +162,8 @@ function Registration() {
               </option>
               <option value={"male"}>Мужской</option>
               <option value={"female"}>Женский</option>
-            </select>
-            <select
+            </Select>
+            <Select
               required
               className="rounded-lg border-solid border-blue-500 px-6 py-2 text-base outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("class", { required: true })}
@@ -178,21 +175,21 @@ function Registration() {
               <option value={"11 класс"}>11 класс</option>
               <option value={"1 курс"}>1 курс</option>
               <option value={"2 курс"}>2 курс</option>
-            </select>
-            <input
+            </Select>
+            <Input
               type="password"
               placeholder="Придумайте пароль"
               className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("password", { required: true })}
             />
-            <input
+            <Input
               type="password"
               className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
             />
-            <Button type="submit" className="py-4 text-lg">
-              Регистрация
+            <Button type="submit" className="py-2.5 text-lg">
+              Зарегистрироваться
             </Button>
-          </m.section>
+          </section>
         </form>
       </div>
       <Footer />
