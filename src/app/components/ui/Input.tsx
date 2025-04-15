@@ -9,7 +9,7 @@ function Input(props: ComponentProps<"input">) {
       initial="hidden"
       animate="visible"
       {...props}
-      className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
+      className="rounded-lg border-solid border-blue-500 px-6 py-2 text-lg outline-2 outline-offset-2 outline-blue-500 outline-solid"
     />
   );
 }

@@ -14,7 +14,7 @@ export const Button = forwardRef<
   PropsWithChildren<ButtonProps>
 >(({ size = "md", className, children, ...rest }, ref) => {
   const base =
-    "rounded-lg cursor-pointer bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-500 hover:to-blue-600";
+    "rounded-lg cursor-pointer bg-gradient-to-r from-blue-600 max-w-lg to-blue-500 text-white hover:from-blue-500 hover:to-blue-600";
 
   const sizeMap: Record<ButtonSize, string> = {
     sm: "px-3 py-1.5 text-sm",

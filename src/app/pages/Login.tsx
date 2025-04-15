@@ -37,7 +37,6 @@ function Login() {
           <Input
             type="text"
             placeholder="Электронная почта"
-            className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
             {...register("email", {
               required: true,
               pattern: {
@@ -49,7 +48,6 @@ function Login() {
           <Input
             type="password"
             placeholder="Пароль"
-            className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
             {...register("password", { required: true })}
           />
           <Button type="submit" className="py-2.5 text-lg">

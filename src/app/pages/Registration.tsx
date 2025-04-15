@@ -47,30 +47,25 @@ function Registration() {
             <Input
               type="text"
               placeholder="Фамилия"
-              className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("lastName", { required: true })}
             />
             <Input
               type="text"
               placeholder="Имя"
-              className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("firstName", { required: true })}
             />
             <Input
               type="text"
               placeholder="Отчество"
-              className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("patronymic", { required: true })}
             />
             <Input
               type="date"
-              className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("dateOfBirth", { required: true })}
             />
             <Input
               type="text"
               placeholder="Электронная почта"
-              className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("email", {
                 required: true,
                 pattern: {
@@ -85,12 +80,10 @@ function Registration() {
             <Input
               type="text"
               placeholder="Контактный телефон"
-              className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("phone", { required: true })}
             />
             <Select
               required
-              className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("region", { required: true })}
             >
               <option disabled selected>
@@ -100,13 +93,11 @@ function Registration() {
             <Input
               type="text"
               placeholder="Населенный пункт"
-              className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("city", { required: true })}
             />
             <Input
               type="text"
               placeholder="Образовательное учреждение"
-              className="w-full rounded-lg border-blue-500 px-12 py-2 outline-2 outline-offset-2 outline-blue-500"
               {...register("institute", { required: true })}
             />
             <div className="flex flex-col gap-2">
@@ -119,7 +110,6 @@ function Registration() {
                 <Input
                   type="checkbox"
                   required
-                  className="rounded border-blue-500 text-blue-500 focus:ring-blue-500"
                 />
                 Согласен на
                 <a href="" className="text-blue-500">
@@ -136,7 +126,6 @@ function Registration() {
                 <Input
                   type="checkbox"
                   required
-                  className="rounded border-blue-500 text-blue-500 focus:ring-blue-500"
                 />
                 Ознакомлен с
                 <a href="" className="text-blue-500">
@@ -154,7 +143,6 @@ function Registration() {
           <section className="grid grid-rows-4 gap-8">
             <Select
               required
-              className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("gender", { required: true })}
             >
               <option disabled selected>
@@ -165,7 +153,6 @@ function Registration() {
             </Select>
             <Select
               required
-              className="rounded-lg border-solid border-blue-500 px-6 py-2 text-base outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("class", { required: true })}
             >
               <option disabled selected>
@@ -179,12 +166,10 @@ function Registration() {
             <Input
               type="password"
               placeholder="Придумайте пароль"
-              className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
               {...register("password", { required: true })}
             />
             <Input
               type="password"
-              className="rounded-lg border-solid border-blue-500 px-6 py-2 outline-2 outline-offset-2 outline-blue-500 outline-solid"
             />
             <Button type="submit" className="py-2.5 text-lg">
               Зарегистрироваться

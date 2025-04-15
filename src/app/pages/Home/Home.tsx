@@ -3,10 +3,11 @@ import News from "./Sections/News";
 import About from "./Sections/About";
 import Partners from "./Sections/Partners";
 import Footer from "../../components/layout/Footer/Footer";
+import Results from "./Sections/Results";
+import { Button } from "../../components/ui/Button";
 import { BackgroundBlobs } from "../../components/ui/BackgroundBlobs/BackgroundBlobs";
 import { fadeUp } from "../../components/animations/fadeUp";
 import { m } from "framer-motion";
-import Results from "./Sections/Results";
 
 export default function Home() {
   return (
@@ -63,7 +64,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-8 text-3xl font-semibold text-white"
+            className="mb-8 text-center text-3xl font-semibold text-white"
           >
             Результаты Олимпиады
           </m.h3>
@@ -79,7 +80,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="mb-8 text-3xl font-semibold text-white"
+            className="mb-8 text-center text-3xl font-semibold text-white"
           >
             Партнёры
           </m.h3>
@@ -89,7 +90,7 @@ export default function Home() {
         {/* Разработчики */}
         <section
           id="developers"
-          className="bg-[#0b0f1a] px-4 py-16 text-center sm:px-6"
+          className="bg-[#0b0f1a] px-4 py-14 text-center sm:px-6"
         >
           <m.h3
             initial={{ opacity: 0, y: 10 }}
@@ -103,12 +104,13 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="mx-auto max-w-3xl text-gray-400"
+            className="mx-auto mb-8 max-w-4xl text-lg text-gray-400"
           >
             Проект разработан курсантами факультета подготовки специалистов в
             области информационной безопасности Московского университета МВД
             России имени В.Я. Кикотя.
           </m.p>
+          <Button>Подробнее</Button>
         </section>
         <Footer />
       </div>
