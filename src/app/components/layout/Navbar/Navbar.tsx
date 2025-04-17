@@ -1,18 +1,27 @@
 import { Link } from "react-router-dom";
 import { Button } from "../../ui/Button";
 import { useThemeStore } from "../../../stores/themeStore";
+import cn from "clsx";
 
 function Navbar() {
   const { isDarkMode, toggleTheme } = useThemeStore();
 
   return (
-    <header className="sticky top-0 z-100 flex items-center justify-between border-b border-[#2c313c] bg-[#0d1117]/70 px-4 py-6 backdrop-blur sm:px-6">
+    <header
+      className={cn(
+        "sticky top-0 z-100 flex items-center justify-between border-b px-4 py-6 backdrop-blur sm:px-6",
+        {
+          "border-[#2c313c] bg-[#0d1117]/70 text-gray-300": isDarkMode,
+          "border-gray-200 bg-white text-gray-800": !isDarkMode,
+        },
+      )}
+    >
       <Link to={"/"}>
         <h1 className="text-2xl font-bold md:text-3xl">
           Университет <span className="text-blue-400">Цифровой Полиции</span>
         </h1>
       </Link>
-      <nav className="hidden gap-6 text-sm font-medium text-gray-300 md:flex md:gap-10">
+      <nav className="hidden gap-6 text-sm font-medium md:flex md:gap-10">
         <a href="#about" className="text-base transition hover:text-blue-400">
           Олимпиада
         </a>
@@ -37,7 +46,10 @@ function Navbar() {
       </nav>
       <button
         onClick={toggleTheme}
-        className="cursor-pointer rounded-lg p-2 text-gray-300 hover:bg-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700"
+        className={cn("cursor-pointer rounded-lg p-2", {
+          "text-gray-300 hover:bg-blue-950": isDarkMode,
+          "text-gray-800 hover:bg-gray-200": !isDarkMode,
+        })}
         aria-label={isDarkMode ? "Светлая тема" : "Тёмная тема"}
       >
         {isDarkMode ? (

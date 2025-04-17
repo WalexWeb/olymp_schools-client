@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { IMenuItem } from "./menu.data";
-import { useSidebarStore } from "../../../../stores/useSidebarStore";
+import { useSidebarStore } from "../../../../stores/SidebarStore";
 import cn from "clsx";
 
 function MenuItem({ item }: { item: IMenuItem }) {

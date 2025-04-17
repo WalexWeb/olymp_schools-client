@@ -6,6 +6,8 @@ import Input from "../components/ui/Input";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { m } from "framer-motion";
+import cn from "clsx";
+import { useThemeStore } from "../stores/themeStore";
 
 interface IForm {
   firstName: string;
@@ -16,6 +18,8 @@ interface IForm {
 }
 
 function Login() {
+  const { isDarkMode } = useThemeStore();
+
   const { register, handleSubmit } = useForm<IForm>({
     mode: "onChange",
   });
@@ -25,13 +29,28 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen w-screen bg-[#0b0f1a] font-sans text-white">
+    <div
+      className={cn("min-h-screen w-screen font-sans", {
+        "bg-[#0b0f1a] text-white": isDarkMode,
+        "bg-gray-50 text-gray-900": !isDarkMode,
+      })}
+    >
+      {" "}
       <BackgroundBlobs />
       <Navbar />
-
-      <m.section className="relative grid grid-cols-2 gap-25 bg-gradient-to-br from-[#0f172a] via-[#101b36] to-[#14213d] px-4 py-20 sm:px-6 md:flex-row">
+      <m.section
+        className={cn(
+          "relative flex flex-col justify-center gap-16 px-4 py-20 sm:px-6 md:flex-row",
+          {
+            "bg-gradient-to-br from-[#0f172a] via-[#101b36] to-[#14213d]":
+              isDarkMode,
+            "bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200":
+              !isDarkMode,
+          },
+        )}
+      >
         <form
-          className="ml-20 mt-1 grid w-lg grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-1"
+          className="mt-1 ml-20 grid w-lg grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-1"
           onSubmit={handleSubmit(onSubmit)}
         >
           <Input
@@ -53,21 +72,26 @@ function Login() {
           <Button type="submit" className="py-2.5 text-lg">
             Войти
           </Button>
-        <Link
-        to="/"
-        className="inline-block text-lg text-blue-400 transition hover:text-blue-300"
-      >
-        Забыли пароль?
-      </Link>
+          <Link
+            to="/"
+            className="inline-block text-lg text-blue-400 transition hover:text-blue-300"
+          >
+            Забыли пароль?
+          </Link>
         </form>
         <m.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
-          className="flex h-80 w-full items-center justify-center rounded-2xl bg-gradient-to-br from-blue-700 to-blue-400 md:w-xl"
+          className={cn(
+            "flex h-80 w-full items-center justify-center rounded-2xl md:w-xl",
+            {
+              "bg-gradient-to-br from-blue-700 to-blue-400": isDarkMode,
+              "bg-gradient-to-br from-blue-400 to-blue-300": !isDarkMode,
+            },
+          )}
         />
       </m.section>
-
       <Footer />
     </div>
   );

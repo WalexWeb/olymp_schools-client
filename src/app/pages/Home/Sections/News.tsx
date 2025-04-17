@@ -1,7 +1,10 @@
 import { m } from "framer-motion";
 import { fadeUp } from "../../../components/animations/fadeUp";
+import { useThemeStore } from "../../../stores/themeStore";
+import cn from "clsx";
 
 function News() {
+  const { isDarkMode } = useThemeStore();
   const newsItems = [
     {
       text: "🎉 У нас Финал!",
@@ -35,12 +38,22 @@ function News() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="mb-8 text-3xl font-semibold text-white"
+        className={cn("mb-8 text-3xl font-semibold", {
+          "text-white": isDarkMode,
+          "text-gray-900": !isDarkMode,
+        })}
       >
         Новости
       </m.h3>
       <m.ul
-        className={`space-y-6 text-gray-300 ${newsItems.length > 3 ? "max-h-72 overflow-y-auto pr-2" : ""}`}
+        className={cn(
+          "space-y-6",
+          {
+            "text-gray-300": isDarkMode,
+            "text-gray-600": !isDarkMode,
+          },
+          newsItems.length > 3 ? "max-h-72 overflow-y-auto pr-2" : "",
+        )}
       >
         {newsItems.map((title, index) => (
           <m.li
@@ -48,10 +61,31 @@ function News() {
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            className="cursor-pointer rounded-xl bg-[#111827] p-4 shadow-md transition hover:shadow-blue-500/20"
+            className={cn(
+              "cursor-pointer rounded-xl p-4 shadow-md transition",
+              {
+                "bg-[#111827] hover:shadow-blue-500/20": isDarkMode,
+                "bg-white hover:shadow-blue-200": !isDarkMode,
+                "border border-gray-200": !isDarkMode,
+              },
+            )}
           >
-            <p className="font-medium text-white">{title.text}</p>
-            <p className="text-sm text-gray-400">{title.date}</p>
+            <p
+              className={cn("font-medium", {
+                "text-white": isDarkMode,
+                "text-gray-800": !isDarkMode,
+              })}
+            >
+              {title.text}
+            </p>
+            <p
+              className={cn("text-sm", {
+                "text-gray-400": isDarkMode,
+                "text-gray-500": !isDarkMode,
+              })}
+            >
+              {title.date}
+            </p>
           </m.li>
         ))}
       </m.ul>

@@ -1,5 +1,6 @@
 import { m } from "framer-motion";
 import { Button } from "../../../components/ui/Button";
+import { Link } from "react-router-dom";
 
 function Results() {
   return (
@@ -14,7 +15,9 @@ function Results() {
         аналитика прохождения этапов. Все данные доступны для скачивания в
         формате PDF и доступны на портале личного кабинета.
       </m.p>
-      <Button>Просмотреть результаты</Button>
+      <Link to={"/ranking"}>
+        <Button className="px-7 py-4">Перейти к результатам</Button>
+      </Link>
     </div>
   );
 }

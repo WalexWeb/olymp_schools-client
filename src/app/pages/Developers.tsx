@@ -1,9 +1,9 @@
 import Navbar from "../components/layout/Navbar/Navbar";
 import { BackgroundBlobs } from "../components/ui/BackgroundBlobs/BackgroundBlobs";
-import cn from "clsx";
 import { useThemeStore } from "../stores/themeStore";
+import cn from "clsx";
 
-function Rankings() {
+function Developers() {
   const { isDarkMode } = useThemeStore();
 
   return (
@@ -13,10 +13,11 @@ function Rankings() {
         "bg-gray-50 text-gray-900": !isDarkMode,
       })}
     >
+      {" "}
       <BackgroundBlobs />
       <Navbar />
     </div>
   );
 }
 
-export default Rankings;
+export default Developers;

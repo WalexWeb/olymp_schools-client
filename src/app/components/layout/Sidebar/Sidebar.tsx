@@ -2,7 +2,7 @@ import Menu from "./menu/Menu";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { m } from "framer-motion";
 import cn from "clsx";
-import { useSidebarStore } from "../../../stores/useSidebarStore";
+import { useSidebarStore } from "../../../stores/SidebarStore";
 
 function Sidebar() {
   const { isCollapsed, setIsCollapsed } = useSidebarStore();

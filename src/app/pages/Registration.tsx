@@ -7,6 +7,8 @@ import Select from "../components/ui/Select";
 import { fadeUp } from "../components/animations/fadeUp";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { m } from "framer-motion";
+import cn from "clsx";
+import { useThemeStore } from "../stores/themeStore";
 
 interface IForm {
   firstName: string;
@@ -25,6 +27,8 @@ interface IForm {
 }
 
 function Registration() {
+  const { isDarkMode } = useThemeStore();
+
   const { register, handleSubmit } = useForm<IForm>({
     mode: "onChange",
   });
@@ -34,11 +38,25 @@ function Registration() {
   };
 
   return (
-    <div className="min-h-screen w-screen bg-[#0b0f1a] font-sans text-white">
+    <div
+      className={cn("min-h-screen w-screen font-sans", {
+        "bg-[#0b0f1a] text-white": isDarkMode,
+        "bg-gray-50 text-gray-900": !isDarkMode,
+      })}
+    >
       <BackgroundBlobs />
       <Navbar />
-
-      <div className="relative flex flex-col justify-center gap-16 bg-gradient-to-br from-[#0f172a] via-[#101b36] to-[#14213d] px-4 py-20 sm:px-6 md:flex-row">
+      <div
+        className={cn(
+          "relative flex flex-col justify-center gap-16 px-4 py-20 sm:px-6 md:flex-row",
+          {
+            "bg-gradient-to-br from-[#0f172a] via-[#101b36] to-[#14213d]":
+              isDarkMode,
+            "bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200":
+              !isDarkMode,
+          },
+        )}
+      >
         <form
           className="grid grid-cols-3 gap-8 sm:grid-cols-1 md:grid-cols-3"
           onSubmit={handleSubmit(onSubmit)}
@@ -82,10 +100,7 @@ function Registration() {
               placeholder="Контактный телефон"
               {...register("phone", { required: true })}
             />
-            <Select
-              required
-              {...register("region", { required: true })}
-            >
+            <Select required {...register("region", { required: true })}>
               <option disabled selected>
                 Регион
               </option>
@@ -107,10 +122,7 @@ function Registration() {
                 initial="hidden"
                 animate="visible"
               >
-                <Input
-                  type="checkbox"
-                  required
-                />
+                <Input type="checkbox" required />
                 Согласен на
                 <a href="" className="text-blue-500">
                   обработку персональных данных
@@ -123,10 +135,7 @@ function Registration() {
                 initial="hidden"
                 animate="visible"
               >
-                <Input
-                  type="checkbox"
-                  required
-                />
+                <Input type="checkbox" required />
                 Ознакомлен с
                 <a href="" className="text-blue-500">
                   Положением
@@ -141,20 +150,14 @@ function Registration() {
           </section>
 
           <section className="grid grid-rows-4 gap-8">
-            <Select
-              required
-              {...register("gender", { required: true })}
-            >
+            <Select required {...register("gender", { required: true })}>
               <option disabled selected>
                 Пол
               </option>
               <option value={"male"}>Мужской</option>
               <option value={"female"}>Женский</option>
             </Select>
-            <Select
-              required
-              {...register("class", { required: true })}
-            >
+            <Select required {...register("class", { required: true })}>
               <option disabled selected>
                 Класс / Курс
               </option>
@@ -168,9 +171,7 @@ function Registration() {
               placeholder="Придумайте пароль"
               {...register("password", { required: true })}
             />
-            <Input
-              type="password"
-            />
+            <Input type="password" />
             <Button type="submit" className="py-2.5 text-lg">
               Зарегистрироваться
             </Button>
