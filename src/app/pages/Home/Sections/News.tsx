@@ -5,6 +5,7 @@ import cn from "clsx";
 
 function News() {
   const { isDarkMode } = useThemeStore();
+  
   const newsItems = [
     {
       text: "🎉 У нас Финал!",

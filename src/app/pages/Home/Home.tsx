@@ -17,7 +17,7 @@ export default function Home() {
 
   return (
     <div
-      className={cn("min-h-screen font-sans", {
+      className={cn("min-h-screen w-screen font-sans", {
         "bg-[#0b0f1a] text-white": isDarkMode,
         "bg-gray-50 text-gray-900": !isDarkMode,
       })}

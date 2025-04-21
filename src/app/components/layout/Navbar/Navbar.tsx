@@ -9,7 +9,7 @@ function Navbar() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-100 flex items-center justify-between border-b px-4 py-6 backdrop-blur sm:px-6",
+        "sticky top-0 z-100 w-screen flex items-center justify-between border-b px-4 py-6 backdrop-blur sm:px-6",
         {
           "border-[#2c313c] bg-[#0d1117]/70 text-gray-300": isDarkMode,
           "border-gray-200 bg-white text-gray-800": !isDarkMode,
@@ -48,7 +48,7 @@ function Navbar() {
         onClick={toggleTheme}
         className={cn("cursor-pointer rounded-lg p-2", {
           "text-gray-300 hover:bg-blue-950": isDarkMode,
-          "text-gray-800 hover:bg-gray-200": !isDarkMode,
+          "text-gray-700 hover:bg-gray-200": !isDarkMode,
         })}
         aria-label={isDarkMode ? "Светлая тема" : "Тёмная тема"}
       >

@@ -1,13 +1,14 @@
-import { BackgroundBlobs } from "../components/ui/BackgroundBlobs/BackgroundBlobs";
-import { Button } from "../components/ui/Button";
-import Navbar from "../components/layout/Navbar/Navbar";
-import Footer from "../components/layout/Footer/Footer";
-import Input from "../components/ui/Input";
+import { BackgroundBlobs } from "../../components/ui/BackgroundBlobs/BackgroundBlobs";
+import { Button } from "../../components/ui/Button";
+import Navbar from "../../components/layout/Navbar/Navbar";
+import Footer from "../../components/layout/Footer/Footer";
+import Input from "../../components/ui/Input";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
 import { m } from "framer-motion";
 import cn from "clsx";
-import { useThemeStore } from "../stores/themeStore";
+import { useThemeStore } from "../../stores/themeStore";
+import { useState } from "react";
+import { ForgotPasswordModal } from "./ForgotPasswordModal";
 
 interface IForm {
   firstName: string;
@@ -24,6 +25,9 @@ function Login() {
     mode: "onChange",
   });
 
+  const [showForgotPasswordModal, setShowForgotPasswordModal] =
+    useState<boolean>(false);
+
   const onSubmit: SubmitHandler<IForm> = (data) => {
     console.log(data);
   };
@@ -35,9 +39,14 @@ function Login() {
         "bg-gray-50 text-gray-900": !isDarkMode,
       })}
     >
-      {" "}
       <BackgroundBlobs />
       <Navbar />
+
+      <ForgotPasswordModal
+        isOpen={showForgotPasswordModal}
+        onClose={() => setShowForgotPasswordModal(false)}
+      />
+
       <m.section
         className={cn(
           "relative flex flex-col justify-center gap-16 px-4 py-20 sm:px-6 md:flex-row",
@@ -72,12 +81,12 @@ function Login() {
           <Button type="submit" className="py-2.5 text-lg">
             Войти
           </Button>
-          <Link
-            to="/"
-            className="inline-block text-lg text-blue-400 transition hover:text-blue-300"
+          <a
+            onClick={() => setShowForgotPasswordModal(true)}
+            className="inline-block cursor-pointer text-lg text-blue-400 transition hover:text-blue-300"
           >
             Забыли пароль?
-          </Link>
+          </a>
         </form>
         <m.div
           initial={{ opacity: 0, scale: 0.9 }}
