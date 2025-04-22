@@ -4,6 +4,7 @@ import { useThemeStore } from "../../stores/themeStore";
 import { m } from "framer-motion";
 import { SubmitHandler, useForm } from "react-hook-form";
 import cn from "clsx";
+import { useRef } from "react";
 
 interface IForgotPasswordModalProps {
   isOpen: boolean;
@@ -19,8 +20,8 @@ export const ForgotPasswordModal = ({
   onClose,
 }: IForgotPasswordModalProps) => {
   const { register, handleSubmit } = useForm<IPasswordResetForm>();
-
   const { isDarkMode } = useThemeStore();
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const onSubmit: SubmitHandler<IPasswordResetForm> = (data) => {
     onClose();
@@ -30,23 +31,64 @@ export const ForgotPasswordModal = ({
 
   return (
     <>
+      {/* Затемнение фона */}
       <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="fixed inset-0 z-40 bg-black/30 backdrop-blur-xs"
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-40 bg-black/35 backdrop-blur-xs"
       />
 
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Контейнер модального окна */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <m.div
+          ref={modalRef}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className={cn("w-full max-w-md rounded-lg p-8", {
-            "bg-gray-800": isDarkMode,
-            "bg-white": !isDarkMode,
-          })}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ type: "spring", damping: 20 }}
+          className={cn(
+            "relative w-full max-w-md rounded-2xl border border-blue-600 bg-gradient-to-br p-8 shadow-md transition-all",
+            {
+              "from-[#142441] to-[#15213e] text-white": isDarkMode,
+              "from-white via-blue-100 to-blue-300 text-gray-800": !isDarkMode,
+            },
+          )}
         >
+          {/* Кнопка закрытия */}
+          <button
+            onClick={onClose}
+            className={cn(
+              "absolute top-4 right-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors",
+              {
+                "hover:bg-blue-700/30": isDarkMode,
+                "hover:bg-blue-200": !isDarkMode,
+              },
+            )}
+            aria-label="Закрыть окно"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className={cn({
+                "text-blue-300": isDarkMode,
+                "text-blue-600": !isDarkMode,
+              })}
+            >
+              <path
+                d="M12 4L4 12M4 4L12 12"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+
           <h3
-            className={cn("mb-6 text-2xl font-bold", {
+            className={cn("mb-6 text-center text-3xl font-semibold", {
               "text-white": isDarkMode,
               "text-gray-900": !isDarkMode,
             })}
@@ -61,13 +103,12 @@ export const ForgotPasswordModal = ({
               type="email"
               placeholder="Ваш email"
               {...register("resetEmail", { required: true })}
-              className="mb-4"
             />
-            <div className="flex gap-3">
-              <Button type="button" onClick={onClose}>
-                Отмена
+
+            <div className="flex justify-end gap-3">
+              <Button type="submit" className="h-14 w-full text-lg">
+                Отправить
               </Button>
-              <Button type="submit">Отправить</Button>
             </div>
           </form>
         </m.div>

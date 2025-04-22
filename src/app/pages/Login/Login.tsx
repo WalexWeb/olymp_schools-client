@@ -9,6 +9,8 @@ import cn from "clsx";
 import { useThemeStore } from "../../stores/themeStore";
 import { useState } from "react";
 import { ForgotPasswordModal } from "./ForgotPasswordModal";
+import { toast, ToastContainer } from "react-toastify";
+import { getCustomToastStyle } from "../../components/ui/toastStyles";
 
 interface IForm {
   firstName: string;
@@ -30,6 +32,13 @@ function Login() {
 
   const onSubmit: SubmitHandler<IForm> = (data) => {
     console.log(data);
+  };
+
+  const onError = () => {
+    toast.warn(
+      "Пожалуйста, заполните все поля",
+      getCustomToastStyle(isDarkMode),
+    );
   };
 
   return (
@@ -60,7 +69,7 @@ function Login() {
       >
         <form
           className="mt-1 ml-20 grid w-lg grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-1"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit, onError)}
         >
           <Input
             type="text"
@@ -102,6 +111,16 @@ function Login() {
         />
       </m.section>
       <Footer />
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
     </div>
   );
 }
