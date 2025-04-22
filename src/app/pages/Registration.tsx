@@ -9,6 +9,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { m } from "framer-motion";
 import cn from "clsx";
 import { useThemeStore } from "../stores/themeStore";
+import { ToastContainer, toast } from "react-toastify";
+import { getCustomToastStyle } from "../components/ui/toastStyles";
 
 interface IForm {
   firstName: string;
@@ -29,12 +31,27 @@ interface IForm {
 function Registration() {
   const { isDarkMode } = useThemeStore();
 
-  const { register, handleSubmit } = useForm<IForm>({
-    mode: "onChange",
+  const { register, handleSubmit, watch } = useForm<IForm>({
+    mode: "onSubmit",
   });
 
+  const password = watch("password");
+  const confirmPassword = watch("confirmPassword");
+
   const onSubmit: SubmitHandler<IForm> = (data) => {
+    if (password !== confirmPassword) {
+      toast.error("Пароли не совпадают", getCustomToastStyle(isDarkMode));
+      return;
+    }
+    toast.success("Регистрация успешна!", getCustomToastStyle(isDarkMode));
     console.log(data);
+  };
+
+  const onError = () => {
+    toast.warn(
+      "Пожалуйста, заполните все поля",
+      getCustomToastStyle(isDarkMode),
+    );
   };
 
   return (
@@ -46,6 +63,7 @@ function Registration() {
     >
       <BackgroundBlobs />
       <Navbar />
+
       <div
         className={cn(
           "relative flex flex-col justify-center gap-16 px-4 py-20 sm:px-6 md:flex-row",
@@ -59,7 +77,7 @@ function Registration() {
       >
         <form
           className="grid grid-cols-3 gap-8 sm:grid-cols-1 md:grid-cols-3"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit, onError)}
         >
           <section className="grid grid-rows-5 gap-8">
             <Input
@@ -67,20 +85,24 @@ function Registration() {
               placeholder="Фамилия"
               {...register("lastName", { required: true })}
             />
+
             <Input
               type="text"
               placeholder="Имя"
               {...register("firstName", { required: true })}
             />
+
             <Input
               type="text"
               placeholder="Отчество"
               {...register("patronymic", { required: true })}
             />
+
             <Input
               type="date"
               {...register("dateOfBirth", { required: true })}
             />
+
             <Input
               type="text"
               placeholder="Электронная почта"
@@ -100,21 +122,27 @@ function Registration() {
               placeholder="Контактный телефон"
               {...register("phone", { required: true })}
             />
+
             <Select required {...register("region", { required: true })}>
               <option disabled selected>
                 Регион
               </option>
+              <option value="Москва">Москва</option>
+              <option value="СПб">Санкт-Петербург</option>
             </Select>
+
             <Input
               type="text"
               placeholder="Населенный пункт"
               {...register("city", { required: true })}
             />
+
             <Input
               type="text"
               placeholder="Образовательное учреждение"
               {...register("institute", { required: true })}
             />
+
             <div className="flex flex-col gap-2">
               <m.label
                 className="flex items-center gap-2 text-sm"
@@ -157,6 +185,7 @@ function Registration() {
               <option value={"male"}>Мужской</option>
               <option value={"female"}>Женский</option>
             </Select>
+
             <Select required {...register("class", { required: true })}>
               <option disabled selected>
                 Класс / Курс
@@ -166,12 +195,19 @@ function Registration() {
               <option value={"1 курс"}>1 курс</option>
               <option value={"2 курс"}>2 курс</option>
             </Select>
+
             <Input
               type="password"
               placeholder="Придумайте пароль"
               {...register("password", { required: true })}
             />
-            <Input type="password" />
+
+            <Input
+              type="password"
+              placeholder="Повторите пароль"
+              {...register("confirmPassword", { required: true })}
+            />
+
             <Button type="submit" className="py-2.5 text-lg">
               Зарегистрироваться
             </Button>
@@ -179,6 +215,16 @@ function Registration() {
         </form>
       </div>
       <Footer />
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
     </div>
   );
 }
