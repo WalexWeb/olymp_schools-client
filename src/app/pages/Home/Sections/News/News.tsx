@@ -12,11 +12,23 @@ interface INewsItems {
 }
 
 function News() {
-  const [showNewsModal, setShowNewsModal] = useState<boolean>(false);
-
+  const [selectedNewsIndex, setSelectedNewsIndex] = useState<number | null>(
+    null,
+  );
   const { isDarkMode } = useThemeStore();
 
   const newsItems: INewsItems[] = [
+    {
+      text: "В Университете завершилась Олимпиада школьников «Университет цифровой полиции» по информационной безопасности",
+      date: "2 марта 2025",
+      desc: `Партнерами Олимпиады выступают: Экспертно-криминалистический центр МВД России, Управление по организации борьбы с противоправным использованием информационно-коммуникационных технологий МВД России, Бюро специальных технических мероприятий МВД России, научно-производственное объединение «Специальная техника и связь» МВД России, а также «Консультант Плюс», «Гарант», «Сбер», «СтандартПроект», «Лаборатория Касперского».
+По итогам Олимпиады победителями и призерами стали:
+1 место - Черноглазов Илья («Применение 3D технологий для изъятия следов подошвы обуви»);
+2 место - Журавкин Даниил («СТРАЖБОТ на службе охраны правопорядка»);
+2 место - Александрова Евгения («Разработка телеграмм чат бота, реализующего различные методы шифрования»);
+3 место - Щукин Алексей («Методы обеспечения безопасности облачных вычислений»);
+3 место - Пахневский Гордей («Дополненная реальность и робототехника в деятельности правоохранительных органов, обеспечивающие безопасность общества»).`,
+    },
     {
       text: "У нас Финал!",
       date: "1 апреля 2025",
@@ -72,52 +84,50 @@ function News() {
           newsItems.length > 3 ? "max-h-72 overflow-y-auto pr-2" : "",
         )}
       >
-        {newsItems.map((title, index) => (
-          <>
-            <NewsModal
-              text={title.text}
-              desc={title.desc}
-              date={title.date}
-              isOpen={showNewsModal}
-              onClose={() => {
-                setShowNewsModal(false);
-              }}
-            />
-            <m.li
-              key={index}
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              onClick={() => setShowNewsModal(true)}
-              className={cn(
-                "cursor-pointer rounded-xl p-4 shadow-md transition",
-                {
-                  "bg-[#111827] hover:shadow-blue-500/20": isDarkMode,
-                  "bg-white hover:shadow-blue-200": !isDarkMode,
-                  "border border-gray-200": !isDarkMode,
-                },
-              )}
+        {newsItems.map((item, index) => (
+          <m.li
+            key={index}
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            onClick={() => setSelectedNewsIndex(index)}
+            className={cn(
+              "cursor-pointer rounded-xl p-4 shadow-md transition",
+              {
+                "bg-[#111827] hover:shadow-blue-500/20": isDarkMode,
+                "bg-white hover:shadow-blue-200": !isDarkMode,
+                "border border-gray-200": !isDarkMode,
+              },
+            )}
+          >
+            <p
+              className={cn("font-medium", {
+                "text-white": isDarkMode,
+                "text-gray-800": !isDarkMode,
+              })}
             >
-              <p
-                className={cn("font-medium", {
-                  "text-white": isDarkMode,
-                  "text-gray-800": !isDarkMode,
-                })}
-              >
-                {title.text}
-              </p>
-              <p
-                className={cn("text-sm", {
-                  "text-gray-400": isDarkMode,
-                  "text-gray-500": !isDarkMode,
-                })}
-              >
-                {title.date}
-              </p>
-            </m.li>
-          </>
+              {item.text}
+            </p>
+            <p
+              className={cn("text-sm", {
+                "text-gray-400": isDarkMode,
+                "text-gray-500": !isDarkMode,
+              })}
+            >
+              {item.date}
+            </p>
+          </m.li>
         ))}
       </m.ul>
+      {selectedNewsIndex !== null && (
+        <NewsModal
+          text={newsItems[selectedNewsIndex].text}
+          desc={newsItems[selectedNewsIndex].desc}
+          date={newsItems[selectedNewsIndex].date}
+          isOpen={selectedNewsIndex !== null}
+          onClose={() => setSelectedNewsIndex(null)}
+        />
+      )}
     </div>
   );
 }

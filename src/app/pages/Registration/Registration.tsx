@@ -171,7 +171,7 @@ function Registration() {
               >
                 <Input type="checkbox" required />
                 Согласен на
-                <a href="" className="text-blue-500">
+                <a href="" className="text-blue-500" target="_blank">
                   обработку персональных данных
                 </a>
               </m.label>
@@ -187,6 +187,7 @@ function Registration() {
                 <a
                   href="https://mvd.ru/upload/site116/folder_page/041/907/599/Polozhenie_Olimpiada_MosU.pdf"
                   className="text-blue-500"
+                  target="_blank"
                 >
                   Положением
                 </a>
@@ -194,6 +195,7 @@ function Registration() {
                 <a
                   href="https://mvd.ru/upload/site116/folder_page/041/907/599/Reglament_2024-2025.pdf"
                   className="text-blue-500"
+                  target="_blank"
                 >
                   Регламентом
                 </a>
