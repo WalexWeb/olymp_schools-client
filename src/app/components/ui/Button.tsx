@@ -23,6 +23,7 @@ export const Button = forwardRef<
   };
 
   return (
+    // @ts-ignore
     <m.button
       ref={ref}
       className={clsx(base, sizeMap[size], className)}

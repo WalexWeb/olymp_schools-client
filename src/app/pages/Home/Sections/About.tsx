@@ -64,7 +64,7 @@ function About() {
               {item.title}
             </h4>
             <p
-              className={cn("text-sm", {
+              className={cn("text-md", {
                 "text-gray-400": isDarkMode,
                 "text-gray-600": !isDarkMode,
               })}

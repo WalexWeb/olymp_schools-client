@@ -24,6 +24,7 @@ export const ForgotPasswordModal = ({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const onSubmit: SubmitHandler<IPasswordResetForm> = (data) => {
+    console.log(data);
     onClose();
   };
 

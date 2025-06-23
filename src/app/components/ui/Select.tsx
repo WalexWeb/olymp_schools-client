@@ -12,6 +12,7 @@ function Select({ children, ...props }: SelectProps) {
   const { isDarkMode } = useThemeStore();
 
   return (
+    // @ts-ignore
     <m.select
       variants={fadeUp}
       initial="hidden"
@@ -20,7 +21,8 @@ function Select({ children, ...props }: SelectProps) {
       className={cn(
         "rounded-lg border-solid border-blue-500 px-6 py-2 text-lg outline-2 outline-offset-2 outline-blue-500 outline-solid",
         { "bg-blue-200/55": !isDarkMode },
-      )}    >
+      )}
+    >
       {children}
     </m.select>
   );

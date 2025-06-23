@@ -8,6 +8,7 @@ function Input(props: ComponentProps<"input">) {
   const { isDarkMode } = useThemeStore();
 
   return (
+    // @ts-ignore
     <m.input
       variants={fadeUp}
       initial="hidden"

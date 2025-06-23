@@ -13,7 +13,6 @@ function Developers() {
         "bg-gray-50 text-gray-900": !isDarkMode,
       })}
     >
-      {" "}
       <BackgroundBlobs />
       <Navbar />
     </div>

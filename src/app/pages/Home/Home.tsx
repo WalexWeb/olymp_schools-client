@@ -1,7 +1,7 @@
 import Navbar from "../../components/layout/Navbar/Navbar";
-import News from "./Sections/News";
+import News from "./Sections/News/News";
 import About from "./Sections/About";
-import Partners from "./Sections/Partners";
+import Docs from "./Sections/Docs";
 import Footer from "../../components/layout/Footer/Footer";
 import Results from "./Sections/Results";
 import { Button } from "../../components/ui/Button";
@@ -11,6 +11,9 @@ import { m } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useThemeStore } from "../../stores/themeStore";
 import cn from "clsx";
+import logo from "../../assets/logo.png";
+import logoDark from '../../assets/logo_dark.png'
+
 
 export default function Home() {
   const { isDarkMode } = useThemeStore();
@@ -64,11 +67,23 @@ export default function Home() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
-          className={cn("h-72 w-full rounded-2xl sm:w-md", {
-            "bg-gradient-to-br from-blue-700 to-blue-400": isDarkMode,
-            "bg-gradient-to-br from-blue-400 to-blue-300": !isDarkMode,
-          })}
-        />
+          className={cn(
+            "group relative flex h-72 w-full items-center justify-center overflow-hidden rounded-2xl sm:w-md",
+            {
+              "bg-gradient-to-br from-blue-700 to-blue-400": isDarkMode,
+              "bg-gradient-to-br from-blue-400 to-blue-300": !isDarkMode,
+            },
+          )}
+        >
+          <Link to={"/"}>
+            <m.img
+              src={isDarkMode ? logoDark : logo}
+              className="z-10 mt-6 h-88 cursor-pointer"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            />
+          </Link>
+        </m.div>
       </section>
 
       {/* Новости */}
@@ -143,9 +158,9 @@ export default function Home() {
             "text-gray-900": !isDarkMode,
           })}
         >
-          Партнёры
+          Документы
         </m.h3>
-        <Partners />
+        <Docs />
       </section>
 
       {/* Разработчики */}
