@@ -238,51 +238,8 @@ function StepContentWrapper({
   );
 }
 
-interface SlideTransitionProps {
-  children: ReactNode;
-  direction: number;
-  onHeightReady: (height: number) => void;
-}
 
-function SlideTransition({
-  children,
-  direction,
-  onHeightReady,
-}: SlideTransitionProps) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
 
-  useLayoutEffect(() => {
-    const updateHeight = () => {
-      if (containerRef.current) {
-        onHeightReady(containerRef.current.scrollHeight);
-      }
-    };
-
-    updateHeight();
-
-    const resizeObserver = new ResizeObserver(updateHeight);
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-
-    return () => resizeObserver.disconnect();
-  }, [children, onHeightReady]);
-
-  return (
-    <motion.div
-      ref={containerRef}
-      custom={direction}
-      variants={stepVariants}
-      initial="enter"
-      animate="center"
-      exit="exit"
-      transition={{ duration: 0.4 }}
-      style={{ position: "absolute", left: 0, right: 0, top: 0 }}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 const stepVariants: Variants = {
   enter: (dir: number) => ({
