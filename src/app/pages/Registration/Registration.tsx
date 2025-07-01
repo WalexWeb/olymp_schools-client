@@ -4,34 +4,21 @@ import Navbar from "../../components/layout/Navbar/Navbar";
 import Footer from "../../components/layout/Footer/Footer";
 import Input from "../../components/ui/Input";
 import Select from "../../components/ui/Select";
-import { fadeUp } from "../../components/animations/fadeUp";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { m } from "framer-motion";
 import cn from "clsx";
 import { useThemeStore } from "../../stores/themeStore";
 import { ToastContainer, toast } from "react-toastify";
 import { getCustomToastStyle } from "../../components/ui/toastStyles";
-
-interface IForm {
-  firstName: string;
-  patronymic: string;
-  lastName: string;
-  dateOfBirth: Date;
-  email: string;
-  phone: number;
-  region: string;
-  city: string;
-  institute: string;
-  instituteRegion: string;
-  gender: string;
-  class: number;
-  snils: number;
-  mailAddress: string;
-  password: string;
-  confirmPassword: string;
-}
+import { IForm } from "../../types/IForm.type";
+import Stepper, { Step } from "../../components/ui/Stepper/Stepper";
+import { useRef } from "react";
+import { useStepStore } from "../../stores/StepsStore";
 
 function Registration() {
+  const { currentStep, setStep, nextStep, prevStep, resetStep } =
+    useStepStore();
+  const stepperRef = useRef<any>(null);
+
   const { isDarkMode } = useThemeStore();
 
   const { register, handleSubmit, watch } = useForm<IForm>({
@@ -48,6 +35,7 @@ function Registration() {
     }
     toast.success("Регистрация успешна!", getCustomToastStyle(isDarkMode));
     console.log(data);
+    resetStep();
   };
 
   const onError = () => {
@@ -66,157 +54,15 @@ function Registration() {
     >
       <BackgroundBlobs />
       <Navbar />
-
-      <div
-        className={cn(
-          "relative flex flex-col justify-center gap-16 px-4 py-20 sm:px-6 md:flex-row",
-          {
-            "bg-gradient-to-br from-[#0f172a] via-[#101b36] to-[#14213d]":
-              isDarkMode,
-            "bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200":
-              !isDarkMode,
-          },
-        )}
+      <Stepper
+        ref={stepperRef}
+        initialStep={currentStep}
+        onStepChange={setStep}
+        onFinalStepCompleted={() => console.log("Регистрация окончена")}
       >
-        <form
-          className="grid grid-cols-3 gap-8 sm:grid-cols-1 md:grid-cols-3"
-          onSubmit={handleSubmit(onSubmit, onError)}
-        >
-          <section className="grid grid-rows-5 gap-8">
-            <Input
-              type="text"
-              placeholder="Фамилия"
-              {...register("lastName", { required: true })}
-            />
-
-            <Input
-              type="text"
-              placeholder="Имя"
-              {...register("firstName", { required: true })}
-            />
-
-            <Input
-              type="text"
-              placeholder="Отчество"
-              {...register("patronymic", { required: true })}
-            />
-
-            <Input
-              type="date"
-              {...register("dateOfBirth", { required: true })}
-            />
-
-            <Select required {...register("gender", { required: true })}>
-              <option disabled selected>
-                Пол
-              </option>
-              <option value={"male"}>Мужской</option>
-              <option value={"female"}>Женский</option>
-            </Select>
-            <Select required {...register("class", { required: true })}>
-              <option disabled selected>
-                Класс / Курс
-              </option>
-              <option value={"10 класс"}>10 класс</option>
-              <option value={"11 класс"}>11 класс</option>
-              <option value={"1 курс"}>1 курс</option>
-              <option value={"2 курс"}>2 курс</option>
-            </Select>
-          </section>
-
-          <section className="grid grid-rows-5 gap-8">
-            <Input
-              type="text"
-              placeholder="Контактный телефон"
-              {...register("phone", { required: true })}
-            />
-
-            <Select required {...register("region", { required: true })}>
-              <option disabled selected>
-                Регион
-              </option>
-              <option value="Москва">Москва</option>
-              <option value="СПб">Санкт-Петербург</option>
-            </Select>
-
-            <Input
-              type="text"
-              placeholder="Населенный пункт"
-              {...register("city", { required: true })}
-            />
-
-            <Input
-              type="text"
-              placeholder="Образовательное учреждение"
-              {...register("institute", { required: true })}
-            />
-
-            <Select
-              required
-              {...register("instituteRegion", { required: true })}
-            >
-              <option disabled selected>
-                Регион организации
-              </option>
-              <option value="Москва">Москва</option>
-              <option value="СПб">Санкт-Петербург</option>
-            </Select>
-
-            <div className="flex flex-col gap-2">
-              <m.label
-                className="flex items-center gap-2 text-sm"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                <Input type="checkbox" required />
-                Согласен на
-                <a href="" className="text-blue-500" target="_blank">
-                  обработку персональных данных
-                </a>
-              </m.label>
-
-              <m.label
-                className="flex items-center gap-2 text-sm"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                <Input type="checkbox" required />
-                Ознакомлен с
-                <a
-                  href="https://mvd.ru/upload/site116/folder_page/041/907/599/Polozhenie_Olimpiada_MosU.pdf"
-                  className="text-blue-500"
-                  target="_blank"
-                >
-                  Положением
-                </a>
-                и
-                <a
-                  href="https://mvd.ru/upload/site116/folder_page/041/907/599/Reglament_2024-2025.pdf"
-                  className="text-blue-500"
-                  target="_blank"
-                >
-                  Регламентом
-                </a>
-                Олимпиады
-              </m.label>
-            </div>
-          </section>
-
-          <section className="grid grid-rows-4 gap-8">
-            <Input
-              type="text"
-              placeholder="СНИЛС"
-              {...register("snils", { required: true })}
-            />
-
-            <Input
-              type="text"
-              placeholder="Почтовый адрес"
-              {...register("mailAddress", { required: true })}
-            />
-
+        {/* Первый шаг - контактная информация */}
+        <Step>
+          <div className="mx-auto flex w-full max-w-md flex-col gap-8">
             <Input
               type="text"
               placeholder="Электронная почта"
@@ -240,15 +86,199 @@ function Registration() {
               placeholder="Повторите пароль"
               {...register("confirmPassword", { required: true })}
             />
+          </div>
+          <div className="mx-auto mt-8 flex max-w-2xl justify-between px-4">
+            <div className="flex-1" />
+            <Button
+              type="button"
+              onClick={() => {
+                if (currentStep === 3) {
+                  // Третий шаг — отправка формы
+                  handleSubmit(onSubmit, onError)();
+                } else {
+                  nextStep();
+                  stepperRef.current?.handleNext?.();
+                }
+              }}
+            >
+              Далее
+            </Button>
+          </div>
+        </Step>
 
-            <Button type="submit" className="py-2.5 text-lg">
+        {/* Второй шаг - личные данные */}
+        <Step>
+          <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
+            <Input
+              type="text"
+              placeholder="Фамилия"
+              {...register("lastName", { required: true })}
+            />
+
+            <Input
+              type="text"
+              placeholder="Имя"
+              {...register("firstName", { required: true })}
+            />
+
+            <Input
+              type="text"
+              placeholder="Отчество"
+              {...register("patronymic", { required: true })}
+            />
+
+            <Input
+              type="date"
+              {...register("dateOfBirth", { required: true })}
+            />
+
+            <section className="grid grid-rows-4 gap-8">
+              <Select required {...register("gender", { required: true })}>
+                <option disabled selected>
+                  Пол
+                </option>
+                <option value={"male"}>Мужской</option>
+                <option value={"female"}>Женский</option>
+              </Select>
+              <Select required {...register("class", { required: true })}>
+                <option disabled selected>
+                  Класс / Курс
+                </option>
+                <option value={"10 класс"}>10 класс</option>
+                <option value={"11 класс"}>11 класс</option>
+                <option value={"1 курс"}>1 курс</option>
+                <option value={"2 курс"}>2 курс</option>
+              </Select>
+              <Input
+                type="text"
+                placeholder="Образовательное учреждение"
+                {...register("institute", { required: true })}
+              />
+              <Select
+                required
+                {...register("instituteRegion", { required: true })}
+              >
+                <option disabled selected>
+                  Регион организации
+                </option>
+                <option value="Москва">Москва</option>
+                <option value="СПб">Санкт-Петербург</option>
+              </Select>
+            </section>
+          </div>
+          <div className="mx-w-2xl mx-auto mt-8 flex justify-between px-4">
+            <Button
+              type="button"
+              onClick={() => {
+                prevStep();
+                stepperRef.current?.handleBack?.();
+              }}
+            >
+              Назад
+            </Button>
+            <div className="flex-1" />
+            <Button
+              type="button"
+              onClick={() => {
+                if (currentStep === 3) {
+                  // Третий шаг — отправка формы
+                  handleSubmit(onSubmit, onError)();
+                } else {
+                  nextStep();
+                  stepperRef.current?.handleNext?.();
+                }
+              }}
+            >
+              Далее
+            </Button>
+          </div>
+        </Step>
+
+        {/* Третий шаг - дополнительная информация */}
+        <Step>
+          <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
+            <Input
+              type="text"
+              placeholder="Контактный телефон"
+              {...register("phone", { required: true })}
+            />
+
+            <Select required {...register("region", { required: true })}>
+              <option disabled selected>
+                Регион
+              </option>
+              <option value="Москва">Москва</option>
+              <option value="СПб">Санкт-Петербург</option>
+            </Select>
+
+            <Input
+              type="text"
+              placeholder="Населенный пункт"
+              {...register("city", { required: true })}
+            />
+
+            <Input
+              type="text"
+              placeholder="СНИЛС"
+              {...register("snils", { required: true })}
+            />
+
+            <Input
+              type="text"
+              placeholder="Почтовый адрес"
+              {...register("mailAddress", { required: true })}
+            />
+            <div className="flex flex-col gap-2">
+              <label className="flex items-center gap-2 text-sm">
+                <Input type="checkbox" required />
+                Согласен на
+                <a href="" className="text-blue-500" target="_blank">
+                  обработку персональных данных
+                </a>
+              </label>
+
+              <label className="flex items-center gap-2 text-sm">
+                <Input type="checkbox" required />
+                Ознакомлен с
+                <a
+                  href="https://mvd.ru/upload/site116/folder_page/041/907/599/Polozhenie_Olimpiada_MosU.pdf"
+                  className="text-blue-500"
+                  target="_blank"
+                >
+                  Положением
+                </a>
+                и
+                <a
+                  href="https://mvd.ru/upload/site116/folder_page/041/907/599/Reglament_2024-2025.pdf"
+                  className="text-blue-500"
+                  target="_blank"
+                >
+                  Регламентом
+                </a>
+                Олимпиады
+              </label>
+            </div>
+          </div>
+          <div className="mx-auto mt-8 flex max-w-2xl justify-between px-4">
+            <Button
+              type="button"
+              onClick={() => {
+                prevStep();
+                stepperRef.current?.handleBack?.();
+              }}
+            >
+              Назад
+            </Button>
+            <div className="flex-1" />
+            <Button
+              type="button"
+              onClick={() => handleSubmit(onSubmit, onError)()}
+            >
               Зарегистрироваться
             </Button>
-          </section>
-        </form>
-      </div>
-      <Footer />
-
+          </div>
+        </Step>
+      </Stepper>
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -258,6 +288,7 @@ function Registration() {
         pauseOnHover
         draggable
       />
+      <Footer />
     </div>
   );
 }
