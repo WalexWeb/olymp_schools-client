@@ -2,11 +2,7 @@ import { m } from "framer-motion";
 import { fadeUp } from "../../../components/animations/fadeUp";
 import { useThemeStore } from "../../../stores/themeStore";
 import cn from "clsx";
-
-interface IDocs {
-  title: string;
-  link: string;
-}
+import { IDocs } from "../../../types/IDocs.type";
 
 function Docs() {
   const { isDarkMode } = useThemeStore();

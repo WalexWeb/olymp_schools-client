@@ -3,15 +3,10 @@ import { fadeUp } from "../../../components/animations/fadeUp";
 import { useThemeStore } from "../../../stores/themeStore";
 import cn from "clsx";
 import { Link } from "react-router-dom";
+import { IAboutItem } from "../../../types/IAbout.type";
 
 function About() {
   const { isDarkMode } = useThemeStore();
-
-  interface IAboutItem {
-    title: string;
-    desc: string;
-    link: string;
-  }
 
   const aboutItems: IAboutItem[] = [
     {
@@ -25,15 +20,30 @@ function About() {
       link: "/",
     },
     {
-      title: "Архив",
+      title: "Результаты Отборочного этапа",
+      desc: "Результаты отборочного этапа олимпиады",
+      link: "/",
+    },
+    {
+      title: "Итоги Олимпиады",
+      desc: "Победители и призёры олимпиады и их проекты",
+      link: "/ranking",
+    },
+    {
+      title: "Результаты Олимпиады прошлых лет",
       desc: "Архив победителей и проектов прошлых лет",
       link: "/",
+    },
+    {
+      title: "Наши партнёры",
+      desc: "Организации и компании, поддерживающие олимпиаду",
+      link: "/partners",
     },
   ];
 
   return (
     <div
-      className={`col-auto grid grid-cols-1 gap-8 md:grid-cols-${aboutItems.length} lg:grid-cols-3 xl:gap-8`}
+      className={`col-auto grid grid-cols-1 gap-8 md:grid-cols-${aboutItems.length} lg:grid-cols-1 xl:gap-4`}
     >
       {aboutItems.map((item, index) => (
         <Link to={item.link} key={index}>
@@ -46,10 +56,10 @@ function About() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 1 }}
             className={cn(
-              "flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-xl p-6 shadow-xl transition",
+              "flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-xl px-4 py-6 shadow-xl transition",
 
               {
-                "bg-[#161b22] hover:shadow-blue-500/20": isDarkMode,
+                "bg-[#161b22]/50 hover:shadow-blue-500/20": isDarkMode,
                 "border border-gray-200 bg-white hover:shadow-blue-200":
                   !isDarkMode,
               },

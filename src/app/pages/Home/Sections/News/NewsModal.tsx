@@ -2,14 +2,7 @@ import { m } from "framer-motion";
 import cn from "clsx";
 import { useThemeStore } from "../../../../stores/themeStore";
 import { useRef } from "react";
-
-interface INewsModalProps {
-  text: string;
-  date: string;
-  desc: string;
-  isOpen: boolean;
-  onClose: () => void;
-}
+import { INewsModalProps } from "../../../../types/INews.type";
 
 function NewsModal({ isOpen, onClose, text, desc, date }: INewsModalProps) {
   const { isDarkMode } = useThemeStore();

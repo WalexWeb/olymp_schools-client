@@ -32,10 +32,10 @@ function Navbar() {
           Результаты
         </a>
         <a
-          href="#partners"
+          href="#docs"
           className="text-base transition hover:text-blue-400"
         >
-          Партнёры
+          Документы
         </a>
         <a
           href="#developers"
