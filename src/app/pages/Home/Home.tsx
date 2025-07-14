@@ -10,6 +10,7 @@ import { useThemeStore } from "../../stores/themeStore";
 import cn from "clsx";
 import logo from "../../assets/logo.png";
 import { Button } from "../../components/ui/Button";
+import Carousel from "./Sections/Carousel";
 
 export default function Home() {
   const { isDarkMode } = useThemeStore();
@@ -87,7 +88,7 @@ export default function Home() {
           <News />
         </div>
       </section>
-      
+
       {/* Разработчики */}
       <section
         id="developers"
@@ -124,23 +125,9 @@ export default function Home() {
           <Button className="px-7 py-3">Подробнее</Button>
         </Link>
       </section>
-      {/* Карусель с изображениями */}
-      <section
-        className={cn("p-8 text-center", {
-          "bg-[#0d1117]": isDarkMode,
-          "bg-white": !isDarkMode,
-        })}
-      >
-        <h2 className="mb-6 text-2xl font-bold">Галерея</h2>
-        <div
-          className={cn("flex h-64 items-center justify-center rounded-lg", {
-            "bg-[#161b22]": isDarkMode,
-            "bg-gray-200": !isDarkMode,
-          })}
-        >
-          <p>Здесь будет карусель с изображениями</p>
-        </div>
-      </section>
+
+      {/* Карусель */}
+      <Carousel />
 
       <Footer />
     </div>
