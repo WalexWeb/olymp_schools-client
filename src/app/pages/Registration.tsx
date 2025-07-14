@@ -1,18 +1,18 @@
-import { BackgroundBlobs } from "../../components/ui/BackgroundBlobs/BackgroundBlobs";
-import { Button } from "../../components/ui/Button";
-import Navbar from "../../components/layout/Navbar/Navbar";
-import Footer from "../../components/layout/Footer/Footer";
-import Input from "../../components/ui/Input";
-import Select from "../../components/ui/Select";
+import { BackgroundBlobs } from "../components/ui/BackgroundBlobs/BackgroundBlobs";
+import { Button } from "../components/ui/Button";
+import Navbar from "../components/layout/Navbar/Navbar";
+import Footer from "../components/layout/Footer/Footer";
+import Input from "../components/ui/Input";
+import Select from "../components/ui/Select";
 import { SubmitHandler, useForm } from "react-hook-form";
 import cn from "clsx";
-import { useThemeStore } from "../../stores/themeStore";
+import { useThemeStore } from "../stores/themeStore";
 import { ToastContainer, toast } from "react-toastify";
-import { getCustomToastStyle } from "../../components/ui/toastStyles";
-import { IForm } from "../../types/IForm.type";
-import Stepper, { Step } from "../../components/ui/Stepper/Stepper";
+import { getCustomToastStyle } from "../components/ui/toastStyles";
+import { IForm } from "../types/IForm.type";
+import Stepper, { Step } from "../components/ui/Stepper/Stepper";
 import { useRef } from "react";
-import { useStepStore } from "../../stores/StepsStore";
+import { useStepStore } from "../stores/StepsStore";
 
 function Registration() {
   const { currentStep, setStep, nextStep, prevStep, resetStep } =
