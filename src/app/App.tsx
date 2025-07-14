@@ -5,8 +5,9 @@ import Login from "./pages/Login/Login";
 import Rankings from "./pages/Rankings";
 import Profile from "./pages/Profile";
 import Olympiads from "./pages/Olympiads";
-import Settings from "./pages/Settings";
 import Developers from "./pages/Developers";
+import Passing from "./pages/Passing";
+import QualifyingResults from "./pages/QualifyingResults";
 
 function App() {
   return (
@@ -18,8 +19,9 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/olympiads" element={<Olympiads />} />
         <Route path="/ranking" element={<Rankings />} />
+        <Route path="/qualification" element={<QualifyingResults />} />
         <Route path="/developers" element={<Developers />} />
-        <Route path="/settings" element={<Settings />} />
+        <Route path="/passing" element={<Passing />} />
       </Routes>
     </>
   );
