@@ -3,16 +3,16 @@ import { fadeUp } from "../../../components/animations/fadeUp";
 import { useThemeStore } from "../../../stores/themeStore";
 import cn from "clsx";
 import { Link } from "react-router-dom";
-import { IAboutItem } from "../../../types/IAbout.type";
+import { IInfoItem } from "../../../types/IInfo.type";
 
-function About() {
+function Info() {
   const { isDarkMode } = useThemeStore();
 
-  const aboutItems: IAboutItem[] = [
+  const InfoItems: IInfoItem[] = [
     {
       title: "Об олимпиаде",
       desc: "Описание олимпиады, её цели и как она помогает при поступлении",
-      link: "/",
+      link: "/about",
     },
     {
       title: "Прохождение олимпиады",
@@ -43,9 +43,9 @@ function About() {
 
   return (
     <div
-      className={`col-auto grid grid-cols-1 gap-8 md:grid-cols-${aboutItems.length} lg:grid-cols-1 xl:gap-4`}
+      className={`col-auto grid grid-cols-1 gap-8 md:grid-cols-${InfoItems.length} lg:grid-cols-1 xl:gap-4`}
     >
-      {aboutItems.map((item, index) => (
+      {InfoItems.map((item, index) => (
         <Link to={item.link} key={index}>
           <m.button
             key={index}
@@ -88,4 +88,4 @@ function About() {
   );
 }
 
-export default About;
+export default Info;

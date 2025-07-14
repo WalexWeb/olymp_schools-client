@@ -8,6 +8,7 @@ import Olympiads from "./pages/Olympiads";
 import Developers from "./pages/Developers";
 import Passing from "./pages/Passing";
 import QualifyingResults from "./pages/QualifyingResults";
+import AboutOlympiad from "./pages/AboutOlympiad/AboutOlympiad";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/qualification" element={<QualifyingResults />} />
         <Route path="/developers" element={<Developers />} />
         <Route path="/passing" element={<Passing />} />
+        <Route path="/about" element={<AboutOlympiad />} />
       </Routes>
     </>
   );

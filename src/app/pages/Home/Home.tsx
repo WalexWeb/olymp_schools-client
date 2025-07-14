@@ -1,6 +1,6 @@
 import Navbar from "../../components/layout/Navbar/Navbar";
 import News from "./Sections/News/News";
-import About from "./Sections/About";
+import About from "./Sections/Info";
 import Footer from "../../components/layout/Footer/Footer";
 import { BackgroundBlobs } from "../../components/ui/BackgroundBlobs/BackgroundBlobs";
 import { fadeUp } from "../../components/animations/fadeUp";

@@ -21,7 +21,7 @@ function Passing() {
       <BackgroundBlobs />
       <Navbar />
 
-      <section className="flex justify-center items-center px-6 py-12">
+      <section className="flex items-center justify-center px-6 py-12">
         <div className="w-10xl mx-auto max-w-4xl">
           <m.div
             variants={fadeUp}
@@ -44,7 +44,7 @@ function Passing() {
                 "bg-white shadow-md": !isDarkMode,
               })}
             >
-              <h3 className="mb-6 text-2xl font-semibold">
+              <h3 className="mb-6 text-center text-2xl font-semibold">
                 Регистрация для участия в олимпиаде
               </h3>
 
