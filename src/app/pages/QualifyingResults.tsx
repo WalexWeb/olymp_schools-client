@@ -7,23 +7,10 @@ import Footer from "../components/layout/Footer/Footer";
 import { fadeUp } from "../components/animations/fadeUp";
 import { BackgroundBlobs } from "../components/ui/BackgroundBlobs/BackgroundBlobs";
 import Navbar from "../components/layout/Navbar/Navbar";
+import { columnVariants } from "../components/animations/columnVariants";
 
 function QualifyingResults() {
   const { isDarkMode } = useThemeStore();
-
-  // Анимация для колонок
-  const columnVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: (i: number) => ({
-      opacity: 1,
-      x: 0,
-      transition: {
-        delay: i * 0.1,
-        duration: 0.5,
-        ease: "easeOut",
-      },
-    }),
-  };
 
   // Моковые данные участников
   const participants = [
@@ -210,10 +197,13 @@ function QualifyingResults() {
                 </p>
               </div>
 
-              <h3 className="mb-4 text-xl font-semibold">
+              <a
+                href="https://mvd.ru/upload/site116/folder_page/045/106/727/final_20_3.pdf"
+                className="mb-4 text-xl font-semibold text-blue-400"
+              >
                 Финалисты Олимпиады школьников «Университет цифровой полиции» по
-                информационной безопасности 2024-2025 учебного года:
-              </h3>
+                информационной безопасности 2024-2025 учебного года.
+              </a>
 
               {/* Таблица участников */}
               <div className="mt-6 overflow-x-auto">

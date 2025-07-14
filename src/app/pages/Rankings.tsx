@@ -5,6 +5,7 @@ import { Button } from "../components/ui/Button";
 import { useThemeStore } from "../stores/themeStore";
 import cn from "clsx";
 import Footer from "../components/layout/Footer/Footer";
+import { columnVariants } from "../components/animations/columnVariants";
 
 const Rankings = () => {
   const { isDarkMode } = useThemeStore();
@@ -177,20 +178,6 @@ const Rankings = () => {
       details: "#",
     },
   ];
-
-  // Анимация для колонок
-  const columnVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: (i: number) => ({
-      opacity: 1,
-      x: 0,
-      transition: {
-        delay: i * 0.1,
-        duration: 0.5,
-        ease: "easeOut",
-      },
-    }),
-  };
 
   return (
     <div
