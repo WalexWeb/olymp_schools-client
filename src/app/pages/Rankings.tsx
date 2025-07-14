@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Navbar from "../components/layout/Navbar/Navbar";
 import { BackgroundBlobs } from "../components/ui/BackgroundBlobs/BackgroundBlobs";
 import { Button } from "../components/ui/Button";
@@ -202,7 +202,7 @@ const Rankings = () => {
       <BackgroundBlobs />
       <Navbar />
       <div className="flex flex-1 items-center justify-center p-4">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -226,7 +226,7 @@ const Rankings = () => {
               </h3>
             </div>
             {/* Подпись под заголовком */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
@@ -236,7 +236,7 @@ const Rankings = () => {
               })}
             >
               <p>Кнопки кликабельны и ведут к проектам в цифровом формате</p>
-            </motion.div>
+            </m.div>
           </div>
 
           {/* Таблица результатов */}
@@ -259,7 +259,7 @@ const Rankings = () => {
                     "Балл",
                     "Статус",
                   ].map((header, i) => (
-                    <motion.th
+                    <m.th
                       key={i}
                       custom={i}
                       initial="hidden"
@@ -271,7 +271,7 @@ const Rankings = () => {
                       })}
                     >
                       {header}
-                    </motion.th>
+                    </m.th>
                   ))}
                 </tr>
               </thead>
@@ -284,7 +284,7 @@ const Rankings = () => {
                       "border-blue-200 hover:bg-blue-100": !isDarkMode,
                     })}
                   >
-                    <motion.td
+                    <m.td
                       custom={0}
                       initial="hidden"
                       animate="visible"
@@ -292,8 +292,8 @@ const Rankings = () => {
                       className="px-4 py-3 text-center"
                     >
                       {index + 1}
-                    </motion.td>
-                    <motion.td
+                    </m.td>
+                    <m.td
                       custom={1}
                       initial="hidden"
                       animate="visible"
@@ -301,8 +301,8 @@ const Rankings = () => {
                       className="px-4 py-3 text-center"
                     >
                       {participant.lastName}
-                    </motion.td>
-                    <motion.td
+                    </m.td>
+                    <m.td
                       custom={2}
                       initial="hidden"
                       animate="visible"
@@ -310,8 +310,8 @@ const Rankings = () => {
                       className="px-4 py-3 text-center"
                     >
                       {participant.firstName}
-                    </motion.td>
-                    <motion.td
+                    </m.td>
+                    <m.td
                       custom={3}
                       initial="hidden"
                       animate="visible"
@@ -319,8 +319,8 @@ const Rankings = () => {
                       className="px-4 py-3 text-center"
                     >
                       {participant.middleName}
-                    </motion.td>
-                    <motion.td
+                    </m.td>
+                    <m.td
                       custom={4}
                       initial="hidden"
                       animate="visible"
@@ -328,8 +328,8 @@ const Rankings = () => {
                       className="px-4 py-3 text-center"
                     >
                       {participant.grade}
-                    </motion.td>
-                    <motion.td
+                    </m.td>
+                    <m.td
                       custom={5}
                       initial="hidden"
                       animate="visible"
@@ -337,8 +337,8 @@ const Rankings = () => {
                       className="px-4 py-3 text-center"
                     >
                       {participant.region}
-                    </motion.td>
-                    <motion.td
+                    </m.td>
+                    <m.td
                       custom={6}
                       initial="hidden"
                       animate="visible"
@@ -349,8 +349,8 @@ const Rankings = () => {
                       })}
                     >
                       {participant.score}
-                    </motion.td>
-                    <motion.td
+                    </m.td>
+                    <m.td
                       custom={7}
                       initial="hidden"
                       animate="visible"
@@ -369,13 +369,13 @@ const Rankings = () => {
                           ? "Победитель"
                           : participant.status}
                       </Button>
-                    </motion.td>
+                    </m.td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </motion.div>
+        </m.div>
       </div>
       <Footer />
     </div>
