@@ -13,6 +13,7 @@ import { IForm } from "../types/IForm.type";
 import Stepper, { Step } from "../components/ui/Stepper/Stepper";
 import { useRef } from "react";
 import { useStepStore } from "../stores/StepsStore";
+import { Link } from "react-router-dom";
 
 function Registration() {
   const { currentStep, setStep, nextStep, prevStep, resetStep } =
@@ -232,9 +233,9 @@ function Registration() {
               <label className="flex items-center gap-2 text-sm">
                 <Input type="checkbox" required />
                 Согласен на
-                <a href="" className="text-blue-500" target="_blank">
+                <Link to="/consent" className="text-blue-500">
                   обработку персональных данных
-                </a>
+                </Link>
               </label>
 
               <label className="flex items-center gap-2 text-sm">

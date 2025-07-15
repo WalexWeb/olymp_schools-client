@@ -9,7 +9,7 @@ function Navbar() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-100 w-screen flex items-center justify-between border-b px-4 py-6 backdrop-blur sm:px-6",
+        "sticky top-0 z-100 flex w-screen items-center justify-between border-b px-4 py-6 backdrop-blur sm:px-6",
         {
           "border-[#2c313c] bg-[#0d1117]/70 text-gray-300": isDarkMode,
           "border-gray-200 bg-white text-gray-800": !isDarkMode,
@@ -22,21 +22,21 @@ function Navbar() {
         </h1>
       </Link>
       <nav className="hidden gap-6 text-sm font-medium md:flex md:gap-10">
-        <a href="#about" className="text-base transition hover:text-blue-400">
-          Олимпиада
-        </a>
-        <a href="#news" className="text-base transition hover:text-blue-400">
-          Новости
-        </a>
-        <a href="#results" className="text-base transition hover:text-blue-400">
-          Результаты
-        </a>
-        <a
-          href="#docs"
+        <Link to="/about" className="text-base transition hover:text-blue-400">
+          Об олимпиаде
+        </Link>
+        <Link
+          to="/passing"
           className="text-base transition hover:text-blue-400"
         >
-          Документы
-        </a>
+          Прохождение
+        </Link>
+        <Link
+          to="/partners"
+          className="text-base transition hover:text-blue-400"
+        >
+          Партнёры
+        </Link>
         <a
           href="#developers"
           className="text-base transition hover:text-blue-400"

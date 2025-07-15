@@ -121,9 +121,6 @@ export default function Home() {
           области информационной безопасности Московского университета МВД
           России имени В.Я. Кикотя.
         </m.p>
-        <Link to={"/developers"}>
-          <Button className="px-7 py-3">Подробнее</Button>
-        </Link>
       </section>
 
       {/* Карусель */}
