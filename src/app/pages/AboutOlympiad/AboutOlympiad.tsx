@@ -42,7 +42,7 @@ function AboutOlympiad() {
             <div
               className={cn("rounded-2xl p-8 text-lg", {
                 "bg-[#0b0f1a] outline-2 outline-blue-900": isDarkMode,
-                "bg-white shadow-md": !isDarkMode,
+                "bg-white shadow-md outline-2 outline-blue-500": !isDarkMode,
               })}
             >
               {/* Общая информация */}
@@ -90,7 +90,7 @@ function AboutOlympiad() {
 
               <div className="mb-8">
                 <h3
-                  className={cn("mb-4 text-2xl text-center font-semibold", {
+                  className={cn("mb-4 text-center text-2xl font-semibold", {
                     "text-white": isDarkMode,
                     "text-blue-600": !isDarkMode,
                   })}
@@ -103,7 +103,7 @@ function AboutOlympiad() {
               {/* График проведения */}
               <div>
                 <h3
-                  className={cn("mb-4 text-2xl text-center font-semibold", {
+                  className={cn("mb-4 text-center text-2xl font-semibold", {
                     "text-white": isDarkMode,
                     "text-blue-600": !isDarkMode,
                   })}

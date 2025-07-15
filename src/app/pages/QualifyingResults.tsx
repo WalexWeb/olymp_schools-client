@@ -181,7 +181,7 @@ function QualifyingResults() {
             <div
               className={cn("rounded-2xl p-8 text-lg", {
                 "bg-[#0b0f1a] outline-2 outline-blue-900": isDarkMode,
-                "bg-white shadow-md": !isDarkMode,
+                "bg-white shadow-md outline-2 outline-blue-500": !isDarkMode,
               })}
             >
               <p className="mb-6">
