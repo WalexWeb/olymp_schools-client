@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/layout/Navbar/Navbar";
 import Footer from "../components/layout/Footer/Footer";
 import { BackgroundBlobs } from "../components/ui/BackgroundBlobs/BackgroundBlobs";
@@ -9,26 +9,78 @@ import cn from "clsx";
 import { Button } from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Select from "../components/ui/Select";
+import { useAuthStore } from "../stores/authStore";
+import axios from "axios";
+import { getCustomToastStyle } from "../components/ui/toastStyles";
+import { toast, ToastContainer } from "react-toastify";
+
+interface UserData {
+  lastname: string;
+  firstname: string;
+  patronymic: string;
+  email: string;
+  dateofbirth: string;
+  gender: "М" | "Ж";
+  class_name: string;
+  institute: string;
+  instituteRegion: string;
+  phone: string;
+  region: string;
+  city: string;
+  snils: string;
+  mailAddress: string;
+}
 
 export default function Profile() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const { isDarkMode } = useThemeStore();
+  const { token } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
-  const [userData, setUserData] = useState({
-    lastName: "Помещиков",
-    firstName: "Станислав",
-    patronymic: "Евгеньевич",
-    email: "spomeshchikov@yandex.ru",
-    dateOfBirth: "17.01.2005",
-    gender: "male",
-    class: "5 класс",
-    institute: "Московский университет МВД России",
-    instituteRegion: "Москва",
-    phone: "+7 (123) 456-78-90",
-    region: "Москва",
-    city: "Москва",
-    snils: "123-456-789 00",
-    mailAddress: "г. Москва, ул. Коптевская, д. 63",
+  const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState<UserData>({
+    lastname: "",
+    firstname: "",
+    patronymic: "",
+    email: "",
+    dateofbirth: "",
+    gender: "М",
+    class_name: "",
+    institute: "",
+    instituteRegion: "",
+    phone: "",
+    region: "",
+    city: "",
+    snils: "",
+    mailAddress: "",
   });
+
+  // Загрузка данных профиля
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/users-service/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUserData(response.data);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          toast.error(
+            "Ошибка загрузки профиля",
+            getCustomToastStyle(isDarkMode),
+          );
+        }
+        console.error("Failed to fetch profile:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (token) {
+      fetchProfile();
+    }
+  }, [token, isDarkMode]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -37,9 +89,64 @@ export default function Profile() {
     setUserData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
+  const handleSave = async () => {
+    setIsLoading(true);
+    try {
+      await axios.put(
+        `${API_URL}/users-service/updateProfile`,
+        {
+          firstName: userData.firstname,
+          patronymic: userData.patronymic,
+          lastName: userData.lastname,
+          dateOfBirth: userData.dateofbirth,
+          phone: userData.phone,
+          region: userData.region,
+          city: userData.city,
+          institute: userData.institute,
+          gender: userData.gender,
+          class_name: userData.class_name,
+          // snils: userData.snils,
+          // mailAddress: userData.mailAddress,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      toast.success(
+        "Профиль успешно обновлен!",
+        getCustomToastStyle(isDarkMode),
+      );
+      setIsEditing(false);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          "Ошибка обновления профиля",
+          getCustomToastStyle(isDarkMode),
+        );
+      }
+      console.error("Failed to update profile:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div
+        className={cn(
+          "flex min-h-screen w-screen items-center justify-center font-sans",
+          {
+            "bg-[#0b0f1a] text-white": isDarkMode,
+            "bg-gray-50 text-gray-900": !isDarkMode,
+          },
+        )}
+      >
+        <div className="text-xl">Загрузка профиля...</div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -50,6 +157,7 @@ export default function Profile() {
     >
       <BackgroundBlobs />
       <Navbar />
+      <ToastContainer />
 
       {/* Основной блок с профилем */}
       <section
@@ -95,8 +203,8 @@ export default function Profile() {
                   {isEditing ? (
                     <div className="mt-2 grid grid-cols-1 gap-4">
                       <Input
-                        name="lastName"
-                        value={userData.lastName}
+                        name="lastname"
+                        value={userData.lastname}
                         onChange={handleInputChange}
                         placeholder="Фамилия"
                         className={cn({
@@ -105,8 +213,8 @@ export default function Profile() {
                         })}
                       />
                       <Input
-                        name="firstName"
-                        value={userData.firstName}
+                        name="firstname"
+                        value={userData.firstname}
                         onChange={handleInputChange}
                         placeholder="Имя"
                         className={cn({
@@ -127,7 +235,7 @@ export default function Profile() {
                     </div>
                   ) : (
                     <p className="mt-1 text-xl">
-                      {userData.lastName} {userData.firstName}{" "}
+                      {userData.lastname} {userData.firstname}{" "}
                       {userData.patronymic}
                     </p>
                   )}
@@ -152,6 +260,7 @@ export default function Profile() {
                         "border-blue-700 bg-[#1e293b]": isDarkMode,
                         "border-gray-300 bg-white": !isDarkMode,
                       })}
+                      disabled // Email обычно нельзя менять
                     />
                   ) : (
                     <p className="mt-1 text-xl">{userData.email}</p>
@@ -188,6 +297,7 @@ export default function Profile() {
                       "bg-blue-600 hover:bg-blue-500": isDarkMode,
                       "bg-blue-500 hover:bg-blue-400": !isDarkMode,
                     })}
+                    disabled={isLoading}
                   >
                     Редактировать профиль
                   </Button>
@@ -199,7 +309,7 @@ export default function Profile() {
                 <div className="space-y-6">
                   <InfoBlock
                     title="Дата рождения"
-                    value={userData.dateOfBirth}
+                    value={userData.dateofbirth}
                     isDarkMode={isDarkMode}
                     isEditing={isEditing}
                     name="dateOfBirth"
@@ -208,20 +318,20 @@ export default function Profile() {
                   />
                   <InfoBlock
                     title="Пол"
-                    value={userData.gender === "male" ? "Мужской" : "Женский"}
+                    value={userData.gender}
                     isDarkMode={isDarkMode}
                     isEditing={isEditing}
                     name="gender"
                     onChange={handleInputChange}
                     type="select"
                     options={[
-                      { value: "male", label: "Мужской" },
-                      { value: "female", label: "Женский" },
+                      { value: "М", label: "Мужской" },
+                      { value: "Ж", label: "Женский" },
                     ]}
                   />
                   <InfoBlock
                     title="Класс/Курс"
-                    value={userData.class}
+                    value={userData.class_name}
                     isDarkMode={isDarkMode}
                     isEditing={isEditing}
                     name="class"
@@ -316,6 +426,7 @@ export default function Profile() {
                       "bg-gray-200 text-gray-800 hover:bg-gray-300":
                         !isDarkMode,
                     })}
+                    disabled={isLoading}
                   >
                     Отмена
                   </Button>
@@ -325,8 +436,9 @@ export default function Profile() {
                       "bg-blue-600 hover:bg-blue-500": isDarkMode,
                       "bg-blue-500 hover:bg-blue-400": !isDarkMode,
                     })}
+                    disabled={isLoading}
                   >
-                    Сохранить изменения
+                    {isLoading ? "Сохранение..." : "Сохранить изменения"}
                   </Button>
                 </div>
               )}

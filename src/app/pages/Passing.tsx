@@ -7,9 +7,11 @@ import { fadeUp } from "../components/animations/fadeUp";
 import Footer from "../components/layout/Footer/Footer";
 import { Button } from "../components/ui/Button";
 import { Link } from "react-router-dom";
+import { useAuthStore } from "../stores/authStore";
 
 function Passing() {
   const { isDarkMode } = useThemeStore();
+  const { isAuthenticated } = useAuthStore();
 
   return (
     <div
@@ -53,9 +55,16 @@ function Passing() {
                 регистрацию и в личном кабинете выбрать дисциплину, в которой Вы
                 хотите участвовать.
               </p>
-              <Link to="/registration" className="mb-4 inline-block">
-                <Button>Регистрация</Button>
-              </Link>
+
+              {isAuthenticated ? (
+                <Link to="/profile" className="mb-4 inline-block">
+                  <Button>Перейти в личный кабинет</Button>
+                </Link>
+              ) : (
+                <Link to="/registration" className="mb-4 inline-block">
+                  <Button>Регистрация</Button>
+                </Link>
+              )}
 
               <p className="mb-6">
                 По результатам регистрации Вам будет направлен логин и пароль

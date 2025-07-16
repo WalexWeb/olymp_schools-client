@@ -105,7 +105,7 @@ function Login() {
             type="text"
             placeholder="Электронная почта"
             {...register("email", {
-              required: "Обязательное поле",
+              required: true,
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
                 message: "Некорректный email",
@@ -116,10 +116,10 @@ function Login() {
             type="password"
             placeholder="Пароль"
             {...register("password", {
-              required: "Обязательное поле",
+              required: true,
               minLength: {
-                value: 6,
-                message: "Минимум 6 символов",
+                value: 5,
+                message: "Минимум 5 символов",
               },
             })}
           />
