@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 import { useThemeStore } from "../../stores/themeStore";
 import cn from "clsx";
 import logo from "../../assets/logo.png";
-import { Button } from "../../components/ui/Button";
 import Carousel from "./Sections/Carousel";
 
 export default function Home() {

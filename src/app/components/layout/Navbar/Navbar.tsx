@@ -2,9 +2,15 @@ import { Link } from "react-router-dom";
 import { Button } from "../../ui/Button";
 import { useThemeStore } from "../../../stores/themeStore";
 import cn from "clsx";
+import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useAuthStore } from "../../../stores/authStore";
 
 function Navbar() {
   const { isDarkMode, toggleTheme } = useThemeStore();
+  const { token, isAuthenticated, clearToken } = useAuthStore();
+  const queryClient = useQueryClient();
 
   return (
     <header
@@ -76,15 +82,23 @@ function Navbar() {
           </svg>
         )}
       </button>
-      <Link
-        to="/login"
-        className="inline-block text-lg text-blue-400 transition hover:text-blue-300"
-      >
-        Войти
-      </Link>
-      <Link to="/registration">
-        <Button>Регистрация</Button>
-      </Link>
+      {isAuthenticated ? (
+        <Link to="/profile">
+          <Button>Личный кабинет</Button>
+        </Link>
+      ) : (
+        <>
+          <Link
+            to="/login"
+            className="inline-block text-lg text-blue-400 transition hover:text-blue-300"
+          >
+            Войти
+          </Link>
+          <Link to="/registration">
+            <Button>Регистрация</Button>
+          </Link>
+        </>
+      )}
     </header>
   );
 }
