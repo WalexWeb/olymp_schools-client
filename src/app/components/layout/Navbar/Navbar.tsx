@@ -1,16 +1,12 @@
 import { Link } from "react-router-dom";
+import cn from "clsx";
 import { Button } from "../../ui/Button";
 import { useThemeStore } from "../../../stores/themeStore";
-import cn from "clsx";
-import axios from "axios";
-import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import { useAuthStore } from "../../../stores/authStore";
 
 function Navbar() {
   const { isDarkMode, toggleTheme } = useThemeStore();
-  const { token, isAuthenticated, clearToken } = useAuthStore();
-  const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuthStore();
 
   return (
     <header

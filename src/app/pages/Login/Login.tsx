@@ -13,27 +13,55 @@ import { toast, ToastContainer } from "react-toastify";
 import { getCustomToastStyle } from "../../components/ui/toastStyles";
 import logo from "../../assets/logo.png";
 import logoDark from "../../assets/logo_dark.png";
+import axios from "axios";
+import { useAuthStore } from "../../stores/authStore";
+import { useNavigate } from "react-router-dom";
 
-interface IForm {
-  firstName: string;
-  patronymic: string;
-  lastName: string;
+interface ILoginForm {
   email: string;
   password: string;
 }
 
 function Login() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const { isDarkMode } = useThemeStore();
+  const { setToken } = useAuthStore();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { register, handleSubmit } = useForm<IForm>({
+  const { register, handleSubmit } = useForm<ILoginForm>({
     mode: "onChange",
   });
 
   const [showForgotPasswordModal, setShowForgotPasswordModal] =
     useState<boolean>(false);
 
-  const onSubmit: SubmitHandler<IForm> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
+    setIsLoading(true);
+    try {
+      const response = await axios.post(`${API_URL}/auth-service/login`, {
+        email: data.email,
+        password: data.password,
+      });
+
+      // Сохраняем токен в хранилище
+      setToken(response.data.token);
+
+      toast.success("Вход выполнен успешно!", getCustomToastStyle(isDarkMode));
+
+      // Перенаправляем пользователя
+      navigate("/profile");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message || "Ошибка входа";
+        toast.error(errorMessage, getCustomToastStyle(isDarkMode));
+      } else {
+        toast.error("Неизвестная ошибка", getCustomToastStyle(isDarkMode));
+      }
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const onError = () => {
@@ -77,20 +105,26 @@ function Login() {
             type="text"
             placeholder="Электронная почта"
             {...register("email", {
-              required: true,
+              required: "Обязательное поле",
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                message: "Invalid email address",
+                message: "Некорректный email",
               },
             })}
           />
           <Input
             type="password"
             placeholder="Пароль"
-            {...register("password", { required: true })}
+            {...register("password", {
+              required: "Обязательное поле",
+              minLength: {
+                value: 6,
+                message: "Минимум 6 символов",
+              },
+            })}
           />
-          <Button type="submit" className="py-2.5 text-lg">
-            Войти
+          <Button type="submit" className="py-2.5 text-lg" disabled={isLoading}>
+            {isLoading ? "Вход..." : "Войти"}
           </Button>
           <a
             onClick={() => setShowForgotPasswordModal(true)}
