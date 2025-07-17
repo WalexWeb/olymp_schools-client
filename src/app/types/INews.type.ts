@@ -1,9 +1,9 @@
-export interface INewsItems {
-  text: string;
-  date: string;
-  desc: string;
+export interface INewsItem {
+  id: number;
+  title: string;
+  description: string;
+  created_at: string;
 }
-
 export interface INewsModalProps {
   text: string;
   date: string;
