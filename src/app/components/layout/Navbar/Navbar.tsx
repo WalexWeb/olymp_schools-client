@@ -3,6 +3,7 @@ import cn from "clsx";
 import { Button } from "../../ui/Button";
 import { useThemeStore } from "../../../stores/themeStore";
 import { useAuthStore } from "../../../stores/authStore";
+import mosu_logo from "../../../assets/mosu_logo.png";
 
 function Navbar() {
   const { isDarkMode, toggleTheme } = useThemeStore();
@@ -11,14 +12,16 @@ function Navbar() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-100 flex w-screen items-center justify-between border-b px-4 py-6 backdrop-blur sm:px-6",
+        "sticky top-0 z-100 flex w-screen items-center justify-between border-b px-4 py-2 backdrop-blur sm:px-6",
         {
           "border-[#2c313c] bg-[#0d1117]/70 text-gray-300": isDarkMode,
           "border-gray-200 bg-white text-gray-800": !isDarkMode,
         },
       )}
     >
-      <Link to={"/"}>
+      {" "}
+      <Link to={"/"} className="flex items-center flex-row gap-4">
+      <img src={mosu_logo} className="max-h-20" />
         <h1 className="text-2xl font-bold md:text-3xl">
           Университет <span className="text-blue-400">Цифровой Полиции</span>
         </h1>

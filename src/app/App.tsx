@@ -10,6 +10,7 @@ import Passing from "./pages/Passing";
 import QualifyingResults from "./pages/QualifyingResults";
 import AboutOlympiad from "./pages/AboutOlympiad/AboutOlympiad";
 import Consent from "./pages/Consent";
+import Admin from "./pages/Admin";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/passing" element={<Passing />} />
         <Route path="/about" element={<AboutOlympiad />} />
         <Route path="/consent" element={<Consent />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </>
   );

@@ -26,9 +26,11 @@ export default function Home() {
 
       {/* Основной блок с тремя колонками */}
       <section className={"relative px-6 py-12"}>
-        <div className="w-10xl mx-auto grid grid-cols-1 gap-8 justify-center md:grid-cols-3">
+        <div className="w-10xl mx-auto grid grid-cols-1 justify-center gap-8 md:grid-cols-3">
           {/* Левая колонка - название и логотип */}
-          <div className="flex flex-col">
+          <div className="ml-8 flex flex-col">
+            {" "}
+            {/* Добавлен ml-8 здесь */}
             <m.div
               variants={fadeUp}
               initial="hidden"

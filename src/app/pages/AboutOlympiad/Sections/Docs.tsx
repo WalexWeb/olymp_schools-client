@@ -25,11 +25,9 @@ function Docs() {
   return (
     <div className="grid grid-cols-2 gap-6 text-center md:grid-cols-3">
       {docs.map((item, i) => (
-        <a href={item.link} target="_blank">
+        <a key={i} href={item.link} target="_blank">
           <m.div
-            key={i}
             variants={fadeUp}
-            custom={i}
             initial="hidden"
             animate="visible"
             whileHover={{ scale: 1.05 }}
