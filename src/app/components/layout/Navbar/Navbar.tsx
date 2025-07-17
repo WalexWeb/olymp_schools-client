@@ -7,7 +7,7 @@ import mosu_logo from "../../../assets/mosu_logo.png";
 
 function Navbar() {
   const { isDarkMode, toggleTheme } = useThemeStore();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, userData } = useAuthStore();
 
   return (
     <header
@@ -20,8 +20,8 @@ function Navbar() {
       )}
     >
       {" "}
-      <Link to={"/"} className="flex items-center flex-row gap-4">
-      <img src={mosu_logo} className="max-h-20" />
+      <Link to={"/"} className="flex flex-row items-center gap-4">
+        <img src={mosu_logo} className="max-h-20" />
         <h1 className="text-2xl font-bold md:text-3xl">
           Университет <span className="text-blue-400">Цифровой Полиции</span>
         </h1>
@@ -82,9 +82,16 @@ function Navbar() {
         )}
       </button>
       {isAuthenticated ? (
-        <Link to="/profile">
-          <Button>Личный кабинет</Button>
-        </Link>
+        <div className="flex items-center gap-4">
+          {userData?.role === "admin" && (
+            <Link to="/admin">
+              <Button>Админ-панель</Button>
+            </Link>
+          )}
+          <Link to="/profile">
+            <Button>Личный кабинет</Button>
+          </Link>
+        </div>
       ) : (
         <>
           <Link

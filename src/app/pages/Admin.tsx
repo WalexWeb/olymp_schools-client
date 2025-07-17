@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import Navbar from "../components/layout/Navbar/Navbar";
@@ -9,36 +9,68 @@ import { m } from "framer-motion";
 import { fadeUp } from "../components/animations/fadeUp";
 import Footer from "../components/layout/Footer/Footer";
 import { Button } from "../components/ui/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
+import { INewsItem } from "../types/INews.type";
 
-interface NewsItem {
-  id: number;
-  title: string;
-  description: string;
-  content: string;
-  images: string[];
+interface LocalImage {
+  id: string;
+  file: File;
+  previewUrl: string;
 }
 
 const Admin = () => {
   const API_URL = import.meta.env.VITE_API_URL;
-  const { token } = useAuthStore();
+  const { token, isAuthenticated, setUserData, userData } = useAuthStore();
   const { isDarkMode } = useThemeStore();
   const queryClient = useQueryClient();
-  const [formData, setFormData] = useState({
+  const navigate = useNavigate();
+
+  // Состояния для новостей
+  const [newsFormData, setNewsFormData] = useState({
     title: "",
     description: "",
     content: " ",
-    images: [] as string[],
   });
   const [editingId, setEditingId] = useState<number | null>(null);
+
+  // Состояния для локальных изображений
+  const [localImages, setLocalImages] = useState<LocalImage[]>([]);
+
+  // Проверка прав администратора
+  useEffect(() => {
+    if (!isAuthenticated || !token) {
+      navigate("/login");
+      return;
+    }
+
+    if (!userData) {
+      axios
+        .get(`${API_URL}/auth-service/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setUserData(response.data);
+          if (response.data.role !== "admin") {
+            navigate("/");
+          }
+        })
+        .catch(() => {
+          navigate("/login");
+        });
+    } else if (userData.role !== "admin") {
+      navigate("/");
+    }
+  }, [isAuthenticated, token, navigate, API_URL, userData, setUserData]);
 
   // Получение списка новостей
   const {
     data: news,
-    isLoading,
-    error,
-  } = useQuery<NewsItem[]>({
+    isLoading: isNewsLoading,
+    error: newsError,
+  } = useQuery<INewsItem[]>({
     queryKey: ["news"],
     queryFn: async () => {
       const response = await axios.get(`${API_URL}/news-service/news`, {
@@ -51,8 +83,8 @@ const Admin = () => {
   });
 
   // Создание новости
-  const createMutation = useMutation({
-    mutationFn: (newNews: Omit<NewsItem, "id">) =>
+  const createNewsMutation = useMutation({
+    mutationFn: (newNews: Omit<INewsItem, "id">) =>
       axios.post(`${API_URL}/news-service/news`, newNews, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -60,36 +92,27 @@ const Admin = () => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["news"] });
-      setFormData({ title: "", description: "", content: " ", images: [] });
+      setNewsFormData({ title: "", description: "", content: " " });
     },
   });
 
   // Обновление новости
-  const updateMutation = useMutation({
-    mutationFn: (updatedNews: NewsItem) =>
-      axios.put(
-        `${API_URL}/news-service/news/${updatedNews.id}`,
-        {
-          title: updatedNews.title,
-          description: updatedNews.description,
-          content: " ",
-          images: [],
+  const updateNewsMutation = useMutation({
+    mutationFn: (updatedNews: INewsItem) =>
+      axios.put(`${API_URL}/news-service/news/${updatedNews.id}`, updatedNews, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      ),
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["news"] });
       setEditingId(null);
-      setFormData({ title: "", description: "", content: " ", images: [] });
+      setNewsFormData({ title: "", description: "", content: " " });
     },
   });
 
   // Удаление новости
-  const deleteMutation = useMutation({
+  const deleteNewsMutation = useMutation({
     mutationFn: (id: number) =>
       axios.delete(`${API_URL}/news-service/news/${id}`, {
         headers: {
@@ -101,46 +124,81 @@ const Admin = () => {
     },
   });
 
-  const handleInputChange = (
+  // Обработчики для новостей
+  const handleNewsInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setNewsFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleNewsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newsData = {
-      title: formData.title,
-      description: formData.description,
+      ...newsFormData,
       content: " ",
-      images: [],
     };
 
     if (editingId !== null) {
-      updateMutation.mutate({ ...newsData, id: editingId });
+      updateNewsMutation.mutate({ ...newsData, id: editingId });
     } else {
-      createMutation.mutate(newsData);
+      createNewsMutation.mutate(newsData);
     }
   };
 
-  const handleEdit = (newsItem: NewsItem) => {
+  const handleEditNews = (newsItem: INewsItem) => {
     setEditingId(newsItem.id);
-    setFormData({
+    setNewsFormData({
       title: newsItem.title,
       description: newsItem.description,
       content: " ",
-      images: [],
     });
   };
 
-  const handleCancel = () => {
+  const handleCancelEdit = () => {
     setEditingId(null);
-    setFormData({ title: "", description: "", content: " ", images: [] });
+    setNewsFormData({ title: "", description: "", content: " " });
   };
 
-  if (isLoading) return <div>Загрузка...</div>;
-  if (error) return <div>Ошибка загрузки новостей: {error.message}</div>;
+  // Обработчики для изображений
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const files = Array.from(e.target.files);
+
+      // Создаем превью для выбранных файлов
+      const newImages = files.map((file) => ({
+        id: Math.random().toString(36).substring(2, 9),
+        file,
+        previewUrl: URL.createObjectURL(file),
+      }));
+
+      setLocalImages((prev) => [...prev, ...newImages]);
+      e.target.value = "";
+    }
+  };
+
+  const handleRemoveImage = (id: string) => {
+    // Освобождаем память от превью
+    const imageToRemove = localImages.find((img) => img.id === id);
+    if (imageToRemove) {
+      URL.revokeObjectURL(imageToRemove.previewUrl);
+    }
+
+    setLocalImages((prev) => prev.filter((img) => img.id !== id));
+  };
+
+  // Очистка превью при размонтировании компонента
+  useEffect(() => {
+    return () => {
+      localImages.forEach((image) => {
+        URL.revokeObjectURL(image.previewUrl);
+      });
+    };
+  }, [localImages]);
+
+  if (isNewsLoading) return <div>Загрузка...</div>;
+  if (newsError)
+    return <div>Ошибка загрузки новостей: {newsError.message}</div>;
 
   return (
     <div
@@ -152,146 +210,246 @@ const Admin = () => {
       <BackgroundBlobs />
       <Navbar />
 
-      <section className="flex items-center justify-center px-6 py-12">
-        <div className="w-10xl mx-auto max-w-4xl">
-          <m.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            className="space-y-8"
-          >
-            <h2
-              className={cn("text-center text-4xl font-bold md:text-5xl", {
-                "text-white": isDarkMode,
-                "text-gray-900": !isDarkMode,
-              })}
-            >
-              Управление новостями
-            </h2>
+      <section className="flex flex-col items-center justify-center px-6 py-12">
+        <h2
+          className={cn("mb-12 text-center text-4xl font-bold md:text-5xl", {
+            "text-white": isDarkMode,
+            "text-gray-900": !isDarkMode,
+          })}
+        >
+          Панель администратора
+        </h2>
 
-            <div
-              className={cn("rounded-2xl p-8", {
-                "bg-[#0b0f1a] outline-2 outline-blue-900": isDarkMode,
-                "bg-white shadow-md": !isDarkMode,
-              })}
+        <div className="flex w-full flex-col gap-8 lg:flex-row">
+          {/* Колонка новостей */}
+          <div className="flex-1">
+            <m.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="space-y-8"
             >
-              <h3 className="mb-6 text-center text-2xl font-semibold">
-                {editingId !== null
-                  ? "Редактирование новости"
-                  : "Создание новости"}
+              <h3
+                className={cn("text-center text-3xl font-bold", {
+                  "text-white": isDarkMode,
+                  "text-gray-900": !isDarkMode,
+                })}
+              >
+                Управление новостями
               </h3>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="mb-2 block font-medium">Заголовок</label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    className={cn("w-full rounded border p-2", {
-                      "border-gray-700 bg-gray-800": isDarkMode,
-                      "border-gray-300 bg-white": !isDarkMode,
-                    })}
-                    required
-                  />
-                </div>
+              <div
+                className={cn("rounded-2xl p-6", {
+                  "bg-[#0b0f1a] outline-2 outline-blue-900": isDarkMode,
+                  "bg-white shadow-md": !isDarkMode,
+                })}
+              >
+                <h4 className="mb-4 text-center text-xl font-semibold">
+                  {editingId !== null
+                    ? "Редактирование новости"
+                    : "Создание новости"}
+                </h4>
 
-                <div>
-                  <label className="mb-2 block font-medium">Описание</label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    className={cn("w-full rounded border p-2", {
-                      "border-gray-700 bg-gray-800": isDarkMode,
-                      "border-gray-300 bg-white": !isDarkMode,
-                    })}
-                    rows={3}
-                    required
-                  />
-                </div>
+                <form onSubmit={handleNewsSubmit} className="space-y-4">
+                  <div>
+                    <label className="mb-2 block font-medium">Заголовок</label>
+                    <input
+                      type="text"
+                      name="title"
+                      value={newsFormData.title}
+                      onChange={handleNewsInputChange}
+                      className={cn("w-full rounded border p-2", {
+                        "border-gray-700 bg-gray-800": isDarkMode,
+                        "border-gray-300 bg-white": !isDarkMode,
+                      })}
+                      required
+                    />
+                  </div>
 
-                <div className="flex space-x-4 pt-2">
-                  <Button
-                    type="submit"
-                    disabled={
-                      createMutation.isPending || updateMutation.isPending
-                    }
-                  >
-                    {editingId !== null ? "Обновить" : "Создать"}
-                    {(createMutation.isPending || updateMutation.isPending) && (
-                      <span className="ml-2">...</span>
-                    )}
-                  </Button>
-                  {editingId !== null && (
-                    <Button type="button" onClick={handleCancel}>
-                      Отмена
+                  <div>
+                    <label className="mb-2 block font-medium">Описание</label>
+                    <textarea
+                      name="description"
+                      value={newsFormData.description}
+                      onChange={handleNewsInputChange}
+                      className={cn("w-full rounded border p-2", {
+                        "border-gray-700 bg-gray-800": isDarkMode,
+                        "border-gray-300 bg-white": !isDarkMode,
+                      })}
+                      rows={3}
+                      required
+                    />
+                  </div>
+
+                  <div className="flex space-x-4 pt-2">
+                    <Button
+                      type="submit"
+                      disabled={
+                        createNewsMutation.isPending ||
+                        updateNewsMutation.isPending
+                      }
+                    >
+                      {editingId !== null ? "Обновить" : "Создать"}
+                      {(createNewsMutation.isPending ||
+                        updateNewsMutation.isPending) && (
+                        <span className="ml-2">...</span>
+                      )}
                     </Button>
-                  )}
-                </div>
-                {(createMutation.isError || updateMutation.isError) && (
-                  <div className="text-red-500">
-                    Ошибка:{" "}
-                    {createMutation.error?.message ||
-                      updateMutation.error?.message}
+                    {editingId !== null && (
+                      <Button type="button" onClick={handleCancelEdit}>
+                        Отмена
+                      </Button>
+                    )}
+                  </div>
+                </form>
+              </div>
+
+              <div
+                className={cn("rounded-2xl p-6", {
+                  "bg-[#0b0f1a] outline-2 outline-blue-900": isDarkMode,
+                  "bg-white shadow-md": !isDarkMode,
+                })}
+              >
+                <h4 className="mb-4 text-center text-xl font-semibold">
+                  Список новостей
+                </h4>
+                {news?.length === 0 ? (
+                  <p className="text-center">Новостей нет</p>
+                ) : (
+                  <div className="space-y-4">
+                    {news?.map((item) => (
+                      <div
+                        key={item.id}
+                        className={cn("rounded-lg border p-4", {
+                          "border-gray-700": isDarkMode,
+                          "border-gray-200": !isDarkMode,
+                        })}
+                      >
+                        <h5 className="mb-2 text-lg font-bold">{item.title}</h5>
+                        <p className="mb-3">{item.description}</p>
+                        <div className="flex space-x-2">
+                          <Button
+                            size="sm"
+                            onClick={() => handleEditNews(item)}
+                            disabled={updateNewsMutation.isPending}
+                          >
+                            Редактировать
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => deleteNewsMutation.mutate(item.id)}
+                            disabled={deleteNewsMutation.isPending}
+                          >
+                            {deleteNewsMutation.isPending
+                              ? "Удаление..."
+                              : "Удалить"}
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
-              </form>
-            </div>
+              </div>
+            </m.div>
+          </div>
 
-            <div
-              className={cn("rounded-2xl p-8", {
-                "bg-[#0b0f1a] outline-2 outline-blue-900": isDarkMode,
-                "bg-white shadow-md": !isDarkMode,
-              })}
+          {/* Колонка изображений */}
+          <div className="flex-1">
+            <m.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="space-y-8"
             >
-              <h3 className="mb-6 text-center text-2xl font-semibold">
-                Список новостей
+              <h3
+                className={cn("text-center text-3xl font-bold", {
+                  "text-white": isDarkMode,
+                  "text-gray-900": !isDarkMode,
+                })}
+              >
+                Управление изображениями главной страницы
               </h3>
 
-              {news?.length === 0 ? (
-                <p className="text-center">Новостей нет</p>
-              ) : (
-                <div className="space-y-6">
-                  {news?.map((item) => (
-                    <div
-                      key={item.id}
-                      className={cn("rounded-lg border p-4", {
-                        "border-gray-700": isDarkMode,
-                        "border-gray-200": !isDarkMode,
-                      })}
-                    >
-                      <h4 className="mb-2 text-xl font-bold">{item.title}</h4>
-                      <p className="mb-4">{item.description}</p>
-                      <div className="flex space-x-2">
+              <div
+                className={cn("rounded-2xl p-6", {
+                  "bg-[#0b0f1a] outline-2 outline-blue-900": isDarkMode,
+                  "bg-white shadow-md": !isDarkMode,
+                })}
+              >
+                <h4 className="mb-4 text-center text-xl font-semibold">
+                  Загрузка изображений
+                </h4>
+                <div className="space-y-4">
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    className={cn("w-full rounded border p-2", {
+                      "border-gray-700 bg-gray-800": isDarkMode,
+                      "border-gray-300 bg-white": !isDarkMode,
+                    })}
+                  />
+                  {localImages.length > 0 && (
+                    <p className="text-sm">
+                      Выбрано изображений: {localImages.length}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div
+                className={cn("rounded-2xl p-6", {
+                  "bg-[#0b0f1a] outline-2 outline-blue-900": isDarkMode,
+                  "bg-white shadow-md": !isDarkMode,
+                })}
+              >
+                <h4 className="mb-4 text-center text-xl font-semibold">
+                  Галерея изображений
+                </h4>
+                {localImages.length === 0 ? (
+                  <p className="text-center">Нет загруженных изображений</p>
+                ) : (
+                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                    {localImages.map((image) => (
+                      <div
+                        key={image.id}
+                        className={cn("relative rounded-lg border", {
+                          "border-gray-700": isDarkMode,
+                          "border-gray-200": !isDarkMode,
+                        })}
+                      >
+                        <img
+                          src={image.previewUrl}
+                          alt={`Preview ${image.id}`}
+                          className="h-full w-full object-cover"
+                        />
+                        <div className="bg-opacity-50 absolute right-0 bottom-0 left-0 bg-black p-2 text-white">
+                          <p className="truncate text-xs">{image.file.name}</p>
+                          <p className="text-xs">
+                            {(image.file.size / 1024).toFixed(1)} KB
+                          </p>
+                        </div>
                         <Button
                           size="sm"
-                          onClick={() => handleEdit(item)}
-                          disabled={updateMutation.isPending}
+                          className="absolute top-2 right-2"
+                          onClick={() => handleRemoveImage(image.id)}
                         >
-                          Редактировать
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => deleteMutation.mutate(item.id)}
-                          disabled={deleteMutation.isPending}
-                        >
-                          {deleteMutation.isPending ? "Удаление..." : "Удалить"}
+                          ×
                         </Button>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </m.div>
+          </div>
+        </div>
 
-            <div className="flex justify-center">
-              <Link to="/">
-                <Button className="px-7 py-3">Вернуться на главную</Button>
-              </Link>
-            </div>
-          </m.div>
+        <div className="mt-8 flex justify-center">
+          <Link to="/">
+            <Button className="px-7 py-3">Вернуться на главную</Button>
+          </Link>
         </div>
       </section>
 

@@ -25,7 +25,7 @@ interface ILoginForm {
 function Login() {
   const API_URL = import.meta.env.VITE_API_URL;
   const { isDarkMode } = useThemeStore();
-  const { setToken } = useAuthStore();
+  const { setToken, setUserData } = useAuthStore();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,13 +44,18 @@ function Login() {
         password: data.password,
       });
 
-      // Сохраняем токен в хранилище
+      // Сохраняем токен и данные пользователя в хранилище
       setToken(response.data.token);
+      setUserData(response.data.user);
 
       toast.success("Вход выполнен успешно!", getCustomToastStyle(isDarkMode));
 
-      // Перенаправляем пользователя
-      navigate("/profile");
+      // Перенаправляем пользователя в зависимости от роли
+      if (response.data.user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/profile");
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data?.message || "Ошибка входа";

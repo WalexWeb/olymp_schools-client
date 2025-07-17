@@ -2,7 +2,9 @@ export interface INewsItem {
   id: number;
   title: string;
   description: string;
-  created_at: string;
+  content?: string;
+  created_at?: string;
+  images?: string[];
 }
 export interface INewsModalProps {
   text: string;
