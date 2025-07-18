@@ -105,8 +105,6 @@ export default function Profile() {
           institute: userData.institute,
           gender: userData.gender,
           class_name: userData.class_name,
-          // snils: userData.snils,
-          // mailAddress: userData.mailAddress,
         },
         {
           headers: {
@@ -260,7 +258,7 @@ export default function Profile() {
                         "border-blue-700 bg-[#1e293b]": isDarkMode,
                         "border-gray-300 bg-white": !isDarkMode,
                       })}
-                      disabled // Email обычно нельзя менять
+                      disabled
                     />
                   ) : (
                     <p className="mt-1 text-xl">{userData.email}</p>
@@ -271,7 +269,7 @@ export default function Profile() {
           </div>
 
           {/* Остальные данные */}
-          <div className="flex h-full flex-col">
+          <div className="flex h-full w-full flex-col">
             <div
               className={cn(
                 "relative h-full flex-1 rounded-2xl p-6 shadow-lg",
@@ -307,113 +305,265 @@ export default function Profile() {
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {/* Первая колонка */}
                 <div className="space-y-6">
-                  <InfoBlock
-                    title="Дата рождения"
-                    value={userData.dateofbirth}
-                    isDarkMode={isDarkMode}
-                    isEditing={isEditing}
-                    name="dateOfBirth"
-                    onChange={handleInputChange}
-                    type="date"
-                  />
-                  <InfoBlock
-                    title="Пол"
-                    value={userData.gender}
-                    isDarkMode={isDarkMode}
-                    isEditing={isEditing}
-                    name="gender"
-                    onChange={handleInputChange}
-                    type="select"
-                    options={[
-                      { value: "М", label: "Мужской" },
-                      { value: "Ж", label: "Женский" },
-                    ]}
-                  />
-                  <InfoBlock
-                    title="Класс/Курс"
-                    value={userData.class_name}
-                    isDarkMode={isDarkMode}
-                    isEditing={isEditing}
-                    name="class"
-                    onChange={handleInputChange}
-                    type="select"
-                    options={[
-                      { value: "10 класс", label: "10 класс" },
-                      { value: "11 класс", label: "11 класс" },
-                      { value: "1 курс", label: "1 курс" },
-                      { value: "2 курс", label: "2 курс" },
-                    ]}
-                  />
-                  <InfoBlock
-                    title="Телефон"
-                    value={userData.phone}
-                    isDarkMode={isDarkMode}
-                    isEditing={isEditing}
-                    name="phone"
-                    onChange={handleInputChange}
-                  />
-                  <InfoBlock
-                    title="Почтовый адрес"
-                    value={userData.mailAddress}
-                    isDarkMode={isDarkMode}
-                    isEditing={isEditing}
-                    name="mailAddress"
-                    onChange={handleInputChange}
-                  />
+                  <div>
+                    <h3
+                      className={cn("mb-2 text-lg font-semibold", {
+                        "text-gray-400": isDarkMode,
+                        "text-gray-500": !isDarkMode,
+                      })}
+                    >
+                      Дата рождения
+                    </h3>
+                    {isEditing ? (
+                      <Input
+                        type="date"
+                        name="dateofbirth"
+                        value={userData.dateofbirth}
+                        onChange={handleInputChange}
+                        className={cn({
+                          "border-blue-700 bg-[#1e293b]": isDarkMode,
+                          "border-gray-300 bg-white": !isDarkMode,
+                        })}
+                      />
+                    ) : (
+                      <p className="mt-1 text-xl">{userData.dateofbirth}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h3
+                      className={cn("mb-2 text-lg font-semibold", {
+                        "text-gray-400": isDarkMode,
+                        "text-gray-500": !isDarkMode,
+                      })}
+                    >
+                      Пол
+                    </h3>
+                    {isEditing ? (
+                      <Select
+                        name="gender"
+                        value={userData.gender}
+                        onChange={handleInputChange}
+                        className={cn("input-size w-full", {
+                          "border-blue-700 bg-[#1e293b]": isDarkMode,
+                          "border-gray-300 bg-white": !isDarkMode,
+                        })}
+                      >
+                        <option value="М">Мужской</option>
+                        <option value="Ж">Женский</option>
+                      </Select>
+                    ) : (
+                      <p className="mt-1 text-xl">
+                        {userData.gender === "М" ? "Мужской" : "Женский"}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h3
+                      className={cn("mb-2 text-lg font-semibold", {
+                        "text-gray-400": isDarkMode,
+                        "text-gray-500": !isDarkMode,
+                      })}
+                    >
+                      Класс/Курс
+                    </h3>
+                    {isEditing ? (
+                      <Select
+                        name="class_name"
+                        value={userData.class_name}
+                        onChange={handleInputChange}
+                        className={cn("input-size w-full", {
+                          "border-blue-700 bg-[#1e293b]": isDarkMode,
+                          "border-gray-300 bg-white": !isDarkMode,
+                        })}
+                      >
+                        <option value="10 класс">10 класс</option>
+                        <option value="11 класс">11 класс</option>
+                        <option value="1 курс">1 курс</option>
+                        <option value="2 курс">2 курс</option>
+                      </Select>
+                    ) : (
+                      <p className="mt-1 text-xl">{userData.class_name}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h3
+                      className={cn("mb-2 text-lg font-semibold", {
+                        "text-gray-400": isDarkMode,
+                        "text-gray-500": !isDarkMode,
+                      })}
+                    >
+                      Телефон
+                    </h3>
+                    {isEditing ? (
+                      <Input
+                        name="phone"
+                        value={userData.phone}
+                        onChange={handleInputChange}
+                        className={cn({
+                          "border-blue-700 bg-[#1e293b]": isDarkMode,
+                          "border-gray-300 bg-white": !isDarkMode,
+                        })}
+                      />
+                    ) : (
+                      <p className="mt-1 text-xl">{userData.phone}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h3
+                      className={cn("mb-2 text-lg font-semibold", {
+                        "text-gray-400": isDarkMode,
+                        "text-gray-500": !isDarkMode,
+                      })}
+                    >
+                      Почтовый адрес
+                    </h3>
+                    {isEditing ? (
+                      <Input
+                        name="mailAddress"
+                        value={userData.mailAddress}
+                        onChange={handleInputChange}
+                        className={cn({
+                          "border-blue-700 bg-[#1e293b]": isDarkMode,
+                          "border-gray-300 bg-white": !isDarkMode,
+                        })}
+                      />
+                    ) : (
+                      <p className="mt-1 text-xl">{userData.mailAddress}</p>
+                    )}
+                  </div>
                 </div>
 
                 {/* Вторая колонка */}
                 <div className="space-y-6">
-                  <InfoBlock
-                    title="Учебное заведение"
-                    value={userData.institute}
-                    isDarkMode={isDarkMode}
-                    isEditing={isEditing}
-                    name="institute"
-                    onChange={handleInputChange}
-                  />
-                  <InfoBlock
-                    title="Регион организации"
-                    value={userData.instituteRegion}
-                    isDarkMode={isDarkMode}
-                    isEditing={isEditing}
-                    name="instituteRegion"
-                    onChange={handleInputChange}
-                    type="select"
-                    options={[
-                      { value: "Москва", label: "Москва" },
-                      { value: "СПб", label: "Санкт-Петербург" },
-                    ]}
-                  />
-                  <InfoBlock
-                    title="Регион проживания"
-                    value={userData.region}
-                    isDarkMode={isDarkMode}
-                    isEditing={isEditing}
-                    name="region"
-                    onChange={handleInputChange}
-                    type="select"
-                    options={[
-                      { value: "Москва", label: "Москва" },
-                      { value: "СПб", label: "Санкт-Петербург" },
-                    ]}
-                  />
-                  <InfoBlock
-                    title="Населенный пункт"
-                    value={userData.city}
-                    isDarkMode={isDarkMode}
-                    isEditing={isEditing}
-                    name="city"
-                    onChange={handleInputChange}
-                  />
-                  <InfoBlock
-                    title="СНИЛС"
-                    value={userData.snils}
-                    isDarkMode={isDarkMode}
-                    isEditing={isEditing}
-                    name="snils"
-                    onChange={handleInputChange}
-                  />
+                  <div>
+                    <h3
+                      className={cn("mb-2 text-lg font-semibold", {
+                        "text-gray-400": isDarkMode,
+                        "text-gray-500": !isDarkMode,
+                      })}
+                    >
+                      Учебное заведение
+                    </h3>
+                    {isEditing ? (
+                      <Input
+                        name="institute"
+                        value={userData.institute}
+                        onChange={handleInputChange}
+                        className={cn({
+                          "border-blue-700 bg-[#1e293b]": isDarkMode,
+                          "border-gray-300 bg-white": !isDarkMode,
+                        })}
+                      />
+                    ) : (
+                      <p className="mt-1 text-xl">{userData.institute}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h3
+                      className={cn("mb-2 text-lg font-semibold", {
+                        "text-gray-400": isDarkMode,
+                        "text-gray-500": !isDarkMode,
+                      })}
+                    >
+                      Регион организации
+                    </h3>
+                    {isEditing ? (
+                      <Select
+                        name="instituteRegion"
+                        value={userData.instituteRegion}
+                        onChange={handleInputChange}
+                        className={cn("input-size w-full", {
+                          "border-blue-700 bg-[#1e293b]": isDarkMode,
+                          "border-gray-300 bg-white": !isDarkMode,
+                        })}
+                      >
+                        <option value="Москва">Москва</option>
+                        <option value="СПб">Санкт-Петербург</option>
+                      </Select>
+                    ) : (
+                      <p className="mt-1 text-xl">{userData.instituteRegion}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h3
+                      className={cn("mb-2 text-lg font-semibold", {
+                        "text-gray-400": isDarkMode,
+                        "text-gray-500": !isDarkMode,
+                      })}
+                    >
+                      Регион проживания
+                    </h3>
+                    {isEditing ? (
+                      <Select
+                        name="region"
+                        value={userData.region}
+                        onChange={handleInputChange}
+                        className={cn("input-size w-full", {
+                          "border-blue-700 bg-[#1e293b]": isDarkMode,
+                          "border-gray-300 bg-white": !isDarkMode,
+                        })}
+                      >
+                        <option value="Москва">Москва</option>
+                        <option value="СПб">Санкт-Петербург</option>
+                      </Select>
+                    ) : (
+                      <p className="mt-1 text-xl">{userData.region}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h3
+                      className={cn("mb-2 text-lg font-semibold", {
+                        "text-gray-400": isDarkMode,
+                        "text-gray-500": !isDarkMode,
+                      })}
+                    >
+                      Населенный пункт
+                    </h3>
+                    {isEditing ? (
+                      <Input
+                        name="city"
+                        value={userData.city}
+                        onChange={handleInputChange}
+                        className={cn({
+                          "border-blue-700 bg-[#1e293b]": isDarkMode,
+                          "border-gray-300 bg-white": !isDarkMode,
+                        })}
+                      />
+                    ) : (
+                      <p className="mt-1 text-xl">{userData.city}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h3
+                      className={cn("mb-2 text-lg font-semibold", {
+                        "text-gray-400": isDarkMode,
+                        "text-gray-500": !isDarkMode,
+                      })}
+                    >
+                      СНИЛС
+                    </h3>
+                    {isEditing ? (
+                      <Input
+                        name="snils"
+                        value={userData.snils}
+                        onChange={handleInputChange}
+                        className={cn({
+                          "border-blue-700 bg-[#1e293b]": isDarkMode,
+                          "border-gray-300 bg-white": !isDarkMode,
+                        })}
+                      />
+                    ) : (
+                      <p className="mt-1 text-xl">{userData.snils}</p>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -448,63 +598,6 @@ export default function Profile() {
       </section>
 
       <Footer />
-    </div>
-  );
-}
-
-function InfoBlock({
-  title,
-  value,
-  isDarkMode,
-  isEditing = false,
-  name = "",
-  onChange = () => {},
-  type = "text",
-  options = [],
-}: {
-  title: string;
-  value: string;
-  isDarkMode: boolean;
-  isEditing?: boolean;
-  name?: string;
-  onChange?: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => void;
-  type?: "text" | "date" | "select";
-  options?: { value: string; label: string }[];
-}) {
-  return (
-    <div>
-      <h3
-        className={cn("mb-2 text-lg font-semibold", {
-          "text-gray-400": isDarkMode,
-          "text-gray-500": !isDarkMode,
-        })}
-      >
-        {title}
-      </h3>
-      {isEditing ? (
-        type === "select" ? (
-          <Select name={name} value={value} onChange={onChange}>
-            {options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </Select>
-        ) : (
-          <Input type={type} name={name} value={value} onChange={onChange} />
-        )
-      ) : (
-        <p
-          className={cn("mt-1 rounded-lg p-2 text-xl", {
-            "bg-[#1e293b]": isDarkMode && isEditing,
-            "bg-gray-100": !isDarkMode && isEditing,
-          })}
-        >
-          {value}
-        </p>
-      )}
     </div>
   );
 }
