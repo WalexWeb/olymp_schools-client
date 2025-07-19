@@ -1,20 +1,33 @@
+import { useEffect, useState } from "react";
 import cn from "clsx";
 import { useThemeStore } from "../../../stores/themeStore";
-import { m } from "framer-motion";
 
 function Carousel() {
   const { isDarkMode } = useThemeStore();
+  const [images, setImages] = useState<string[]>([]);
 
-  const carouselImages = [
-    "/carousel1.jpeg",
-    "/carousel2.jpeg",
-    "/carousel3.jpeg",
-    "/carousel4.jpeg",
-    "/carousel5.jpeg",
-    "/carousel6.jpeg",
-    "/carousel7.jpeg",
-    "/carousel8.jpeg",
-  ];
+  useEffect(() => {
+    const importImages = async () => {
+      try {
+        // Получаем все изображения из папки assets
+        // Используем import.meta.glob для Vite
+        const modules = import.meta.glob(
+          "/src/app/assets/*.(jpeg|jpg|png|svg)",
+        );
+        const imagePaths = await Promise.all(
+          Object.keys(modules).map(async (path) => {
+            const module = await modules[path]();
+            return (module as { default: string }).default;
+          }),
+        );
+        setImages(imagePaths);
+      } catch (error) {
+        console.error("Error loading images:", error);
+      }
+    };
+
+    importImages();
+  }, []);
 
   return (
     <section
@@ -23,32 +36,51 @@ function Carousel() {
         "bg-white": !isDarkMode,
       })}
     >
-      <h2 className="mb-6 text-2xl font-bold">Галерея</h2>
+      <h2
+        className={cn("mb-6 text-2xl font-bold md:text-3xl", {
+          "text-white": isDarkMode,
+          "text-gray-900": !isDarkMode,
+        })}
+      >
+        Галерея
+      </h2>
 
       {/* Карусель */}
-      <div className="scrollbar-hide relative overflow-x-auto">
-        <div className="flex space-x-4 p-2">
-          {carouselImages.map((src, index) => (
-            <m.div
-              key={index}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className={cn(
-                "shrink-0 rounded-lg max-h-60 shadow-lg transition-transform",
-                {
-                  "bg-gray-800": isDarkMode,
-                  "bg-white": !isDarkMode,
-                },
-              )}
-            >
-              <img
-                src={src}
-                alt={`Галерея ${index + 1}`}
-                className="rounded-lg object-contain"
-              />
-            </m.div>
-          ))}
+      <div className="scrollbar-hide relative overflow-x-auto py-4">
+        <div className="flex space-x-4 px-2">
+          {images.length > 0 ? (
+            images.map((src, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "relative shrink-0 rounded-lg shadow-lg transition-all duration-300",
+                  {
+                    "bg-gray-800": isDarkMode,
+                    "bg-gray-100": !isDarkMode,
+                  },
+                )}
+              >
+                <img
+                  src={src}
+                  alt={`Галерея ${index + 1}`}
+                  className="h-60 w-auto rounded-lg object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 rounded-lg transition-all duration-300" />
+              </div>
+            ))
+          ) : (
+            <div className="flex h-60 w-full items-center justify-center">
+              <p
+                className={cn("text-lg", {
+                  "text-gray-400": isDarkMode,
+                  "text-gray-500": !isDarkMode,
+                })}
+              >
+                Загрузка изображений...
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </section>

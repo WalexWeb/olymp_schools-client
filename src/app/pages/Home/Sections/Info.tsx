@@ -43,7 +43,7 @@ function Info() {
 
   return (
     <div
-      className={`col-auto grid grid-cols-1 gap-8 md:grid-cols-${InfoItems.length} lg:grid-cols-1 xl:gap-4`}
+      className={`col-auto grid grid-cols-1 gap-8 md:grid-cols-${InfoItems.length} lg:grid-cols-1 xl:gap-6`}
     >
       {InfoItems.map((item, index) => (
         <Link to={item.link} key={index}>

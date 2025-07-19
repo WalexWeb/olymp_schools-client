@@ -11,24 +11,48 @@ const partners = [
   {
     logo: "/expert_logo.png",
     name: "Экспертно-криминалистический центр МВД России",
+    size: "h-40",
   },
   {
     logo: "/ubk_logo.svg",
     name: "Управление по организации борьбы с противоправным использованием информационно-коммуникационных технологий МВД России",
+    size: "h-60",
   },
   {
     logo: "/bstm_logo.png",
     name: "Бюро специальных технических мероприятий МВД России",
+    size: "h-36",
   },
   {
     logo: "/stis_logo.png",
     name: "НПО «Специальная техника и связь» МВД России",
+    size: "h-48",
   },
-  { logo: "/consplus_logo.png", name: "Консультант Плюс" },
-  { logo: "/garant_logo.png", name: "Гарант" },
-  { logo: "/sber_logo.svg", name: "Сбер" },
-  { logo: "/standart_logo.svg", name: "СтандартПроект" },
-  { logo: "/kaspersky_logo.svg", name: "Лаборатория Касперского" },
+  {
+    logo: "/consplus_logo.png",
+    name: "Консультант Плюс",
+    size: "h-32",
+  },
+  {
+    logo: "/garant_logo.png",
+    name: "Гарант",
+    size: "h-54",
+  },
+  {
+    logo: "/sber_logo.svg",
+    name: "Сбер",
+    size: "h-20",
+  },
+  {
+    logo: "/standart_logo.svg",
+    name: "СтандартПроект",
+    size: "h-72",
+  },
+  {
+    logo: "/kaspersky_logo.svg",
+    name: "Лаборатория Касперского",
+    size: "h-72",
+  },
 ];
 
 const containerVariants = {
@@ -54,17 +78,6 @@ const itemVariants = {
   },
 };
 
-const textVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      duration: 0.8,
-      delay: 0.5,
-    },
-  },
-};
-
 export default function Partners() {
   const { isDarkMode } = useThemeStore();
 
@@ -80,6 +93,18 @@ export default function Partners() {
 
       <section className="relative px-6 py-12 md:py-20">
         <div className="mx-auto max-w-7xl">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className={cn("mb-12 text-center text-4xl font-bold md:text-5xl", {
+              "text-white": isDarkMode,
+              "text-gray-900": !isDarkMode,
+            })}
+          >
+            Партнеры олимпиады
+          </motion.h1>
+
           <motion.div
             initial="hidden"
             animate="visible"
@@ -105,7 +130,7 @@ export default function Partners() {
                   <img
                     src={partner.logo}
                     alt={partner.name}
-                    className="max-h-11/12 min-h-11/12 object-contain"
+                    className={cn("object-contain", partner.size)}
                   />
                 </div>
                 <motion.p
@@ -120,41 +145,6 @@ export default function Partners() {
             ))}
           </motion.div>
 
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={textVariants}
-            className={cn(
-              "mx-auto mt-16 max-w-4xl rounded-2xl p-8 text-center",
-              {
-                "bg-[#1e293b]/50": isDarkMode,
-                "bg-white shadow-md": !isDarkMode,
-              },
-            )}
-          >
-            <h2
-              className={cn("mb-6 text-2xl font-bold md:text-3xl", {
-                "text-blue-300": isDarkMode,
-                "text-blue-600": !isDarkMode,
-              })}
-            >
-              Партнерами Олимпиады выступают:
-            </h2>
-            <p
-              className={cn("text-lg leading-relaxed", {
-                "text-gray-300": isDarkMode,
-                "text-gray-700": !isDarkMode,
-              })}
-            >
-              Экспертно-криминалистический центр МВД России, Управление по
-              организации борьбы с противоправным использованием
-              информационно-коммуникационных технологий МВД России, Бюро
-              специальных технических мероприятий МВД России,
-              научно-производственное объединение «Специальная техника и связь»
-              МВД России, а также «Консультант Плюс», «Гарант», «Сбер»,
-              «СтандартПроект», «Лаборатория Касперского».
-            </p>
-          </motion.div>
           <div className="mt-10 flex items-center justify-center">
             <Link to="/">
               <Button className="px-7 py-3">Вернуться на главную</Button>
