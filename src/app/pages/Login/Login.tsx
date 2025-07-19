@@ -11,8 +11,6 @@ import { useState } from "react";
 import { ForgotPasswordModal } from "./ForgotPasswordModal";
 import { toast, ToastContainer } from "react-toastify";
 import { getCustomToastStyle } from "../../components/ui/toastStyles";
-import logo from "../../assets/logo.png";
-import logoDark from "../../assets/logo_dark.png";
 import axios from "axios";
 import { useAuthStore } from "../../stores/authStore";
 import { useNavigate } from "react-router-dom";
@@ -150,7 +148,10 @@ function Login() {
             },
           )}
         >
-          <img src={isDarkMode ? logoDark : logo} className="z-10 mt-6 h-88" />
+          <img
+            src={isDarkMode ? "/logo_dark.png" : "/logo.png"}
+            className="z-10 mt-6 h-88"
+          />
         </m.div>
       </m.section>
       <Footer />

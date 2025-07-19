@@ -8,7 +8,6 @@ import { m } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useThemeStore } from "../../stores/themeStore";
 import cn from "clsx";
-import logo from "../../assets/logo.png";
 import Carousel from "./Sections/Carousel";
 
 export default function Home() {
@@ -70,7 +69,7 @@ export default function Home() {
               >
                 <Link to={"/"}>
                   <m.img
-                    src={logo}
+                    src="/logo.png"
                     className="z-10 mt-6 h-88 cursor-pointer"
                     whileHover={{ scale: 1.05 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}

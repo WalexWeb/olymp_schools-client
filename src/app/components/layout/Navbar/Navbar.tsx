@@ -3,7 +3,6 @@ import cn from "clsx";
 import { Button } from "../../ui/Button";
 import { useThemeStore } from "../../../stores/themeStore";
 import { useAuthStore } from "../../../stores/authStore";
-import mosu_logo from "../../../assets/mosu_logo.png";
 
 function Navbar() {
   const { isDarkMode, toggleTheme } = useThemeStore();
@@ -21,7 +20,7 @@ function Navbar() {
     >
       {" "}
       <Link to={"/"} className="flex flex-row items-center gap-4">
-        <img src={mosu_logo} className="max-h-20" />
+        <img src="/mosu_logo.png" className="max-h-20" />
         <h1 className="text-2xl font-bold md:text-3xl">
           Университет <span className="text-blue-400">Цифровой Полиции</span>
         </h1>

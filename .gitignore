@@ -9,10 +9,10 @@ lerna-debug.log*
 
 node_modules
 /src/tests
+/src/app/assets
 dist
 dist-ssr
 *.local
-public
 
 # Editor directories and files
 .vscode/*
