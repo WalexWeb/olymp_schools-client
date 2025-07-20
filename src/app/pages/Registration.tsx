@@ -148,6 +148,7 @@ function Registration() {
       resetStep();
 
       useRegistrationStore.persist.clearStorage();
+
       navigate("/profile");
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -314,8 +315,8 @@ function Registration() {
                   })}
                 >
                   <option value="">Пол</option>
-                  <option value="male">Мужской</option>
-                  <option value="female">Женский</option>
+                  <option value="М">Мужской</option>
+                  <option value="Ж">Женский</option>
                 </Select>
                 {profileErrors.gender && (
                   <p className="mt-1 text-sm text-red-500">
@@ -352,16 +353,13 @@ function Registration() {
                     {profileErrors.institute.message}
                   </p>
                 )}
-
-                <Select
+                <Input
+                  type="text"
+                  placeholder="Регион образовательного учреждения"
                   {...registerProfile("instituteRegion", {
                     required: "Обязательное поле",
                   })}
-                >
-                  <option value="">Регион организации</option>
-                  <option value="Москва">Москва</option>
-                  <option value="СПб">Санкт-Петербург</option>
-                </Select>
+                />
                 {profileErrors.instituteRegion && (
                   <p className="mt-1 text-sm text-red-500">
                     {profileErrors.instituteRegion.message}
@@ -417,15 +415,13 @@ function Registration() {
                 </p>
               )}
 
-              <Select
+              <Input
+                type="text"
+                placeholder="Регион"
                 {...registerProfile("region", {
                   required: "Обязательное поле",
                 })}
-              >
-                <option value="">Регион</option>
-                <option value="Москва">Москва</option>
-                <option value="СПб">Санкт-Петербург</option>
-              </Select>
+              />
               {profileErrors.region && (
                 <p className="mt-1 text-sm text-red-500">
                   {profileErrors.region.message}
