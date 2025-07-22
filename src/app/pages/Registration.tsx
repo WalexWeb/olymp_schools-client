@@ -128,6 +128,9 @@ function Registration() {
           institute: data.institute,
           gender: data.gender === "male" ? "м" : "ж",
           class_name: data.class,
+          snils: data.snils,
+          mailAddress: data.mailAddress,
+          instituteRegion: data.instituteRegion,
         },
         {
           headers: {
