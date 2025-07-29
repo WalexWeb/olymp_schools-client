@@ -590,7 +590,7 @@ export default function Profile() {
                     "text-blue-600": !isDarkMode,
                   })}
                 >
-                  Выберите олимпиаду для участия
+                  Выберите профиль олимпиады
                 </h3>
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -638,7 +638,7 @@ export default function Profile() {
                       </div>
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold">
-                          Информационные технологии
+                          Информационная безопасность
                         </h3>
                         <p
                           className={cn("mt-2 text-sm", {
@@ -703,7 +703,7 @@ export default function Profile() {
                       </div>
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold">
-                          Гуманитарные науки
+                          Обществознание
                         </h3>
                         <p
                           className={cn("mt-2 text-sm", {

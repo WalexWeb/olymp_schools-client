@@ -420,7 +420,7 @@ function Registration() {
 
               <Input
                 type="text"
-                placeholder="Регион"
+                placeholder="Регион проживания"
                 {...registerProfile("region", {
                   required: "Обязательное поле",
                 })}

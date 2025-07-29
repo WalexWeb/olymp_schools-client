@@ -29,9 +29,13 @@ function Navbar() {
             className="max-h-20"
             alt="Логотип Университета Цифровой Полиции"
           />
-          <h1 className="hidden text-2xl font-bold md:block md:text-3xl">
-            Университет <span className="text-blue-400">Цифровой Полиции</span>
-          </h1>
+          <span>
+            <h2 className="hidden text-md md:block md:text-lg">Московский университет МВД России имени В.Я. Кикотя</h2>
+            <h1 className="hidden text-2xl font-bold md:block md:text-3xl">
+              Университет{" "}
+              <span className="text-blue-400">Цифровой Полиции</span>
+            </h1>
+          </span>
           <span className="text-2xl font-bold text-blue-400 sm:hidden">
             УЦП
           </span>

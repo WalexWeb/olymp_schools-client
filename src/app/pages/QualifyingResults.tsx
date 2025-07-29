@@ -192,8 +192,8 @@ function QualifyingResults() {
 
               <div className="mb-6 rounded-lg border border-blue-900/20 bg-blue-900/10 p-4">
                 <p className="font-semibold">
-                  260 участников получают электронный сертификат участника
-                  Олимпиады.
+                  Участиники, набравшие больше 20 баллов получают электронный
+                  сертификат участника Олимпиады.
                 </p>
               </div>
 
@@ -215,28 +215,26 @@ function QualifyingResults() {
                         "bg-blue-200": !isDarkMode,
                       })}
                     >
-                      {[
-                        "№ п/п",
-                        "Фамилия",
-                        "Имя",
-                        "Отчество",
-                        "Балл",
-                        "Сертификат",
-                      ].map((header, i) => (
-                        <m.th
-                          key={i}
-                          custom={i}
-                          initial="hidden"
-                          animate="visible"
-                          variants={columnVariants}
-                          className={cn("px-4 py-3 text-center align-middle", {
-                            "text-blue-300": isDarkMode,
-                            "text-blue-800": !isDarkMode,
-                          })}
-                        >
-                          {header}
-                        </m.th>
-                      ))}
+                      {["№ п/п", "Фамилия", "Имя", "Отчество", "Балл"].map(
+                        (header, i) => (
+                          <m.th
+                            key={i}
+                            custom={i}
+                            initial="hidden"
+                            animate="visible"
+                            variants={columnVariants}
+                            className={cn(
+                              "px-4 py-3 text-center align-middle",
+                              {
+                                "text-blue-300": isDarkMode,
+                                "text-blue-800": !isDarkMode,
+                              },
+                            )}
+                          >
+                            {header}
+                          </m.th>
+                        ),
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -296,17 +294,6 @@ function QualifyingResults() {
                         >
                           {participant.score}
                         </m.td>
-                        <m.td
-                          custom={7}
-                          initial="hidden"
-                          animate="visible"
-                          variants={columnVariants}
-                          className="px-4 py-3 text-center"
-                        >
-                          <Button className="px-8 py-2 text-center">
-                            Скачать
-                          </Button>
-                        </m.td>
                       </tr>
                     ))}
                   </tbody>
@@ -315,7 +302,6 @@ function QualifyingResults() {
 
               <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
                 <Button>Скачать полную рейтинговую таблицу (PDF)</Button>
-                <Button>Скачать все сертификаты (ZIP)</Button>
               </div>
             </div>
 
