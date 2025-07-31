@@ -11,7 +11,7 @@ function InfiniteCarousel() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const scrollSpeed = 30; // Скорость прокрутки (меньше = быстрее)
+  const scrollSpeed = 30;
 
   useEffect(() => {
     const fetchImages = async () => {
