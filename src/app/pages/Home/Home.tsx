@@ -53,7 +53,7 @@ export default function Home() {
                   "text-blue-600": !isDarkMode,
                 })}
               >
-                Побеждай и получай дополнительные баллы при поступлении
+                Знание объединяет, интеллект побеждает
               </p>
               <m.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -88,40 +88,6 @@ export default function Home() {
           <News />
         </div>
       </section>
-
-      {/* Разработчики */}
-      {/* <section
-        id="developers"
-        className={cn("px-4 py-14 text-center sm:px-6", {
-          "bg-[#0b0f1a]": isDarkMode,
-          "bg-white": !isDarkMode,
-        })}
-      >
-        <m.h3
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className={cn("mb-6 text-3xl font-semibold", {
-            "text-white": isDarkMode,
-            "text-gray-900": !isDarkMode,
-          })}
-        >
-          Разработчики
-        </m.h3>
-        <m.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className={cn("mx-auto mb-8 max-w-4xl text-lg", {
-            "text-gray-400": isDarkMode,
-            "text-gray-600": !isDarkMode,
-          })}
-        >
-          Проект разработан курсантами факультета подготовки специалистов в
-          области информационной безопасности Московского университета МВД
-          России имени В.Я. Кикотя.
-        </m.p>
-      </section> */}
 
       {/* Карусель */}
       <Carousel />

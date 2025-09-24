@@ -20,7 +20,7 @@ function Navbar() {
           "border-[#2c313c] bg-[#0d1117]/70 text-gray-300": isDarkMode,
           "border-gray-200 bg-white/70 text-gray-800": !isDarkMode,
         },
-      )}
+      )} 
     >
       <div className="flex w-full items-center justify-between">
         <Link to={"/"} className="flex items-center gap-4">
@@ -61,12 +61,6 @@ function Navbar() {
           >
             Партнёры
           </Link>
-          <a
-            href="#developers"
-            className="text-base transition hover:text-blue-400"
-          >
-            Разработчики
-          </a>
         </nav>
 
         <div className="flex items-center gap-4">
@@ -181,13 +175,6 @@ function Navbar() {
               >
                 Партнёры
               </Link>
-              <a
-                href="#developers"
-                className="py-2 text-lg transition hover:text-blue-400"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Разработчики
-              </a>
 
               {isAuthenticated ? (
                 <div className="flex flex-col gap-4 pt-4">

@@ -52,23 +52,28 @@ function Passing() {
 
               <p className="mb-4">
                 Для прохождения олимпиады Вам необходимо пройти предварительную
-                регистрацию и в личном кабинете выбрать дисциплину, в которой Вы
-                хотите участвовать.
+                регистрацию и в личном кабинете выбрать соответствующий профиль.
               </p>
 
-              {isAuthenticated ? (
-                <Link to="/profile" className="mb-4 inline-block">
-                  <Button>Перейти в личный кабинет</Button>
-                </Link>
-              ) : (
-                <Link to="/registration" className="mb-4 inline-block">
-                  <Button>Регистрация</Button>
-                </Link>
-              )}
+              <div className="mb-4 flex justify-center">
+                {isAuthenticated ? (
+                  <Link to="/profile">
+                    <Button className="px-7 py-3">
+                      Перейти в личный кабинет
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link to="/registration">
+                    <Button className="px-7 py-3">Регистрация</Button>
+                  </Link>
+                )}
+              </div>
 
-              <p className="mb-6">
-                По результатам регистрации Вам дополнительно будет отправлено
-                письмо с данного адреса электронной почты:{" "}
+              <p className="mb-4">
+                После регистрации на сайте и подтверждения профиля олимпиады вам
+                на указанную почту в течении <b>двух рабочих дней</b> будет
+                выслан логин и пароль для прохождения тестирования <br /> Данные
+                будут отправлены с данной электронной почты:{" "}
                 <a
                   href="mailto:olimpiada.mosu@mail.ru"
                   className={cn("font-medium", {
@@ -79,14 +84,10 @@ function Passing() {
                   olimpiada.mosu@mail.ru
                 </a>
               </p>
-              <a
-                href="https://moodle.mosu-mvd.com/mod/quiz/view.php?id=337"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex justify-center"
-              >
-                <Button className="px-4 py-4 text-lg">Нажмите для прохождения отборочного этапа</Button>
-              </a>
+              <p className="mb-4">
+                Доступ к тестовым заданиям откроется в 00:00 14 октября 2025
+                года на платформе. <br />
+              </p>
             </div>
 
             <div className="flex justify-center">

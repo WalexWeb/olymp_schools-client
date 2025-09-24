@@ -646,8 +646,7 @@ export default function Profile() {
                             "text-gray-300": isDarkMode,
                           })}
                         >
-                          Какое-то интересное описание олимпиады для поступающих
-                          на ИБ
+                          Дисциплины: Информатика и ИКТ, Математика, Физика
                         </p>
                         {selectedOlympiads.it && (
                           <div className="mt-2 text-sm font-medium text-blue-500">
@@ -711,8 +710,7 @@ export default function Profile() {
                             "text-gray-300": isDarkMode,
                           })}
                         >
-                          Менее крутое описание для поступающих на остальные
-                          факультеты
+                          Дисциплины: обществознание
                         </p>
                         {selectedOlympiads.humanities && (
                           <div className="mt-2 text-sm font-medium text-blue-500">
