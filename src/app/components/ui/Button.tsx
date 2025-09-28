@@ -3,7 +3,7 @@ import { m } from "framer-motion";
 import { type ButtonHTMLAttributes, type PropsWithChildren } from "react";
 import { clsx } from "clsx";
 
-type ButtonSize = "sm" | "md" | "lg";
+type ButtonSize = "sm" | "md" | "lg" | "xl";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize;
@@ -20,6 +20,7 @@ export const Button = forwardRef<
     sm: "px-3 py-1.5 text-sm",
     md: "px-4 py-2 text-base",
     lg: "px-6 py-3 text-lg",
+    xl: "px-8 py-4 text-xl",
   };
 
   return (

@@ -169,6 +169,29 @@ const Admin = () => {
     },
   });
 
+  // Функция для выгрузки пользователей в Excel
+  const exportUsersToExcel = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/admin/export-users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: "blob",
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "users_export.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Ошибка выгрузки:", error);
+      alert("Не удалось выгрузить файл");
+    }
+  };
+
   // Обработчики для новостей
   const handleNewsInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -286,6 +309,18 @@ const Admin = () => {
         >
           Панель администратора
         </h2>
+
+        {/* Кнопка выгрузки пользователей */}
+        <div className="mb-8 flex justify-center">
+          <m.div variants={fadeUp} initial="hidden" animate="visible">
+            <Button
+              onClick={exportUsersToExcel}
+              className="px-6 py-3"
+            >
+              Выгрузить пользователей в Excel
+            </Button>
+          </m.div>
+        </div>
 
         <div className="flex w-full flex-col gap-8 lg:flex-row">
           {/* Колонка новостей */}
