@@ -14,21 +14,32 @@ import axios from "axios";
 import { getCustomToastStyle } from "../components/ui/toastStyles";
 import { toast, ToastContainer } from "react-toastify";
 
+interface SelectedOlympiad {
+  name: string;
+  date: string;
+  description: string | null;
+}
 interface UserData {
-  lastname: string;
-  firstname: string;
-  patronymic: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  birthDate: string;
   email: string;
-  dateofbirth: string;
-  gender: "М" | "Ж";
-  class_name: string;
-  institute: string;
-  instituteRegion: string;
-  phone: string;
-  region: string;
-  city: string;
+  phoneNumber: string;
+  residenceRegion: string;
+  residenceSettlement: string;
+  educationalInstitution: string;
+  institutionAddress: string;
+  postalAddress: string;
   snils: string;
-  mailAddress: string;
+  gender: string;
+  classCourse: string;
+  selectedOlympiads?: SelectedOlympiad[];
+}
+
+interface Olympiad {
+  name: string;
+  description: string;
 }
 
 export default function Profile() {
@@ -38,39 +49,46 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserData>({
-    lastname: "",
-    firstname: "",
-    patronymic: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    birthDate: "",
     email: "",
-    dateofbirth: "",
-    gender: "М",
-    class_name: "",
-    institute: "",
-    instituteRegion: "",
-    phone: "",
-    region: "",
-    city: "",
+    phoneNumber: "",
+    residenceRegion: "",
+    residenceSettlement: "",
+    educationalInstitution: "",
+    institutionAddress: "",
+    postalAddress: "",
     snils: "",
-    mailAddress: "",
+    gender: "",
+    classCourse: "",
   });
-  const [selectedOlympiads, setSelectedOlympiads] = useState<{
-    it: boolean;
-    humanities: boolean;
-  }>({
-    it: false,
-    humanities: false,
-  });
+  const [olympiads, setOlympiads] = useState<Olympiad[]>([]);
+  const [selectedOlympiadNames, setSelectedOlympiadNames] = useState<
+    Set<string>
+  >(new Set());
+  const [olympiadsLoading, setOlympiadsLoading] = useState(true);
+  const [isSubmittingOlympiads, setIsSubmittingOlympiads] = useState(false);
 
+  // Загрузка данных профиля
   // Загрузка данных профиля
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(`${API_URL}/users-service/profile`, {
+        const response = await axios.get<UserData>(`${API_URL}/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+
         setUserData(response.data);
+
+        // Извлекаем названия выбранных олимпиад и создаём Set
+        const selectedNames = new Set(
+          response.data.selectedOlympiads?.map((item) => item.name) ?? [],
+        );
+        setSelectedOlympiadNames(selectedNames);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           toast.error(
@@ -89,6 +107,35 @@ export default function Profile() {
     }
   }, [token, isDarkMode]);
 
+  // Загрузка списка олимпиад
+  useEffect(() => {
+    const fetchOlympiads = async () => {
+      if (!token) return;
+      try {
+        setOlympiadsLoading(true);
+        const response = await axios.get<Olympiad[]>(`${API_URL}/olympiads`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setOlympiads(response.data);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          toast.error(
+            "Не удалось загрузить список олимпиад",
+            getCustomToastStyle(isDarkMode),
+          );
+        }
+        console.error("Failed to fetch olympiads:", error);
+      } finally {
+        setOlympiadsLoading(false);
+      }
+    };
+
+    fetchOlympiads();
+  }, [token, isDarkMode]);
+
+  // Обработчики изменений полей
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -96,29 +143,39 @@ export default function Profile() {
     setUserData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleOlympiadChange = (olympiad: "it" | "humanities") => {
-    setSelectedOlympiads((prev) => ({
-      ...prev,
-      [olympiad]: !prev[olympiad],
-    }));
+  const handleOlympiadChange = (name: string) => {
+    setSelectedOlympiadNames((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(name)) {
+        newSet.delete(name);
+      } else {
+        newSet.add(name);
+      }
+      return newSet;
+    });
   };
 
+  // Сохранение изменений профиля
   const handleSave = async () => {
     setIsLoading(true);
     try {
       await axios.put(
-        `${API_URL}/users-service/updateProfile`,
+        `${API_URL}/profile`,
         {
-          firstName: userData.firstname,
-          patronymic: userData.patronymic,
-          lastName: userData.lastname,
-          dateOfBirth: userData.dateofbirth,
-          phone: userData.phone,
-          region: userData.region,
-          city: userData.city,
-          institute: userData.institute,
+          email: userData.email,
+          firstName: userData.firstName,
+          middleName: userData.middleName,
+          lastName: userData.lastName,
+          birthDate: userData.birthDate,
+          phoneNumber: userData.phoneNumber,
+          residenceRegion: userData.residenceRegion,
+          residenceSettlement: userData.residenceSettlement,
+          educationalInstitution: userData.educationalInstitution,
+          institutionAddress: userData.institutionAddress,
+          postalAddress: userData.postalAddress,
+          snils: userData.snils,
           gender: userData.gender,
-          class_name: userData.class_name,
+          classCourse: userData.classCourse,
         },
         {
           headers: {
@@ -126,7 +183,6 @@ export default function Profile() {
           },
         },
       );
-      // Здесь можно добавить сохранение выбранных олимпиад, если нужно
       toast.success(
         "Профиль успешно обновлен!",
         getCustomToastStyle(isDarkMode),
@@ -160,6 +216,36 @@ export default function Profile() {
       </div>
     );
   }
+
+  // Отправка выбранных олимпиад
+  const submitSelectedOlympiads = async () => {
+    if (selectedOlympiadNames.size === 0) return;
+
+    const selectedNames = Array.from(selectedOlympiadNames);
+
+    setIsSubmittingOlympiads(true);
+    try {
+      await axios.post(`${API_URL}/profile/olympiads/select`, selectedNames, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success(
+        "Выбор олимпиад успешно сохранён!",
+        getCustomToastStyle(isDarkMode),
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          "Ошибка при сохранении выбора олимпиад",
+          getCustomToastStyle(isDarkMode),
+        );
+      }
+      console.error("Failed to submit olympiads:", error);
+    } finally {
+      setIsSubmittingOlympiads(false);
+    }
+  };
 
   return (
     <div
@@ -216,8 +302,8 @@ export default function Profile() {
                   {isEditing ? (
                     <div className="mt-2 grid grid-cols-1 gap-4">
                       <Input
-                        name="lastname"
-                        value={userData.lastname}
+                        name="lastName"
+                        value={userData.lastName}
                         onChange={handleInputChange}
                         placeholder="Фамилия"
                         className={cn({
@@ -226,8 +312,8 @@ export default function Profile() {
                         })}
                       />
                       <Input
-                        name="firstname"
-                        value={userData.firstname}
+                        name="firstName"
+                        value={userData.firstName}
                         onChange={handleInputChange}
                         placeholder="Имя"
                         className={cn({
@@ -236,8 +322,8 @@ export default function Profile() {
                         })}
                       />
                       <Input
-                        name="patronymic"
-                        value={userData.patronymic}
+                        name="middleName"
+                        value={userData.middleName}
                         onChange={handleInputChange}
                         placeholder="Отчество"
                         className={cn({
@@ -248,8 +334,8 @@ export default function Profile() {
                     </div>
                   ) : (
                     <p className="mt-1 text-xl">
-                      {userData.lastname} {userData.firstname}{" "}
-                      {userData.patronymic}
+                      {userData.lastName} {userData.firstName}{" "}
+                      {userData.middleName}
                     </p>
                   )}
                 </div>
@@ -332,8 +418,8 @@ export default function Profile() {
                     {isEditing ? (
                       <Input
                         type="date"
-                        name="dateofbirth"
-                        value={userData.dateofbirth}
+                        name="birthDate"
+                        value={userData.birthDate}
                         onChange={handleInputChange}
                         className={cn({
                           "border-blue-700 bg-[#1e293b]": isDarkMode,
@@ -341,7 +427,7 @@ export default function Profile() {
                         })}
                       />
                     ) : (
-                      <p className="mt-1 text-xl">{userData.dateofbirth}</p>
+                      <p className="mt-1 text-xl">{userData.birthDate}</p>
                     )}
                   </div>
 
@@ -369,7 +455,7 @@ export default function Profile() {
                       </Select>
                     ) : (
                       <p className="mt-1 text-xl">
-                        {userData.gender === "М" ? "Мужской" : "Женский"}
+                        {userData.gender === "МALE" ? "Мужской" : "Женский"}
                       </p>
                     )}
                   </div>
@@ -385,8 +471,8 @@ export default function Profile() {
                     </h3>
                     {isEditing ? (
                       <Select
-                        name="class_name"
-                        value={userData.class_name}
+                        name="classCourse"
+                        value={userData.classCourse}
                         onChange={handleInputChange}
                         className={cn("input-size w-full", {
                           "border-blue-700 bg-[#1e293b]": isDarkMode,
@@ -399,7 +485,7 @@ export default function Profile() {
                         <option value="2 курс">2 курс</option>
                       </Select>
                     ) : (
-                      <p className="mt-1 text-xl">{userData.class_name}</p>
+                      <p className="mt-1 text-xl">{userData.classCourse}</p>
                     )}
                   </div>
 
@@ -414,8 +500,8 @@ export default function Profile() {
                     </h3>
                     {isEditing ? (
                       <Input
-                        name="phone"
-                        value={userData.phone}
+                        name="phoneNumber"
+                        value={userData.phoneNumber}
                         onChange={handleInputChange}
                         className={cn({
                           "border-blue-700 bg-[#1e293b]": isDarkMode,
@@ -423,7 +509,7 @@ export default function Profile() {
                         })}
                       />
                     ) : (
-                      <p className="mt-1 text-xl">{userData.phone}</p>
+                      <p className="mt-1 text-xl">{userData.phoneNumber}</p>
                     )}
                   </div>
 
@@ -438,8 +524,8 @@ export default function Profile() {
                     </h3>
                     {isEditing ? (
                       <Input
-                        name="mailAddress"
-                        value={userData.mailAddress}
+                        name="postalAddress"
+                        value={userData.postalAddress}
                         onChange={handleInputChange}
                         className={cn({
                           "border-blue-700 bg-[#1e293b]": isDarkMode,
@@ -447,7 +533,7 @@ export default function Profile() {
                         })}
                       />
                     ) : (
-                      <p className="mt-1 text-xl">{userData.mailAddress}</p>
+                      <p className="mt-1 text-xl">{userData.postalAddress}</p>
                     )}
                   </div>
                 </div>
@@ -465,8 +551,8 @@ export default function Profile() {
                     </h3>
                     {isEditing ? (
                       <Input
-                        name="institute"
-                        value={userData.institute}
+                        name="educationalInstitution"
+                        value={userData.educationalInstitution}
                         onChange={handleInputChange}
                         className={cn({
                           "border-blue-700 bg-[#1e293b]": isDarkMode,
@@ -474,7 +560,9 @@ export default function Profile() {
                         })}
                       />
                     ) : (
-                      <p className="mt-1 text-xl">{userData.institute}</p>
+                      <p className="mt-1 text-xl">
+                        {userData.educationalInstitution}
+                      </p>
                     )}
                   </div>
 
@@ -488,20 +576,19 @@ export default function Profile() {
                       Регион организации
                     </h3>
                     {isEditing ? (
-                      <Select
-                        name="instituteRegion"
-                        value={userData.instituteRegion}
+                      <Input
+                        name="institutionAddress"
+                        value={userData.institutionAddress}
                         onChange={handleInputChange}
-                        className={cn("input-size w-full", {
+                        className={cn({
                           "border-blue-700 bg-[#1e293b]": isDarkMode,
                           "border-gray-300 bg-white": !isDarkMode,
                         })}
-                      >
-                        <option value="Москва">Москва</option>
-                        <option value="СПб">Санкт-Петербург</option>
-                      </Select>
+                      />
                     ) : (
-                      <p className="mt-1 text-xl">{userData.instituteRegion}</p>
+                      <p className="mt-1 text-xl">
+                        {userData.institutionAddress}
+                      </p>
                     )}
                   </div>
 
@@ -516,8 +603,8 @@ export default function Profile() {
                     </h3>
                     {isEditing ? (
                       <Select
-                        name="region"
-                        value={userData.region}
+                        name="residenceRegion"
+                        value={userData.residenceRegion}
                         onChange={handleInputChange}
                         className={cn("input-size w-full", {
                           "border-blue-700 bg-[#1e293b]": isDarkMode,
@@ -528,7 +615,7 @@ export default function Profile() {
                         <option value="СПб">Санкт-Петербург</option>
                       </Select>
                     ) : (
-                      <p className="mt-1 text-xl">{userData.region}</p>
+                      <p className="mt-1 text-xl">{userData.residenceRegion}</p>
                     )}
                   </div>
 
@@ -543,8 +630,8 @@ export default function Profile() {
                     </h3>
                     {isEditing ? (
                       <Input
-                        name="city"
-                        value={userData.city}
+                        name="residenceSettlement"
+                        value={userData.residenceSettlement}
                         onChange={handleInputChange}
                         className={cn({
                           "border-blue-700 bg-[#1e293b]": isDarkMode,
@@ -552,7 +639,9 @@ export default function Profile() {
                         })}
                       />
                     ) : (
-                      <p className="mt-1 text-xl">{userData.city}</p>
+                      <p className="mt-1 text-xl">
+                        {userData.residenceSettlement}
+                      </p>
                     )}
                   </div>
 
@@ -583,6 +672,7 @@ export default function Profile() {
               </div>
 
               {/* Блок выбора олимпиад */}
+              {/* Блок выбора олимпиад */}
               <div className="mt-8">
                 <h3
                   className={cn("mb-4 text-xl font-bold", {
@@ -593,134 +683,106 @@ export default function Profile() {
                   Выберите профиль олимпиады
                 </h3>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <div
-                    className={cn(
-                      "group cursor-pointer rounded-lg border-2 p-4 transition-all hover:shadow-md",
-                      {
-                        "border-blue-500 bg-blue-500/10": selectedOlympiads.it,
-                        "border-gray-300 hover:border-blue-300":
-                          !selectedOlympiads.it,
-                        "border-gray-700 hover:border-blue-500":
-                          isDarkMode && !selectedOlympiads.it,
-                      },
-                    )}
-                    onClick={() => handleOlympiadChange("it")}
-                  >
-                    <div className="flex items-start">
-                      <div
-                        className={cn(
-                          "mt-1 mr-3 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all",
-                          {
-                            "border-blue-500 bg-blue-500 text-white":
-                              selectedOlympiads.it,
-                            "border-gray-400 group-hover:border-blue-400":
-                              !selectedOlympiads.it,
-                            "border-gray-500 group-hover:border-blue-500":
-                              isDarkMode && !selectedOlympiads.it,
-                          },
-                        )}
-                      >
-                        {selectedOlympiads.it && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            className="h-3 w-3"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold">
-                          Информационная безопасность
-                        </h3>
-                        <p
-                          className={cn("mt-2 text-sm", {
-                            "text-gray-600": !isDarkMode,
-                            "text-gray-300": isDarkMode,
-                          })}
+                {olympiadsLoading ? (
+                  <p className="text-center text-gray-500">
+                    Загрузка олимпиад...
+                  </p>
+                ) : olympiads.length === 0 ? (
+                  <p className="text-center text-gray-500">
+                    Нет доступных олимпиад
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    {olympiads.map((olympiad, index) => {
+                      const isSelected = selectedOlympiadNames.has(
+                        olympiad.name,
+                      );
+                      return (
+                        <div
+                          key={index}
+                          className={cn(
+                            "group cursor-pointer rounded-lg border-2 p-4 transition-all hover:shadow-md",
+                            {
+                              "border-blue-500 bg-blue-500/10": isSelected,
+                              "border-gray-300 hover:border-blue-300":
+                                !isSelected && !isDarkMode,
+                              "border-gray-700 hover:border-blue-500":
+                                !isSelected && isDarkMode,
+                            },
+                          )}
+                          onClick={() => handleOlympiadChange(olympiad.name)}
                         >
-                          Дисциплины: Информатика и ИКТ, Математика, Физика
-                        </p>
-                        {selectedOlympiads.it && (
-                          <div className="mt-2 text-sm font-medium text-blue-500">
-                            Выбрано
+                          <div className="flex items-start">
+                            <div
+                              className={cn(
+                                "mt-1 mr-3 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all",
+                                {
+                                  "border-blue-500 bg-blue-500 text-white":
+                                    isSelected,
+                                  "border-gray-400 group-hover:border-blue-400":
+                                    !isSelected && !isDarkMode,
+                                  "border-gray-500 group-hover:border-blue-500":
+                                    !isSelected && isDarkMode,
+                                },
+                              )}
+                            >
+                              {isSelected && (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                  className="h-3 w-3"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="text-lg font-semibold">
+                                {olympiad.name}
+                              </h3>
+                              <p
+                                className={cn("mt-2 text-sm", {
+                                  "text-gray-600": !isDarkMode,
+                                  "text-gray-300": isDarkMode,
+                                })}
+                              >
+                                {olympiad.description}
+                              </p>
+                              {isSelected && (
+                                <div className="mt-2 text-sm font-medium text-blue-500">
+                                  Выбрано
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        )}
-                      </div>
-                    </div>
+                        </div>
+                      );
+                    })}
                   </div>
+                )}
 
-                  <div
-                    className={cn(
-                      "group cursor-pointer rounded-lg border-2 p-4 transition-all hover:shadow-md",
-                      {
-                        "border-blue-500 bg-blue-500/10":
-                          selectedOlympiads.humanities,
-                        "border-gray-300 hover:border-blue-300":
-                          !selectedOlympiads.humanities,
-                        "border-gray-700 hover:border-blue-500":
-                          isDarkMode && !selectedOlympiads.humanities,
-                      },
-                    )}
-                    onClick={() => handleOlympiadChange("humanities")}
-                  >
-                    <div className="flex items-start">
-                      <div
-                        className={cn(
-                          "mt-1 mr-3 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all",
-                          {
-                            "border-blue-500 bg-blue-500 text-white":
-                              selectedOlympiads.humanities,
-                            "border-gray-400 group-hover:border-blue-400":
-                              !selectedOlympiads.humanities,
-                            "border-gray-500 group-hover:border-blue-500":
-                              isDarkMode && !selectedOlympiads.humanities,
-                          },
-                        )}
-                      >
-                        {selectedOlympiads.humanities && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            className="h-3 w-3"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold">
-                          Обществознание
-                        </h3>
-                        <p
-                          className={cn("mt-2 text-sm", {
-                            "text-gray-600": !isDarkMode,
-                            "text-gray-300": isDarkMode,
-                          })}
-                        >
-                          Дисциплины: обществознание
-                        </p>
-                        {selectedOlympiads.humanities && (
-                          <div className="mt-2 text-sm font-medium text-blue-500">
-                            Выбрано
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                {/* Кнопка подтверждения */}
+                {selectedOlympiadNames.size > 0 && (
+                  <div className="mt-6 flex justify-end">
+                    <Button
+                      onClick={submitSelectedOlympiads}
+                      disabled={isSubmittingOlympiads}
+                      className={cn("px-6 py-2", {
+                        "bg-green-600 hover:bg-green-500": isDarkMode,
+                        "bg-green-500 hover:bg-green-400": !isDarkMode,
+                      })}
+                    >
+                      {isSubmittingOlympiads
+                        ? "Отправка..."
+                        : "Подтвердить выбор"}
+                    </Button>
                   </div>
-                </div>
+                )}
               </div>
 
               {isEditing && (
