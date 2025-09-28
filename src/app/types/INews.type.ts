@@ -4,6 +4,7 @@ export interface INewsItem {
   description: string;
   newsDate: string;
 }
+
 export interface INewsModalProps {
   text: string;
   date: string;

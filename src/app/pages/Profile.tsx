@@ -13,12 +13,14 @@ import { useAuthStore } from "../stores/authStore";
 import axios from "axios";
 import { getCustomToastStyle } from "../components/ui/toastStyles";
 import { toast, ToastContainer } from "react-toastify";
+import { IOlympiad } from "../types/IOlympiads.type";
 
 interface SelectedOlympiad {
   name: string;
   date: string;
   description: string | null;
 }
+
 interface UserData {
   firstName: string;
   middleName: string;
@@ -35,11 +37,6 @@ interface UserData {
   gender: string;
   classCourse: string;
   selectedOlympiads?: SelectedOlympiad[];
-}
-
-interface Olympiad {
-  name: string;
-  description: string;
 }
 
 export default function Profile() {
@@ -64,14 +61,13 @@ export default function Profile() {
     gender: "",
     classCourse: "",
   });
-  const [olympiads, setOlympiads] = useState<Olympiad[]>([]);
+  const [olympiads, setOlympiads] = useState<IOlympiad[]>([]);
   const [selectedOlympiadNames, setSelectedOlympiadNames] = useState<
     Set<string>
   >(new Set());
   const [olympiadsLoading, setOlympiadsLoading] = useState(true);
   const [isSubmittingOlympiads, setIsSubmittingOlympiads] = useState(false);
 
-  // Загрузка данных профиля
   // Загрузка данных профиля
   useEffect(() => {
     const fetchProfile = async () => {
@@ -113,7 +109,7 @@ export default function Profile() {
       if (!token) return;
       try {
         setOlympiadsLoading(true);
-        const response = await axios.get<Olympiad[]>(`${API_URL}/olympiads`, {
+        const response = await axios.get<IOlympiad[]>(`${API_URL}/olympiads`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

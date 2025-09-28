@@ -8,13 +8,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { getCustomToastStyle } from "../../../../components/ui/toastStyles";
 import { useAuthStore } from "../../../../stores/authStore";
+import { INewsItem } from "../../../../types/INews.type";
 
-interface INewsItem {
-  id: number;
-  title: string;
-  description: string;
-  newsDate: string;
-}
+
 
 function News() {
   const API_URL = import.meta.env.VITE_API_URL;

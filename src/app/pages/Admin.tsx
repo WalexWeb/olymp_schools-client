@@ -9,9 +9,10 @@ import { m } from "framer-motion";
 import { fadeUp } from "../components/animations/fadeUp";
 import Footer from "../components/layout/Footer/Footer";
 import { Button } from "../components/ui/Button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { INewsItem } from "../types/INews.type";
+import { IOlympiad } from "../types/IOlympiads.type";
 
 interface LocalImage {
   id: string;
@@ -22,51 +23,72 @@ interface LocalImage {
 const Admin = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const STATIC_URL = import.meta.env.VITE_STATIC_URL;
-  const { token, isAuthenticated, setUserData, userData } = useAuthStore();
+  const { token } = useAuthStore();
   const { isDarkMode } = useThemeStore();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   // Состояния для новостей
   const [newsFormData, setNewsFormData] = useState({
     title: "",
     description: "",
-    content: " ",
+    newsDate: "",
   });
-  const [editingId, setEditingId] = useState<number | null>(null);
 
   // Состояния для изображений
   const [localImages, setLocalImages] = useState<LocalImage[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  // Проверка прав администратора
-  useEffect(() => {
-    if (!isAuthenticated || !token) {
-      navigate("/login");
-      return;
-    }
+  // Состояния для олимпиад
+  const [olympiadFormData, setOlympiadFormData] = useState({
+    name: "",
+    date: "",
+    description: "",
+  });
 
-    if (!userData) {
-      axios
-        .get(`${API_URL}/auth-service/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setUserData(response.data);
-          if (response.data.role !== "admin") {
-            navigate("/");
-          }
-        })
-        .catch(() => {
-          navigate("/login");
-        });
-    } else if (userData.role !== "admin") {
-      navigate("/");
-    }
-  }, [isAuthenticated, token, navigate, API_URL, userData, setUserData]);
+  // Получение списка олимпиад
+  const {
+    data: olympiads,
+    isLoading: isOlympiadsLoading,
+    error: olympiadsError,
+  } = useQuery<IOlympiad[]>({
+    queryKey: ["olympiads"],
+    queryFn: async () => {
+      const response = await axios.get(`${API_URL}/olympiads`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    },
+  });
+
+  // Создание олимпиады
+  const createOlympiadMutation = useMutation({
+    mutationFn: (newOlympiad: Omit<IOlympiad, "id">) =>
+      axios.post(`${API_URL}/admin/olympiads`, newOlympiad, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["olympiads"] });
+      setOlympiadFormData({ name: "", date: "", description: "" });
+    },
+  });
+
+  // Удаление олимпиады
+  const deleteOlympiadMutation = useMutation({
+    mutationFn: (name: string) =>
+      axios.delete(`${API_URL}/admin/olympiads/${name}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["olympiads"] });
+    },
+  });
 
   // Получение списка новостей
   const {
@@ -76,7 +98,7 @@ const Admin = () => {
   } = useQuery<INewsItem[]>({
     queryKey: ["news"],
     queryFn: async () => {
-      const response = await axios.get(`${API_URL}/news-service/news`, {
+      const response = await axios.get(`${API_URL}/news`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -94,44 +116,29 @@ const Admin = () => {
   } = useQuery<string[]>({
     queryKey: ["images"],
     queryFn: async () => {
-      const response = await axios.get(`${API_URL}/news-service/images`);
-      return response.data.images;
+      const response = await axios.get(`${API_URL}/carousel/images`);
+      return response.data;
     },
   });
 
   // Создание новости
   const createNewsMutation = useMutation({
     mutationFn: (newNews: Omit<INewsItem, "id">) =>
-      axios.post(`${API_URL}/news-service/news`, newNews, {
+      axios.post(`${API_URL}/admin/news`, newNews, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["news"] });
-      setNewsFormData({ title: "", description: "", content: " " });
-    },
-  });
-
-  // Обновление новости
-  const updateNewsMutation = useMutation({
-    mutationFn: (updatedNews: INewsItem) =>
-      axios.put(`${API_URL}/news-service/news/${updatedNews.id}`, updatedNews, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["news"] });
-      setEditingId(null);
-      setNewsFormData({ title: "", description: "", content: " " });
+      setNewsFormData({ title: "", description: "", newsDate: "" });
     },
   });
 
   // Удаление новости
   const deleteNewsMutation = useMutation({
     mutationFn: (id: number) =>
-      axios.delete(`${API_URL}/news-service/news/${id}`, {
+      axios.delete(`${API_URL}/admin/news/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -143,9 +150,15 @@ const Admin = () => {
 
   // Удаление изображения
   const deleteImageMutation = useMutation({
-    mutationFn: async (imageUrl: string) => {
-      await axios.delete(`${API_URL}/news-service/images`, {
-        data: { imageUrl },
+    mutationFn: async (fullImageUrl: string) => {
+      // Извлекаем часть после "/uploads/"
+      const uploadPath = fullImageUrl.split("/uploads/").pop();
+
+      if (!uploadPath) {
+        throw new Error("Неверный формат URL изображения");
+      }
+
+      await axios.delete(`${API_URL}/admin/carousel/${uploadPath}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -166,30 +179,7 @@ const Admin = () => {
 
   const handleNewsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newsData = {
-      ...newsFormData,
-      content: " ",
-    };
-
-    if (editingId !== null) {
-      updateNewsMutation.mutate({ ...newsData, id: editingId });
-    } else {
-      createNewsMutation.mutate(newsData);
-    }
-  };
-
-  const handleEditNews = (newsItem: INewsItem) => {
-    setEditingId(newsItem.id);
-    setNewsFormData({
-      title: newsItem.title,
-      description: newsItem.description,
-      content: " ",
-    });
-  };
-
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setNewsFormData({ title: "", description: "", content: " " });
+    createNewsMutation.mutate(newsFormData);
   };
 
   // Обработчики для изображений
@@ -226,12 +216,11 @@ const Admin = () => {
     try {
       const formData = new FormData();
       localImages.forEach((image) => {
-        formData.append("image", image.file);
+        formData.append("files", image.file);
       });
 
-      await axios.post(`${API_URL}/news-service/upload`, formData, {
+      await axios.post(`${API_URL}/admin/carousel/upload`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -264,6 +253,19 @@ const Admin = () => {
   if (isNewsLoading) return <div>Загрузка...</div>;
   if (newsError)
     return <div>Ошибка загрузки новостей: {newsError.message}</div>;
+
+  // Обработчики для олимпиад
+  const handleOlympiadInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    setOlympiadFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleOlympiadSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    createOlympiadMutation.mutate(olympiadFormData);
+  };
 
   return (
     <div
@@ -310,9 +312,7 @@ const Admin = () => {
                 })}
               >
                 <h4 className="mb-4 text-center text-xl font-semibold">
-                  {editingId !== null
-                    ? "Редактирование новости"
-                    : "Создание новости"}
+                  Создание новости
                 </h4>
 
                 <form onSubmit={handleNewsSubmit} className="space-y-4">
@@ -346,25 +346,33 @@ const Admin = () => {
                     />
                   </div>
 
-                  <div className="flex space-x-4 pt-2">
+                  <div>
+                    <label className="mb-2 block font-medium">
+                      Дата новости
+                    </label>
+                    <input
+                      type="date"
+                      name="newsDate"
+                      value={newsFormData.newsDate}
+                      onChange={handleNewsInputChange}
+                      className={cn("w-full rounded border p-2", {
+                        "border-gray-700 bg-gray-800": isDarkMode,
+                        "border-gray-300 bg-white": !isDarkMode,
+                      })}
+                      required
+                    />
+                  </div>
+
+                  <div className="pt-2">
                     <Button
                       type="submit"
-                      disabled={
-                        createNewsMutation.isPending ||
-                        updateNewsMutation.isPending
-                      }
+                      disabled={createNewsMutation.isPending}
+                      className="w-full"
                     >
-                      {editingId !== null ? "Обновить" : "Создать"}
-                      {(createNewsMutation.isPending ||
-                        updateNewsMutation.isPending) && (
-                        <span className="ml-2">...</span>
-                      )}
+                      {createNewsMutation.isPending
+                        ? "Создание..."
+                        : "Создать новость"}
                     </Button>
-                    {editingId !== null && (
-                      <Button type="button" onClick={handleCancelEdit}>
-                        Отмена
-                      </Button>
-                    )}
                   </div>
                 </form>
               </div>
@@ -391,19 +399,17 @@ const Admin = () => {
                         })}
                       >
                         <h5 className="mb-2 text-lg font-bold">{item.title}</h5>
+                        <p className="mb-2 text-sm text-gray-500">
+                          Дата:{" "}
+                          {new Date(item.newsDate).toLocaleDateString("ru-RU")}
+                        </p>
                         <p className="mb-3">{item.description}</p>
-                        <div className="flex space-x-2">
-                          <Button
-                            size="sm"
-                            onClick={() => handleEditNews(item)}
-                            disabled={updateNewsMutation.isPending}
-                          >
-                            Редактировать
-                          </Button>
+                        <div>
                           <Button
                             size="sm"
                             onClick={() => deleteNewsMutation.mutate(item.id)}
                             disabled={deleteNewsMutation.isPending}
+                            className="bg-red-500 hover:bg-red-600"
                           >
                             {deleteNewsMutation.isPending
                               ? "Удаление..."
@@ -560,6 +566,152 @@ const Admin = () => {
                         >
                           ×
                         </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </m.div>
+          </div>
+
+          {/* Колонка олимпиад */}
+          <div className="flex-1">
+            <m.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="space-y-8"
+            >
+              <h3
+                className={cn("text-center text-3xl font-bold", {
+                  "text-white": isDarkMode,
+                  "text-gray-900": !isDarkMode,
+                })}
+              >
+                Управление олимпиадами
+              </h3>
+
+              <div
+                className={cn("rounded-2xl p-6", {
+                  "bg-[#0b0f1a] outline-2 outline-blue-900": isDarkMode,
+                  "bg-white shadow-md outline-2 outline-blue-500": !isDarkMode,
+                })}
+              >
+                <h4 className="mb-4 text-center text-xl font-semibold">
+                  Создание олимпиады
+                </h4>
+
+                <form onSubmit={handleOlympiadSubmit} className="space-y-4">
+                  <div>
+                    <label className="mb-2 block font-medium">Название</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={olympiadFormData.name}
+                      onChange={handleOlympiadInputChange}
+                      className={cn("w-full rounded border p-2", {
+                        "border-gray-700 bg-gray-800": isDarkMode,
+                        "border-gray-300 bg-white": !isDarkMode,
+                      })}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block font-medium">
+                      Дата проведения
+                    </label>
+                    <input
+                      type="date"
+                      name="date"
+                      value={olympiadFormData.date}
+                      onChange={handleOlympiadInputChange}
+                      className={cn("w-full rounded border p-2", {
+                        "border-gray-700 bg-gray-800": isDarkMode,
+                        "border-gray-300 bg-white": !isDarkMode,
+                      })}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block font-medium">Описание</label>
+                    <textarea
+                      name="description"
+                      value={olympiadFormData.description}
+                      onChange={handleOlympiadInputChange}
+                      className={cn("w-full rounded border p-2", {
+                        "border-gray-700 bg-gray-800": isDarkMode,
+                        "border-gray-300 bg-white": !isDarkMode,
+                      })}
+                      rows={3}
+                      required
+                    />
+                  </div>
+
+                  <div className="pt-2">
+                    <Button
+                      type="submit"
+                      disabled={createOlympiadMutation.isPending}
+                      className="w-full"
+                    >
+                      {createOlympiadMutation.isPending
+                        ? "Создание..."
+                        : "Создать олимпиаду"}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+
+              <div
+                className={cn("rounded-2xl p-6", {
+                  "bg-[#0b0f1a] outline-2 outline-blue-900": isDarkMode,
+                  "bg-white shadow-md outline-2 outline-blue-500": !isDarkMode,
+                })}
+              >
+                <h4 className="mb-4 text-center text-xl font-semibold">
+                  Список олимпиад
+                </h4>
+                {isOlympiadsLoading ? (
+                  <p className="text-center">Загрузка...</p>
+                ) : olympiadsError ? (
+                  <p className="text-center text-red-500">
+                    Ошибка: {olympiadsError.message}
+                  </p>
+                ) : olympiads?.length === 0 ? (
+                  <p className="text-center">Нет олимпиад</p>
+                ) : (
+                  <div className="space-y-4">
+                    {olympiads?.map((olympiad) => (
+                      <div
+                        key={olympiad.id}
+                        className={cn("rounded-lg border p-4", {
+                          "border-gray-700": isDarkMode,
+                          "border-gray-200": !isDarkMode,
+                        })}
+                      >
+                        <h5 className="mb-2 text-lg font-bold">
+                          {olympiad.name}
+                        </h5>
+                        <p className="mb-2 text-sm text-gray-500">
+                          Дата:{" "}
+                          {new Date(olympiad.date).toLocaleDateString("ru-RU")}
+                        </p>
+                        <p className="mb-3">{olympiad.description}</p>
+                        <div>
+                          <Button
+                            size="sm"
+                            onClick={() =>
+                              deleteOlympiadMutation.mutate(olympiad.name)
+                            }
+                            disabled={deleteOlympiadMutation.isPending}
+                            className="bg-red-500 hover:bg-red-600"
+                          >
+                            {deleteOlympiadMutation.isPending
+                              ? "Удаление..."
+                              : "Удалить"}
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
