@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import cn from "clsx";
 import { Button } from "../../ui/Button";
 import { useThemeStore } from "../../../stores/themeStore";
@@ -9,8 +9,16 @@ import { Menu, X } from "lucide-react";
 
 function Navbar() {
   const { isDarkMode, toggleTheme } = useThemeStore();
-  const { isAuthenticated, userData } = useAuthStore();
+  const { isAuthenticated, userData, clearToken } = useAuthStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    clearToken();
+    navigate("/");
+    setMobileMenuOpen(false);
+  };
 
   return (
     <header
@@ -20,7 +28,7 @@ function Navbar() {
           "border-[#2c313c] bg-[#0d1117]/70 text-gray-300": isDarkMode,
           "border-gray-200 bg-white/70 text-gray-800": !isDarkMode,
         },
-      )} 
+      )}
     >
       <div className="flex w-full items-center justify-between">
         <Link to={"/"} className="flex items-center gap-4">
@@ -30,7 +38,9 @@ function Navbar() {
             alt="Логотип Университета Цифровой Полиции"
           />
           <span>
-            <h2 className="hidden text-md md:block md:text-lg">Московский университет МВД России имени В.Я. Кикотя</h2>
+            <h2 className="text-md hidden md:block md:text-lg">
+              Московский университет МВД России имени В.Я. Кикотя
+            </h2>
             <h1 className="hidden text-2xl font-bold md:block md:text-3xl">
               Университет{" "}
               <span className="text-blue-400">Цифровой Полиции</span>
@@ -99,7 +109,7 @@ function Navbar() {
 
           {isAuthenticated ? (
             <div className="hidden items-center gap-4 md:flex">
-              {userData?.role === "admin" && (
+              {userData?.role === "ADMIN" && (
                 <Link to="/admin">
                   <Button>Админ-панель</Button>
                 </Link>
@@ -107,6 +117,7 @@ function Navbar() {
               <Link to="/profile">
                 <Button>Личный кабинет</Button>
               </Link>
+              <Button onClick={handleLogout}>Выйти</Button>
             </div>
           ) : (
             <>
@@ -178,7 +189,7 @@ function Navbar() {
 
               {isAuthenticated ? (
                 <div className="flex flex-col gap-4 pt-4">
-                  {userData?.role === "admin" && (
+                  {userData?.role === "ADMIN" && (
                     <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
                       <Button className="w-full">Админ-панель</Button>
                     </Link>
