@@ -12,6 +12,7 @@ import Consent from "./pages/Consent";
 import Admin from "./pages/Admin";
 import Partners from "./pages/Partners";
 import Archive from "./pages/Archive";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/partners" element={<Partners />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/archive" element={<Archive />} />
+        <Route path="/*" element={<NotFound />} />
       </Routes>
     </>
   );
