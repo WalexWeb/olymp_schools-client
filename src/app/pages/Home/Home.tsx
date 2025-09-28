@@ -53,7 +53,7 @@ export default function Home() {
                   "text-blue-600": !isDarkMode,
                 })}
               >
-                Знание объединяет, интеллект побеждает
+                Право. Технологии. Безопасность.
               </p>
               <m.div
                 initial={{ opacity: 0, scale: 0.9 }}

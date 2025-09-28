@@ -37,17 +37,17 @@ function Login() {
   const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
     setIsLoading(true);
     try {
-      const response = await axios.post(`${API_URL}/auth-service/login`, {
+      const response = await axios.post(`${API_URL}/auth/login`, {
         email: data.email,
         password: data.password,
       });
 
       setToken(response.data.token);
-      setUserData(response.data.user);
+      setUserData(response.data);
 
       toast.success("Вход выполнен успешно!", getCustomToastStyle(isDarkMode));
 
-      if (response.data.user.role === "admin") {
+      if (response.data.role === "ADMIN") {
         navigate("/admin");
       } else {
         navigate("/profile");

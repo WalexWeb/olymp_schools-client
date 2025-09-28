@@ -2,17 +2,17 @@ export interface IForm {
   firstName: string;
   patronymic: string;
   lastName: string;
-  dateOfBirth: Date;
+  birthDate: Date;
   email: string;
-  phone: number;
-  region: string;
-  city: string;
-  institute: string;
-  instituteRegion: string;
+  phoneNumber: number;
+  residenceRegion: string;
+  residenceSettlement: string;
+  educationalInstitution: string;
+  institutionAddress: string;
   gender: string;
-  class: number;
+  classCourse: number;
   snils: number;
-  mailAddress: string;
+  postalAddress: string;
   password: string;
   confirmPassword: string;
 }
