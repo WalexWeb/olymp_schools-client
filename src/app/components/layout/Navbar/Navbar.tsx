@@ -197,6 +197,11 @@ function Navbar() {
                   <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
                     <Button className="w-full">Личный кабинет</Button>
                   </Link>
+                  <Link to="/" onClick={() => setMobileMenuOpen(false)}>
+                    <Button onClick={handleLogout} className="w-full">
+                      Выйти
+                    </Button>
+                  </Link>
                 </div>
               ) : (
                 <div className="flex flex-col gap-4 pt-4">
