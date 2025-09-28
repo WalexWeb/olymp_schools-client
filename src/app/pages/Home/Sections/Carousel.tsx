@@ -19,11 +19,11 @@ function InfiniteCarousel() {
         setIsLoading(true);
         setError(null);
 
-        const response = await axios.get(`${API_URL}/news-service/images`);
+        const response = await axios.get(`${API_URL}/carousel/images`);
 
-        if (response.data && Array.isArray(response.data.images)) {
+        if (response.data && Array.isArray(response.data)) {
           // Дублируем изображения для бесшовной прокрутки
-          setImages([...response.data.images, ...response.data.images]);
+          setImages([...response.data, ...response.data]);
         } else {
           throw new Error("Некорректный формат данных");
         }

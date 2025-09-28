@@ -13,7 +13,7 @@ interface INewsItem {
   id: number;
   title: string;
   description: string;
-  created_at: string;
+  newsDate: string;
 }
 
 function News() {
@@ -31,15 +31,17 @@ function News() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get(`${API_URL}/news-service/news`, {
+        const response = await axios.get(`${API_URL}/news`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+
+        console.log(response.data);
         // Преобразуем данные API в нужный формат
         const formattedNews = response.data.map((item: INewsItem) => ({
           text: item.title,
-          date: formatDate(item.created_at),
+          date: formatDate(item.newsDate),
           desc: item.description,
         }));
         setNewsItems(formattedNews);
