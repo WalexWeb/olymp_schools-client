@@ -8,6 +8,7 @@ import Footer from "../components/layout/Footer/Footer";
 import { Button } from "../components/ui/Button";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
+import Background from "../components/ui/Background";
 
 function Passing() {
   const { isDarkMode } = useThemeStore();
@@ -20,6 +21,7 @@ function Passing() {
         "bg-gray-50/20 text-gray-900": !isDarkMode,
       })}
     >
+      <Background />
       <BackgroundBlobs />
       <Navbar />
 

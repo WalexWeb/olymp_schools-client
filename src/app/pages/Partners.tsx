@@ -6,6 +6,7 @@ import Footer from "../components/layout/Footer/Footer";
 import { BackgroundBlobs } from "../components/ui/BackgroundBlobs/BackgroundBlobs";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/Button";
+import Background from "../components/ui/Background";
 
 const partners = [
   {
@@ -109,6 +110,7 @@ export default function Partners() {
         "bg-gray-50 text-gray-900": !isDarkMode,
       })}
     >
+      <Background />
       <BackgroundBlobs />
       <Navbar />
 

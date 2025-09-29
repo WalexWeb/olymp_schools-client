@@ -10,7 +10,7 @@ function Docs() {
   const docs: IDocs[] = [
     {
       title: "Регламент",
-      link: "https://mvd.ru/upload/site116/folder_page/041/907/599/Reglament_2024-2025.pdf",
+      link: "/Регламент.pdf",
     },
     {
       title: "Методика оценки",
@@ -18,7 +18,7 @@ function Docs() {
     },
     {
       title: "Положение",
-      link: "https://mvd.ru/upload/site116/folder_page/041/907/599/Polozhenie_Olimpiada_MosU.pdf",
+      link: "/Положение_Олимпиада_изм_2025_профили.pdf",
     },
   ];
 

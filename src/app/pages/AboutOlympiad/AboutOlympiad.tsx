@@ -8,6 +8,7 @@ import { fadeUp } from "../../components/animations/fadeUp";
 import Docs from "./Sections/Docs";
 import { Button } from "../../components/ui/Button";
 import Footer from "../../components/layout/Footer/Footer";
+import Background from "../../components/ui/Background";
 
 function AboutOlympiad() {
   const { isDarkMode } = useThemeStore();
@@ -19,6 +20,7 @@ function AboutOlympiad() {
         "bg-gray-50/20 text-gray-900": !isDarkMode,
       })}
     >
+      <Background />
       <BackgroundBlobs />
       <Navbar />
 
@@ -108,16 +110,23 @@ function AboutOlympiad() {
                 <ol className="mb-4 list-decimal space-y-2 pl-6">
                   <li>
                     Первый (отборочный) этап Олимпиады проводится в период с 24
-                    ноября 2024 года по 14 декабря 2025 года в виде
+                    ноября 2025 года по 14 декабря 2025 года в виде
                     дистанционного тестирования через
                     информационно-телекоммуникационную сеть «Интернет».
                   </li>
                   <li>
                     Второй (заключительный) этап Олимпиады на базе Московского
-                    университета МВД России имени В.Я. Кикотя проводится с 12
-                    января по 21 марта 2026 года.
+                    университета МВД России имени В.Я. Кикотя проводится с 1
+                    февраля по 7 марта 2026 года. Очная защита проектов
+                    проводится 14 марта 2025 года.
                   </li>
                 </ol>
+                <p>
+                  Подробнее с графиком проведения можно ознакомиться{" "}
+                  <a className="text-blue-500" href="/График проведения.pdf">
+                    по ссылке.
+                  </a>
+                </p>
                 <p>
                   Для прохождения Олимпиады необходимо пройти процедуру
                   регистрацию в личном кабинете на сайте.

@@ -39,38 +39,33 @@ function Navbar() {
           />
           <span>
             <h2 className="text-md hidden md:block md:text-lg">
-              Московский университет МВД России имени В.Я. Кикотя
+              Московский ордена Почета университет МВД России имени В.Я. Кикотя
             </h2>
             <h1 className="hidden text-2xl font-bold md:block md:text-3xl">
-              Университет{" "}
-              <span className="text-blue-400">Цифровой Полиции</span>
+              Всероссийская олимпиада школьников
             </h1>
           </span>
           <span className="text-2xl font-bold sm:hidden">
             <h1 className="md:block md:text-3xl">
-              Университет{" "}
-              <span className="text-blue-400">Цифровой Полиции</span>
-            </h1>{" "}
+              Всероссийская олимпиада школьников
+            </h1>
           </span>
         </Link>
 
         {/* Основная навигация */}
         <nav className="hidden gap-6 text-sm font-medium md:flex md:gap-10">
-          <Link
-            to="/about"
-            className="text-base transition hover:text-blue-400"
-          >
+          <Link to="/about" className="text-lg transition hover:text-blue-400">
             Об олимпиаде
           </Link>
           <Link
             to="/passing"
-            className="text-base transition hover:text-blue-400"
+            className="text-lg transition hover:text-blue-400"
           >
             Прохождение
           </Link>
           <Link
             to="/partners"
-            className="text-base transition hover:text-blue-400"
+            className="text-lg transition hover:text-blue-400"
           >
             Партнёры
           </Link>
