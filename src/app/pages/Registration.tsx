@@ -21,7 +21,7 @@ interface RegistrationForm {
   firstName: string;
   middleName: string;
   lastName: string;
-  birthDate: string; // Date не сериализуется — лучше string в формате YYYY-MM-DD
+  birthDate: string;
   email: string;
   phoneNumber: string;
   residenceRegion: string;
@@ -142,7 +142,7 @@ function Registration() {
 
       <div
         className={cn(
-          "relative flex flex-col justify-center gap-16 px-4 py-20 sm:px-6 md:flex-row",
+          "relative flex flex-col justify-center px-4 py-8 sm:px-6 sm:py-12 lg:py-20",
           {
             "bg-gradient-to-br from-[#0f172a] via-[#101b36] to-[#14213d]":
               isDarkMode,
@@ -151,399 +151,463 @@ function Registration() {
           },
         )}
       >
-        <form
-          className="grid grid-cols-3 gap-8 sm:grid-cols-1 md:grid-cols-3"
-          onSubmit={handleSubmit(onSubmit, onError)}
-        >
-          {/* Левая колонка */}
-          <section className="grid grid-rows-7 gap-8">
-            <Input
-              type="text"
-              placeholder="Фамилия"
-              {...register("lastName", { required: "Обязательное поле" })}
-            />
-            {errors.lastName && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.lastName.message}
-              </m.p>
+        <div className="mx-auto w-full max-w-6xl">
+          <h1
+            className={cn(
+              "mb-6 text-center text-2xl font-bold sm:mb-8 sm:text-3xl lg:mb-12 lg:text-4xl",
+              {
+                "text-white": isDarkMode,
+                "text-gray-900": !isDarkMode,
+              },
             )}
+          >
+            Регистрация
+          </h1>
 
-            <Input
-              type="text"
-              placeholder="Имя"
-              {...register("firstName", { required: "Обязательное поле" })}
-            />
-            {errors.firstName && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.firstName.message}
-              </m.p>
-            )}
-
-            <Input
-              type="text"
-              placeholder="Отчество"
-              {...register("middleName", { required: "Обязательное поле" })}
-            />
-            {errors.middleName && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.middleName.message}
-              </m.p>
-            )}
-
-            <Input
-              type="date"
-              {...register("birthDate", {
-                required: "Обязательное поле",
-                validate: validateBirthDate,
-              })}
-            />
-            {errors.birthDate && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.birthDate.message}
-              </m.p>
-            )}
-
-            <Input
-              type="email"
-              placeholder="Электронная почта"
-              {...register("email", {
-                required: "Обязательное поле",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                  message: "Некорректный email",
-                },
-              })}
-            />
-            {errors.email && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.email.message}
-              </m.p>
-            )}
-
-            <Input
-              type="tel"
-              placeholder="Контактный телефон"
-              {...register("phoneNumber", {
-                required: "Обязательное поле",
-                pattern: {
-                  value: /^[\d\+][\d\(\)\ -]{4,14}\d$/,
-                  message: "Некорректный номер телефона",
-                },
-              })}
-            />
-            {errors.phoneNumber && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.phoneNumber.message}
-              </m.p>
-            )}
-
-            <Input
-              type="text"
-              placeholder="СНИЛС (XXX-XXX-XXX XX)"
-              {...register("snils", {
-                required: "Обязательное поле",
-                pattern: {
-                  value: /^\d{3}-\d{3}-\d{3} \d{2}$/,
-                  message: "Формат: XXX-XXX-XXX XX",
-                },
-              })}
-            />
-            {errors.snils && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.snils.message}
-              </m.p>
-            )}
-          </section>
-
-          {/* Средняя колонка */}
-          <section className="grid grid-rows-6 gap-8">
-            <Input
-              type="text"
-              placeholder="Регион проживания"
-              {...register("residenceRegion", {
-                required: "Обязательное поле",
-              })}
-            />
-            {errors.residenceRegion && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.residenceRegion.message}
-              </m.p>
-            )}
-
-            <Input
-              type="text"
-              placeholder="Населенный пункт"
-              {...register("residenceSettlement", {
-                required: "Обязательное поле",
-              })}
-            />
-            {errors.residenceSettlement && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.residenceSettlement.message}
-              </m.p>
-            )}
-
-            <Input
-              type="text"
-              placeholder="Образовательное учреждение"
-              {...register("educationalInstitution", {
-                required: "Обязательное поле",
-              })}
-            />
-            {errors.educationalInstitution && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.educationalInstitution.message}
-              </m.p>
-            )}
-
-            <Input
-              type="text"
-              placeholder="Регион образовательного учреждения"
-              {...register("institutionAddress", {
-                required: "Обязательное поле",
-              })}
-            />
-            {errors.institutionAddress && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.institutionAddress.message}
-              </m.p>
-            )}
-
-            <Input
-              type="text"
-              placeholder="Почтовый адрес"
-              {...register("postalAddress", { required: "Обязательное поле" })}
-            />
-            {errors.postalAddress && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.postalAddress.message}
-              </m.p>
-            )}
-
-            <div className="flex flex-col gap-4">
-              <m.label
-                className="flex items-start gap-2 text-sm"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
+          <form
+            className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-3"
+            onSubmit={handleSubmit(onSubmit, onError)}
+          >
+            {/* Левая колонка */}
+            <section className="space-y-4 sm:space-y-6 lg:space-y-4">
+              <div className="flex flex-col gap-1">
                 <Input
-                  type="checkbox"
-                  {...register("agreeToTerms", {
-                    required: "Необходимо согласие",
+                  type="text"
+                  placeholder="Фамилия"
+                  {...register("lastName", { required: "Обязательное поле" })}
+                />
+                {errors.lastName && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.lastName.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <Input
+                  type="text"
+                  placeholder="Имя"
+                  {...register("firstName", { required: "Обязательное поле" })}
+                />
+                {errors.firstName && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.firstName.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <Input
+                  type="text"
+                  placeholder="Отчество"
+                  {...register("middleName", { required: "Обязательное поле" })}
+                />
+                {errors.middleName && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.middleName.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <Input
+                  type="date"
+                  {...register("birthDate", {
+                    required: "Обязательное поле",
+                    validate: validateBirthDate,
                   })}
                 />
-                Согласен на
-                <a
-                  href="/consent"
-                  className="ml-1 text-blue-500 hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  обработку персональных данных
-                </a>
-              </m.label>
-              {errors.agreeToTerms && (
-                <m.p
-                  className="text-sm text-red-500"
-                  variants={fadeUp}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  {errors.agreeToTerms.message}
-                </m.p>
-              )}
+                {errors.birthDate && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.birthDate.message}
+                  </m.p>
+                )}
+              </div>
 
-              <m.label
-                className="flex items-start gap-2 text-sm"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
+              <div className="flex flex-col gap-1">
                 <Input
-                  type="checkbox"
-                  {...register("agreeToRegulations", {
-                    required: "Необходимо ознакомление",
+                  type="email"
+                  placeholder="Электронная почта"
+                  {...register("email", {
+                    required: "Обязательное поле",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                      message: "Некорректный email",
+                    },
                   })}
                 />
-                Ознакомлен с
-                <a
-                  href="https://mvd.ru/upload/site116/folder_page/041/907/599/Polozhenie_Olimpiada_MosU.pdf"
-                  className="mx-1 text-blue-500 hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                {errors.email && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.email.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <Input
+                  type="tel"
+                  placeholder="Контактный телефон"
+                  {...register("phoneNumber", {
+                    required: "Обязательное поле",
+                    pattern: {
+                      value: /^[\d\+][\d\(\)\ -]{4,14}\d$/,
+                      message: "Некорректный номер телефона",
+                    },
+                  })}
+                />
+                {errors.phoneNumber && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.phoneNumber.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <Input
+                  type="text"
+                  placeholder="СНИЛС (XXX-XXX-XXX XX)"
+                  {...register("snils", {
+                    required: "Обязательное поле",
+                    pattern: {
+                      value: /^\d{3}-\d{3}-\d{3} \d{2}$/,
+                      message: "Формат: XXX-XXX-XXX XX",
+                    },
+                  })}
+                />
+                {errors.snils && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.snils.message}
+                  </m.p>
+                )}
+              </div>
+            </section>
+
+            {/* Средняя колонка */}
+            <section className="space-y-4 sm:space-y-6 lg:space-y-4">
+              <div className="flex flex-col gap-1">
+                <Input
+                  type="text"
+                  placeholder="Регион проживания"
+                  {...register("residenceRegion", {
+                    required: "Обязательное поле",
+                  })}
+                />
+                {errors.residenceRegion && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.residenceRegion.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <Input
+                  type="text"
+                  placeholder="Населенный пункт"
+                  {...register("residenceSettlement", {
+                    required: "Обязательное поле",
+                  })}
+                />
+                {errors.residenceSettlement && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.residenceSettlement.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <Input
+                  type="text"
+                  placeholder="Образовательное учреждение"
+                  {...register("educationalInstitution", {
+                    required: "Обязательное поле",
+                  })}
+                />
+                {errors.educationalInstitution && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.educationalInstitution.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <Input
+                  type="text"
+                  placeholder="Регион образовательного учреждения"
+                  {...register("institutionAddress", {
+                    required: "Обязательное поле",
+                  })}
+                />
+                {errors.institutionAddress && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.institutionAddress.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <Input
+                  type="text"
+                  placeholder="Почтовый адрес"
+                  {...register("postalAddress", {
+                    required: "Обязательное поле",
+                  })}
+                />
+                {errors.postalAddress && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.postalAddress.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-3 pt-2 sm:gap-4">
+                <div className="flex flex-col gap-1">
+                  <m.label
+                    className="flex items-start gap-2 text-xs sm:text-sm"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <Input
+                      type="checkbox"
+                      className="mt-1 flex-shrink-0"
+                      {...register("agreeToTerms", {
+                        required: "Необходимо согласие",
+                      })}
+                    />
+                    <span className="leading-tight">
+                      Согласен на
+                      <a
+                        href="/consent"
+                        className="ml-1 text-blue-500 hover:underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        обработку персональных данных
+                      </a>
+                    </span>
+                  </m.label>
+                  {errors.agreeToTerms && (
+                    <m.p
+                      className="text-sm text-red-500"
+                      variants={fadeUp}
+                      initial="hidden"
+                      animate="visible"
+                    >
+                      {errors.agreeToTerms.message}
+                    </m.p>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <m.label
+                    className="flex items-start gap-2 text-xs sm:text-sm"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <Input
+                      type="checkbox"
+                      className="mt-1 flex-shrink-0"
+                      {...register("agreeToRegulations", {
+                        required: "Необходимо ознакомление",
+                      })}
+                    />
+                    <span className="leading-tight">
+                      Ознакомлен с
+                      <a
+                        href="https://mvd.ru/upload/site116/folder_page/041/907/599/Polozhenie_Olimpiada_MosU.pdf"
+                        className="mx-1 text-blue-500 hover:underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Положением
+                      </a>
+                      и
+                      <a
+                        href="https://mvd.ru/upload/site116/folder_page/041/907/599/Reglament_2024-2025.pdf"
+                        className="mx-1 text-blue-500 hover:underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Регламентом
+                      </a>
+                      Олимпиады
+                    </span>
+                  </m.label>
+                  {errors.agreeToRegulations && (
+                    <m.p
+                      className="text-sm text-red-500"
+                      variants={fadeUp}
+                      initial="hidden"
+                      animate="visible"
+                    >
+                      {errors.agreeToRegulations.message}
+                    </m.p>
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {/* Правая колонка */}
+            <section className="space-y-4 sm:space-y-6 lg:space-y-4">
+              <div className="flex flex-col gap-1">
+                <Select
+                  {...register("gender", { required: "Обязательное поле" })}
                 >
-                  Положением
-                </a>
-                и
-                <a
-                  href="https://mvd.ru/upload/site116/folder_page/041/907/599/Reglament_2024-2025.pdf"
-                  className="mx-1 text-blue-500 hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  <option value="">Пол</option>
+                  <option value="MALE">Мужской</option>
+                  <option value="FEMALE">Женский</option>
+                </Select>
+                {errors.gender && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.gender.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <Select
+                  {...register("classCourse", {
+                    required: "Обязательное поле",
+                  })}
                 >
-                  Регламентом
-                </a>
-                Олимпиады
-              </m.label>
-              {errors.agreeToRegulations && (
-                <m.p
-                  className="text-sm text-red-500"
-                  variants={fadeUp}
-                  initial="hidden"
-                  animate="visible"
+                  <option value="">Класс / Курс</option>
+                  <option value="10 класс">10 класс</option>
+                  <option value="11 класс">11 класс</option>
+                  <option value="1 курс">1 курс</option>
+                  <option value="2 курс">2 курс</option>
+                </Select>
+                {errors.classCourse && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.classCourse.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <Input
+                  type="password"
+                  placeholder="Придумайте пароль"
+                  {...register("password", {
+                    required: "Обязательное поле",
+                    validate: validatePassword,
+                  })}
+                />
+                {errors.password && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.password.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <Input
+                  type="password"
+                  placeholder="Повторите пароль"
+                  {...register("confirmPassword", {
+                    required: "Обязательное поле",
+                    validate: validateConfirmPassword,
+                  })}
+                />
+                {errors.confirmPassword && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.confirmPassword.message}
+                  </m.p>
+                )}
+              </div>
+
+              <div className="pt-2 sm:pt-4">
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full py-3 text-base sm:text-lg"
                 >
-                  {errors.agreeToRegulations.message}
-                </m.p>
-              )}
-            </div>
-          </section>
-
-          {/* Правая колонка */}
-          <section className="grid grid-rows-6 gap-8">
-            <Select {...register("gender", { required: "Обязательное поле" })}>
-              <option value="">Пол</option>
-              <option value="MALE">Мужской</option>
-              <option value="FEMALE">Женский</option>
-            </Select>
-            {errors.gender && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.gender.message}
-              </m.p>
-            )}
-
-            <Select
-              {...register("classCourse", { required: "Обязательное поле" })}
-            >
-              <option value="">Класс / Курс</option>
-              <option value="10 класс">10 класс</option>
-              <option value="11 класс">11 класс</option>
-              <option value="1 курс">1 курс</option>
-              <option value="2 курс">2 курс</option>
-            </Select>
-            {errors.classCourse && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.classCourse.message}
-              </m.p>
-            )}
-
-            <Input
-              type="password"
-              placeholder="Придумайте пароль"
-              {...register("password", {
-                required: "Обязательное поле",
-                validate: validatePassword,
-              })}
-            />
-            {errors.password && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.password.message}
-              </m.p>
-            )}
-
-            <Input
-              type="password"
-              placeholder="Повторите пароль"
-              {...register("confirmPassword", {
-                required: "Обязательное поле",
-                validate: validateConfirmPassword,
-              })}
-            />
-            {errors.confirmPassword && (
-              <m.p
-                className="text-sm text-red-500"
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-              >
-                {errors.confirmPassword.message}
-              </m.p>
-            )}
-
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="mt-4 py-2.5 text-lg"
-            >
-              {isLoading ? "Регистрация..." : "Зарегистрироваться"}
-            </Button>
-          </section>
-        </form>
+                  {isLoading ? "Регистрация..." : "Зарегистрироваться"}
+                </Button>
+              </div>
+            </section>
+          </form>
+        </div>
       </div>
 
       <Footer />

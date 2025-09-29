@@ -46,8 +46,11 @@ function Navbar() {
               <span className="text-blue-400">Цифровой Полиции</span>
             </h1>
           </span>
-          <span className="text-2xl font-bold text-blue-400 sm:hidden">
-            УЦП
+          <span className="text-2xl font-bold sm:hidden">
+            <h1 className="md:block md:text-3xl">
+              Университет{" "}
+              <span className="text-blue-400">Цифровой Полиции</span>
+            </h1>{" "}
           </span>
         </Link>
 

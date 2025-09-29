@@ -9,7 +9,6 @@ interface RegistrationData {
     confirmPassword: string;
   };
   profile?: Partial<IForm>;
-  currentStep?: number;
 }
 
 interface RegistrationStore {
