@@ -360,7 +360,7 @@ const Admin = () => {
         <div className="mb-8 flex justify-center">
           <m.div variants={fadeUp} initial="hidden" animate="visible">
             <Button onClick={exportUsersToExcel} className="px-6 py-3">
-              Выгрузить пользователей в Excel
+              Выгрузить пользователей в таблицу Excel
             </Button>
           </m.div>
         </div>

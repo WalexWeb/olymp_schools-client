@@ -67,6 +67,8 @@ export default function Profile() {
   >(new Set());
   const [olympiadsLoading, setOlympiadsLoading] = useState(true);
   const [isSubmittingOlympiads, setIsSubmittingOlympiads] = useState(false);
+  const [initialSelectedOlympiadNames, setInitialSelectedOlympiadNames] =
+    useState<Set<string>>(new Set());
 
   // Загрузка данных профиля
   useEffect(() => {
@@ -85,6 +87,7 @@ export default function Profile() {
           response.data.selectedOlympiads?.map((item) => item.name) ?? [],
         );
         setSelectedOlympiadNames(selectedNames);
+        setInitialSelectedOlympiadNames(new Set(selectedNames));
       } catch (error) {
         if (axios.isAxiosError(error)) {
           toast.error(
@@ -215,25 +218,54 @@ export default function Profile() {
 
   // Отправка выбранных олимпиад
   const submitSelectedOlympiads = async () => {
-    if (selectedOlympiadNames.size === 0) return;
+    if (!token) return;
 
-    const selectedNames = Array.from(selectedOlympiadNames);
+    const currentSelected = Array.from(selectedOlympiadNames);
+    const initialSelected = Array.from(initialSelectedOlympiadNames);
+
+    // Олимпиады, которые нужно УДАЛИТЬ (были, но теперь нет)
+    const toDelete = initialSelected.filter(
+      (name) => !selectedOlympiadNames.has(name),
+    );
+
+    // Олимпиады, которые нужно ДОБАВИТЬ (новые)
+    const toAdd = currentSelected.filter(
+      (name) => !initialSelectedOlympiadNames.has(name),
+    );
 
     setIsSubmittingOlympiads(true);
+
     try {
-      await axios.post(`${API_URL}/profile/olympiads/select`, selectedNames, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // Сначала удаляем снятые
+      const deletePromises = toDelete.map((name) =>
+        axios.delete(
+          `${API_URL}/profile/olympiads/${encodeURIComponent(name)}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        ),
+      );
+
+      await Promise.all(deletePromises);
+
+      // Затем добавляем новые
+      if (toAdd.length > 0) {
+        await axios.post(`${API_URL}/profile/olympiads/select`, toAdd, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+
       toast.success(
-        "Выбор олимпиад успешно сохранён!",
+        "Выбор олимпиад успешно обновлён!",
         getCustomToastStyle(isDarkMode),
       );
+
+      // Обновляем изначальное состояние после успешного сохранения
+      setInitialSelectedOlympiadNames(new Set(selectedOlympiadNames));
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(
-          "Ошибка при сохранении выбора олимпиад",
+          "Ошибка при обновлении выбора олимпиад",
           getCustomToastStyle(isDarkMode),
         );
       }
