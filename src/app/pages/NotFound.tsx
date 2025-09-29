@@ -67,11 +67,9 @@ export default function NotFoundPage() {
             animate="visible"
             transition={{ delay: 0.3 }}
           >
-            <Button className="text-5xl">
-                <Link to="/">
-                На главную
-                </Link>
-                </Button>
+            <Link to="/">
+              <Button className="text-5xl">На главную</Button>
+            </Link>
           </m.div>
         </div>
       </div>
