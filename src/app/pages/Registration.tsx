@@ -103,7 +103,12 @@ function Registration() {
 
       setToken(response.data.token);
       toast.success("Регистрация успешна!", getCustomToastStyle(isDarkMode));
-      navigate("/profile");
+
+      if (response.data.role === "ADMIN") {
+        navigate("/admin");
+      } else {
+        navigate("/profile");
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const errorMessage =
@@ -287,7 +292,7 @@ function Registration() {
 
           {/* Средняя колонка */}
           <section className="grid grid-rows-6 gap-8">
-                        <Input
+            <Input
               type="text"
               placeholder="Регион проживания"
               {...register("residenceRegion", {

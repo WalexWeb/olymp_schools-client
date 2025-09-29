@@ -9,7 +9,7 @@ import { m } from "framer-motion";
 import { fadeUp } from "../components/animations/fadeUp";
 import Footer from "../components/layout/Footer/Footer";
 import { Button } from "../components/ui/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { INewsItem } from "../types/INews.type";
 import { IOlympiad } from "../types/IOlympiads.type";
@@ -23,7 +23,7 @@ interface LocalImage {
 const Admin = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const STATIC_URL = import.meta.env.VITE_STATIC_URL;
-  const { token } = useAuthStore();
+  const { token, userData, setUserData } = useAuthStore();
   const { isDarkMode } = useThemeStore();
   const queryClient = useQueryClient();
 
@@ -45,6 +45,52 @@ const Admin = () => {
     date: "",
     description: "",
   });
+
+  const navigate = useNavigate();
+
+  // Проверка роли администратора
+  useEffect(() => {
+    const checkAdminRole = async () => {
+      // Если нет токена — редирект на логин
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      // Если данные пользователя уже есть и роль не ADMIN — редирект
+      if (userData && userData.role !== "ADMIN") {
+        navigate("/");
+        return;
+      }
+
+      // Если данных нет — загружаем профиль
+      if (!userData) {
+        try {
+          const response = await axios.get(`${API_URL}/profile`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          const profileData = {
+            role: response.data.role,
+          };
+
+          setUserData(profileData);
+
+          // Проверяем роль после загрузки
+          if (profileData.role !== "ADMIN") {
+            navigate("/");
+          }
+        } catch (error) {
+          console.error("Ошибка загрузки профиля:", error);
+          navigate("/login");
+        }
+      }
+    };
+
+    checkAdminRole();
+  }, [token, userData, navigate, API_URL, setUserData]);
 
   // Получение списка олимпиад
   const {
@@ -313,10 +359,7 @@ const Admin = () => {
         {/* Кнопка выгрузки пользователей */}
         <div className="mb-8 flex justify-center">
           <m.div variants={fadeUp} initial="hidden" animate="visible">
-            <Button
-              onClick={exportUsersToExcel}
-              className="px-6 py-3"
-            >
+            <Button onClick={exportUsersToExcel} className="px-6 py-3">
               Выгрузить пользователей в Excel
             </Button>
           </m.div>

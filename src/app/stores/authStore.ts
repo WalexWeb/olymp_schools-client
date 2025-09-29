@@ -2,8 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface UserData {
-  id: number;
-  email: string;
+  id?: number;
+  email?: string;
   role: string;
 }
 
