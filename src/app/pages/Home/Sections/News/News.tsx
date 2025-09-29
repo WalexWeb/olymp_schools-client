@@ -7,14 +7,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { getCustomToastStyle } from "../../../../components/ui/toastStyles";
-import { useAuthStore } from "../../../../stores/authStore";
 import { INewsItem } from "../../../../types/INews.type";
 
 
 
 function News() {
   const API_URL = import.meta.env.VITE_API_URL;
-  const { token } = useAuthStore();
   const [selectedNewsIndex, setSelectedNewsIndex] = useState<number | null>(
     null,
   );
@@ -27,13 +25,8 @@ function News() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get(`${API_URL}/news`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(`${API_URL}/news`);
 
-        console.log(response.data);
         // Преобразуем данные API в нужный формат
         const formattedNews = response.data.map((item: INewsItem) => ({
           text: item.title,
