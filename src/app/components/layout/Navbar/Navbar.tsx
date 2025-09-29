@@ -55,7 +55,7 @@ function Navbar() {
         {/* Основная навигация */}
         <nav className="hidden gap-6 text-sm font-medium md:flex md:gap-10">
           <Link to="/about" className="text-lg transition hover:text-blue-400">
-            Об олимпиаде
+            Об&nbsp;олимпиаде
           </Link>
           <Link
             to="/passing"

@@ -87,10 +87,8 @@ export default function Home() {
                 className={cn(
                   "mt-8 rounded-2xl p-6 backdrop-blur-sm transition-all duration-300",
                   {
-                    "border border-blue-800/30 bg-[#161b22]/80 hover:bg-[#161b22]/90":
-                      isDarkMode,
-                    "border border-gray-200 bg-white/95 shadow-md hover:shadow-lg":
-                      !isDarkMode,
+                    "bg-[#161b22]/50": isDarkMode,
+                    "border border-gray-200 bg-white/95 shadow-md hover:shadow-lg": !isDarkMode,
                   },
                 )}
               >
@@ -113,7 +111,7 @@ export default function Home() {
                       className={cn(
                         "group cursor-pointer rounded-xl p-5 backdrop-blur-sm transition-all duration-300",
                         {
-                          "border border-blue-500/20 bg-[#1e293b]/80 hover:border-blue-400/40 hover:bg-[#2d3748]/90":
+                          "bg-[#1e293b]/80 hover:border-blue-400/40 hover:bg-[#2d3748]/90":
                             isDarkMode,
                           "border border-gray-200 bg-white/90 shadow-sm hover:border-blue-300 hover:bg-blue-50/95 hover:shadow-md":
                             !isDarkMode,
