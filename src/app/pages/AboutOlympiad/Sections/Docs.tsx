@@ -3,8 +3,8 @@ import { fadeUp } from "../../../components/animations/fadeUp";
 import { useThemeStore } from "../../../stores/themeStore";
 import cn from "clsx";
 import { IDocs } from "../../../types/IDocs.type";
-import regulations from "/public/Регламент.pdf";
-import position from "/public/Положение_Олимпиада_изм_2025_профили.pdf";
+import regulations from "/public/regulations.pdf";
+import position from "/public/position.pdf";
 
 function Docs() {
   const { isDarkMode } = useThemeStore();

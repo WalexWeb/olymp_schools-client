@@ -9,7 +9,7 @@ import Docs from "./Sections/Docs";
 import { Button } from "../../components/ui/Button";
 import Footer from "../../components/layout/Footer/Footer";
 import Background from "../../components/ui/Background";
-import chart from "/public/График проведения.pdf";
+import chart from "/public/chart.pdf";
 
 function AboutOlympiad() {
   const { isDarkMode } = useThemeStore();
