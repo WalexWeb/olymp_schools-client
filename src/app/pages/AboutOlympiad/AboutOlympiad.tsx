@@ -9,10 +9,31 @@ import Docs from "./Sections/Docs";
 import { Button } from "../../components/ui/Button";
 import Footer from "../../components/layout/Footer/Footer";
 import Background from "../../components/ui/Background";
-import chart from "/public/chart.pdf";
 
 function AboutOlympiad() {
   const { isDarkMode } = useThemeStore();
+
+  const timelineData = [
+    {
+      number: "1",
+      title: "Регистрация участников",
+      period: "октябрь - декабрь 2025 года",
+      description: "Онлайн-регистрация на официальном сайте Олимпиады",
+    },
+    {
+      number: "2",
+      title: "Отборочный этап",
+      period: "ноябрь - декабрь 2025 года",
+      description: "Дистанционное тестирование по выбранным профилям",
+    },
+    {
+      number: "3",
+      title: "Заключительный этап",
+      period: "февраль - март 2026 года",
+      description:
+        "Очный этап на базе Московского ордена Почета университета МВД России имени В.Я. Кикотя",
+    },
+  ];
 
   return (
     <div
@@ -100,42 +121,115 @@ function AboutOlympiad() {
               {/* График проведения */}
               <div>
                 <h3
-                  className={cn("mb-4 text-center text-2xl font-semibold", {
+                  className={cn("mb-8 text-center text-2xl font-semibold", {
                     "text-white": isDarkMode,
                     "text-blue-600": !isDarkMode,
                   })}
                 >
                   График проведения олимпиады в 2025-2026 году
                 </h3>
-                <p className="mb-4">Олимпиада проводится в два этапа.</p>
-                <ol className="mb-4 list-decimal space-y-2 pl-6">
-                  <li>
-                    Первый (отборочный) этап Олимпиады проводится в период с
-                    ноября 2025 года по декабрь 2025 года в виде дистанционного
-                    тестирования через информационно-телекоммуникационную сеть
-                    «Интернет».
-                  </li>
-                  <li>
-                    Второй (заключительный) этап Олимпиады на базе Московского
-                    университета МВД России имени В.Я. Кикотя проводится с
-                    февраля по март 2026 года.
-                  </li>
-                </ol>
-                <p>
-                  Подробнее с графиком проведения можно ознакомиться{" "}
-                  <a
-                    className="text-blue-500"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={chart}
-                  >
-                    по ссылке.
-                  </a>
-                </p>
-                <p>
-                  Для прохождения Олимпиады необходимо пройти процедуру
-                  регистрацию в личном кабинете на сайте.
-                </p>
+
+                <div className="mb-6">
+                  <p className="mb-4">Олимпиада проводится в два этапа:</p>
+                  <ol className="mb-6 list-decimal space-y-2 pl-6">
+                    <li>
+                      Первый (отборочный) этап Олимпиады проводится в период{" "}
+                      <b>c ноября 2025 года по декабрь 2025 года</b> в виде
+                      дистанционного тестирования через
+                      информационно-телекоммуникационную сеть «Интернет».
+                    </li>
+                    <li>
+                      Второй (заключительный) этап Олимпиады на базе Московского
+                      университета МВД России имени В.Я. Кикотя проводится{" "}
+                      <b>с февраля по март 2026 года.</b>
+                    </li>
+                  </ol>
+                </div>
+
+                {/* Визуальная временная шкала */}
+                <div className="relative mb-8">
+                  {/* Вертикальная линия */}
+                  <div
+                    className={cn(
+                      "absolute top-0 left-8 h-full w-0.5 transform md:left-1/2 md:-translate-x-1/2",
+                      {
+                        "bg-blue-600": isDarkMode,
+                        "bg-blue-400": !isDarkMode,
+                      },
+                    )}
+                  />
+
+                  {timelineData.map((item, index) => (
+                    <m.div
+                      key={index}
+                      initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.2 }}
+                      className={cn(
+                        "relative mb-8 flex items-start md:mb-10",
+                        index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse",
+                      )}
+                    >
+                      {/* Иконка с номером */}
+                      <div
+                        className={cn(
+                          "relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-4 text-2xl font-bold shadow-lg",
+                          {
+                            "border-blue-600 bg-blue-700 text-white":
+                              isDarkMode,
+                            "border-blue-500 bg-blue-600 text-white":
+                              !isDarkMode,
+                          },
+                        )}
+                      >
+                        {item.number}
+                      </div>
+
+                      {/* Контент */}
+                      <div
+                        className={cn(
+                          "ml-6 flex-1 rounded-2xl p-6 shadow-lg md:ml-8 md:w-1/2",
+                          {
+                            "bg-gray-800/50": isDarkMode,
+                            "bg-blue-50": !isDarkMode,
+                          },
+                        )}
+                      >
+                        <h4
+                          className={cn("mb-2 text-2xl font-semibold", {
+                            "text-white": isDarkMode,
+                            "text-blue-800": !isDarkMode,
+                          })}
+                        >
+                          {item.title}
+                        </h4>
+                        <p
+                          className={cn("text-md mb-3 font-medium", {
+                            "text-blue-300": isDarkMode,
+                            "text-blue-600": !isDarkMode,
+                          })}
+                        >
+                          {item.period}
+                        </p>
+                        <p
+                          className={cn("text-md", {
+                            "text-gray-300": isDarkMode,
+                            "text-gray-700": !isDarkMode,
+                          })}
+                        >
+                          {item.description}
+                        </p>
+                      </div>
+                    </m.div>
+                  ))}
+                </div>
+
+                <div className="text-center">
+                  <p className="text-lg font-medium">
+                    Для прохождения Олимпиады необходимо пройти процедуру
+                    регистрацию в личном кабинете на сайте.
+                  </p>
+                </div>
               </div>
             </div>
 
