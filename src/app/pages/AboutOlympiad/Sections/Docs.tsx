@@ -3,29 +3,31 @@ import { fadeUp } from "../../../components/animations/fadeUp";
 import { useThemeStore } from "../../../stores/themeStore";
 import cn from "clsx";
 import { IDocs } from "../../../types/IDocs.type";
+import regulations from "/public/Регламент.pdf";
+import position from "/public/Положение_Олимпиада_изм_2025_профили.pdf";
 
 function Docs() {
   const { isDarkMode } = useThemeStore();
 
   const docs: IDocs[] = [
     {
+      title: "Положение",
+      link: position,
+    },
+    {
       title: "Регламент",
-      link: "/Регламент.pdf",
+      link: regulations,
     },
     {
       title: "Методика оценки",
       link: "https://mvd.ru/upload/site116/folder_page/041/907/599/Metodika_otsenki_2024-2025.pdf",
-    },
-    {
-      title: "Положение",
-      link: "/Положение_Олимпиада_изм_2025_профили.pdf",
     },
   ];
 
   return (
     <div className="grid grid-cols-2 gap-6 text-center md:grid-cols-3">
       {docs.map((item, i) => (
-        <a key={i} href={item.link} target="_blank">
+        <a key={i} href={item.link} target="_blank" rel="noopener noreferrer">
           <m.div
             variants={fadeUp}
             initial="hidden"

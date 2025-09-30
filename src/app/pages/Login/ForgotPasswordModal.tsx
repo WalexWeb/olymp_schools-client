@@ -4,7 +4,8 @@ import { useThemeStore } from "../../stores/themeStore";
 import { m } from "framer-motion";
 import { SubmitHandler, useForm } from "react-hook-form";
 import cn from "clsx";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import axios from "axios";
 
 interface IForgotPasswordModalProps {
   isOpen: boolean;
@@ -12,20 +13,63 @@ interface IForgotPasswordModalProps {
 }
 
 interface IPasswordResetForm {
-  resetEmail: string;
+  email: string;
 }
 
 export const ForgotPasswordModal = ({
   isOpen,
   onClose,
 }: IForgotPasswordModalProps) => {
-  const { register, handleSubmit } = useForm<IPasswordResetForm>();
+  const API_URL = import.meta.env.VITE_API_URL;
+  const { register, handleSubmit, reset } = useForm<IPasswordResetForm>();
   const { isDarkMode } = useThemeStore();
   const modalRef = useRef<HTMLDivElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverMessage, setServerMessage] = useState<string>("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  const onSubmit: SubmitHandler<IPasswordResetForm> = (data) => {
-    console.log(data);
-    onClose();
+  const onSubmit: SubmitHandler<IPasswordResetForm> = async (data) => {
+    setIsLoading(true);
+    setServerMessage("");
+    setIsSuccess(false);
+
+    try {
+      await axios.post(`${API_URL}/auth/forgot-password`, {
+        email: data.email,
+      });
+
+      setIsSuccess(true);
+      setServerMessage(
+        "Ссылка для восстановления пароля отправлена на вашу почту",
+      );
+
+      setTimeout(() => {
+        onClose();
+        reset();
+        setServerMessage("");
+        setIsSuccess(false);
+      }, 2000);
+    } catch (error) {
+      console.error("Ошибка восстановления пароля:", error);
+
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          const errorMessage =
+            error.response.data?.message ||
+            error.response.data?.error ||
+            "Не удалось отправить запрос. Проверьте email и попробуйте снова.";
+          setServerMessage(errorMessage);
+        } else if (error.request) {
+          setServerMessage(
+            "Ошибка подключения к серверу. Проверьте интернет-соединение.",
+          );
+        }
+      } else {
+        setServerMessage("Произошла неизвестная ошибка. Попробуйте позже.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -103,12 +147,29 @@ export const ForgotPasswordModal = ({
             <Input
               type="email"
               placeholder="Ваш email"
-              {...register("resetEmail", { required: true })}
+              {...register("email", { required: true })}
             />
 
+            {serverMessage && (
+              <div
+                className={cn(
+                  "rounded-lg p-3 text-center text-sm font-medium",
+                  isSuccess
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700",
+                )}
+              >
+                {serverMessage}
+              </div>
+            )}
+
             <div className="flex justify-end gap-3">
-              <Button type="submit" className="h-14 w-full text-lg">
-                Отправить
+              <Button
+                type="submit"
+                className="h-14 w-full text-lg"
+                disabled={isLoading}
+              >
+                {isLoading ? "Отправка..." : "Отправить"}
               </Button>
             </div>
           </form>

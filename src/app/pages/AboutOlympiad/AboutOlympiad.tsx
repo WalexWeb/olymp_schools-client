@@ -9,6 +9,7 @@ import Docs from "./Sections/Docs";
 import { Button } from "../../components/ui/Button";
 import Footer from "../../components/layout/Footer/Footer";
 import Background from "../../components/ui/Background";
+import chart from "/public/График проведения.pdf";
 
 function AboutOlympiad() {
   const { isDarkMode } = useThemeStore();
@@ -109,21 +110,25 @@ function AboutOlympiad() {
                 <p className="mb-4">Олимпиада проводится в два этапа.</p>
                 <ol className="mb-4 list-decimal space-y-2 pl-6">
                   <li>
-                    Первый (отборочный) этап Олимпиады проводится в период с 24
-                    ноября 2025 года по 14 декабря 2025 года в виде
-                    дистанционного тестирования через
-                    информационно-телекоммуникационную сеть «Интернет».
+                    Первый (отборочный) этап Олимпиады проводится в период с
+                    ноября 2025 года по декабрь 2025 года в виде дистанционного
+                    тестирования через информационно-телекоммуникационную сеть
+                    «Интернет».
                   </li>
                   <li>
                     Второй (заключительный) этап Олимпиады на базе Московского
-                    университета МВД России имени В.Я. Кикотя проводится с 1
-                    февраля по 7 марта 2026 года. Очная защита проектов
-                    проводится 14 марта 2025 года.
+                    университета МВД России имени В.Я. Кикотя проводится с
+                    февраля по март 2026 года.
                   </li>
                 </ol>
                 <p>
                   Подробнее с графиком проведения можно ознакомиться{" "}
-                  <a className="text-blue-500" href="/График проведения.pdf">
+                  <a
+                    className="text-blue-500"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={chart}
+                  >
                     по ссылке.
                   </a>
                 </p>
