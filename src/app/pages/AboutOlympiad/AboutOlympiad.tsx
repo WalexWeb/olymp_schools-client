@@ -9,9 +9,25 @@ import Docs from "./Sections/Docs";
 import { Button } from "../../components/ui/Button";
 import Footer from "../../components/layout/Footer/Footer";
 import Background from "../../components/ui/Background";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
 
 function AboutOlympiad() {
   const { isDarkMode } = useThemeStore();
+
+  // Refs для отслеживания появления в viewport
+  const timelineRef = useRef(null);
+  const finalTextRef = useRef(null);
+  const buttonRef = useRef(null);
+  const isTimelineInView = useInView(timelineRef, {
+    once: true,
+    margin: "-100px",
+  });
+  const isFinalTextInView = useInView(finalTextRef, {
+    once: true,
+    margin: "-50px",
+  });
+  const isButtonInView = useInView(buttonRef, { once: true, margin: "-50px" });
 
   const timelineData = [
     {
@@ -34,6 +50,62 @@ function AboutOlympiad() {
         "Очный этап на базе Московского ордена Почета университета МВД России имени В.Я. Кикотя",
     },
   ];
+
+  // Анимации для графика
+  const timelineVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: {
+      opacity: 0,
+      y: 30,
+      scale: 0.9,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        damping: 15,
+        stiffness: 100,
+      },
+    },
+  };
+
+  const lineVariants = {
+    hidden: { scaleY: 0 },
+    visible: {
+      scaleY: 1,
+      transition: {
+        duration: 1,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const iconVariants = {
+    hidden: {
+      scale: 0,
+      rotate: -180,
+    },
+    visible: {
+      scale: 1,
+      rotate: 0,
+      transition: {
+        type: "spring",
+        damping: 15,
+        stiffness: 200,
+      },
+    },
+  };
 
   return (
     <div
@@ -130,11 +202,18 @@ function AboutOlympiad() {
                 </h3>
 
                 {/* Визуальная временная шкала */}
-                <div className="relative mb-8">
-                  {/* Вертикальная линия */}
-                  <div
+                <m.div
+                  ref={timelineRef}
+                  className="relative mb-8"
+                  variants={timelineVariants}
+                  initial="hidden"
+                  animate={isTimelineInView ? "visible" : "hidden"}
+                >
+                  {/* Анимированная вертикальная линия */}
+                  <m.div
+                    variants={lineVariants}
                     className={cn(
-                      "absolute top-0 left-8 h-full w-0.5 transform md:left-1/2 md:-translate-x-1/2",
+                      "absolute top-0 left-8 h-full w-0.5 origin-top transform md:left-1/2 md:-translate-x-1/2",
                       {
                         "bg-blue-600": isDarkMode,
                         "bg-blue-400": !isDarkMode,
@@ -145,16 +224,15 @@ function AboutOlympiad() {
                   {timelineData.map((item, index) => (
                     <m.div
                       key={index}
-                      initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.2 }}
+                      variants={itemVariants}
                       className={cn(
                         "relative mb-8 flex items-start md:mb-10",
                         index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse",
                       )}
                     >
-                      {/* Иконка с номером */}
-                      <div
+                      {/* Анимированная иконка с номером */}
+                      <m.div
+                        variants={iconVariants}
                         className={cn(
                           "relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-4 text-2xl font-bold shadow-lg",
                           {
@@ -166,10 +244,21 @@ function AboutOlympiad() {
                         )}
                       >
                         {item.number}
-                      </div>
+                      </m.div>
 
-                      {/* Контент */}
-                      <div
+                      {/* Контент с отдельной анимацией */}
+                      <m.div
+                        initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+                        animate={
+                          isTimelineInView
+                            ? { opacity: 1, x: 0 }
+                            : { opacity: 0, x: index % 2 === 0 ? -20 : 20 }
+                        }
+                        transition={{
+                          delay: index * 0.3 + 0.5,
+                          type: "spring",
+                          stiffness: 100,
+                        }}
                         className={cn(
                           "ml-6 flex-1 rounded-2xl p-6 shadow-lg md:ml-8 md:w-1/2",
                           {
@@ -202,25 +291,43 @@ function AboutOlympiad() {
                         >
                           {item.description}
                         </p>
-                      </div>
+                      </m.div>
                     </m.div>
                   ))}
-                </div>
+                </m.div>
 
-                <div className="text-center">
+                <m.div
+                  ref={finalTextRef}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={
+                    isFinalTextInView
+                      ? { opacity: 1, y: 0 }
+                      : { opacity: 0, y: 20 }
+                  }
+                  transition={{ duration: 0.6 }}
+                  className="text-center"
+                >
                   <p className="text-lg font-medium">
                     Для прохождения Олимпиады необходимо пройти процедуру
                     регистрации в личном кабинете на сайте.
                   </p>
-                </div>
+                </m.div>
               </div>
             </div>
 
-            <div className="flex justify-center gap-4">
+            <m.div
+              ref={buttonRef}
+              className="flex justify-center gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={
+                isButtonInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+              }
+              transition={{ duration: 0.6 }}
+            >
               <Link to="/">
                 <Button className="px-7 py-3">Вернуться на главную</Button>
               </Link>
-            </div>
+            </m.div>
           </m.div>
         </div>
       </section>

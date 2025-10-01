@@ -6,7 +6,7 @@ import position from "/public/position.pdf";
 import regulationsSociety from "/public/regulationsSociety.pdf";
 import methodologySociety from "/public/methodologySociety.pdf";
 import chartSociety from "/public/chartSociety.pdf";
-
+import regulationsInfoSec from "/public/regulationsInfoSec.pdf";
 import chartInfoSec from "/public/chartInfoSec.pdf";
 
 function Docs() {
@@ -48,7 +48,7 @@ function Docs() {
         Информационная безопасность
       </m.h3>
       <section className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-        <a href={position} target="_blank" rel="noopener noreferrer">
+        <a href={regulationsInfoSec} target="_blank" rel="noopener noreferrer">
           <m.div
             variants={fadeUp}
             initial="hidden"
@@ -68,7 +68,7 @@ function Docs() {
             Регламент
           </m.div>
         </a>
-        <a href={position} target="_blank" rel="noopener noreferrer">
+        <a href="#" target="_blank" rel="noopener noreferrer">
           <m.div
             variants={fadeUp}
             initial="hidden"
