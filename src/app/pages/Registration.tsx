@@ -227,14 +227,18 @@ function Registration() {
                 )}
               </div>
 
-              <div className="flex flex-col gap-1">
+              <div className="relative flex flex-col gap-1">
                 <Input
                   type="date"
+                  className="peer"
                   {...register("birthDate", {
                     required: "Обязательное поле",
                     validate: validateBirthDate,
                   })}
                 />
+                <span className="pointer-events-none absolute top-3 left-3 text-gray-400 transition-all peer-valid:hidden peer-focus:hidden md:hidden">
+                  Дата рождения
+                </span>
                 {errors.birthDate && (
                   <m.p
                     className="text-sm text-red-500"
@@ -369,20 +373,26 @@ function Registration() {
 
               {/* Radio button для выбора типа населенного пункта */}
               <div className="flex flex-col gap-3">
-                <label
+                <m.label
                   className={cn("text-md font-medium", {
                     "text-white": isDarkMode,
                     "text-gray-700": !isDarkMode,
                   })}
+                  variants={fadeUp}
+                  initial="hidden"
+                  animate="visible"
                 >
                   Тип населенного пункта:
-                </label>
+                </m.label>
                 <div className="flex gap-6">
-                  <label
+                  <m.label
                     className={cn("flex cursor-pointer items-center gap-2", {
                       "text-white": isDarkMode,
                       "text-gray-700": !isDarkMode,
                     })}
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
                   >
                     <input
                       type="radio"
@@ -401,12 +411,15 @@ function Registration() {
                       )}
                     />
                     <span>Город(ПГТ)</span>
-                  </label>
-                  <label
+                  </m.label>
+                  <m.label
                     className={cn("flex cursor-pointer items-center gap-2", {
                       "text-white": isDarkMode,
                       "text-gray-700": !isDarkMode,
                     })}
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
                   >
                     <input
                       type="radio"
@@ -425,7 +438,7 @@ function Registration() {
                       )}
                     />
                     <span>Иное</span>
-                  </label>
+                  </m.label>
                 </div>
                 {errors.settlementType && (
                   <m.p
