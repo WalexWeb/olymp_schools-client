@@ -228,6 +228,17 @@ function Registration() {
               </div>
 
               <div className="relative flex flex-col gap-1">
+                <m.label
+                  className={cn("text-md mb-1 font-medium", {
+                    "text-white": isDarkMode,
+                    "text-gray-700": !isDarkMode,
+                  })}
+                  variants={fadeUp}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  Дата рождения
+                </m.label>
                 <Input
                   type="date"
                   className="peer"
@@ -236,7 +247,7 @@ function Registration() {
                     validate: validateBirthDate,
                   })}
                 />
-                <span className="pointer-events-none absolute top-3 left-3 text-gray-400 transition-all peer-valid:hidden peer-focus:hidden md:hidden">
+                <span className="pointer-events-none absolute top-3 left-3 mt-8 text-gray-400 transition-all peer-valid:hidden peer-focus:hidden md:hidden">
                   Дата рождения
                 </span>
                 {errors.birthDate && (
