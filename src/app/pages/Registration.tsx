@@ -15,6 +15,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuthStore } from "../stores/authStore";
+import { regions } from "../../data/mockData";
 
 // Локальный интерфейс (можно заменить на импорт из types)
 interface RegistrationForm {
@@ -26,6 +27,7 @@ interface RegistrationForm {
   phoneNumber: string;
   residenceRegion: string;
   residenceSettlement: string;
+  settlementType: string;
   educationalInstitution: string;
   institutionAddress: string;
   postalAddress: string;
@@ -93,6 +95,7 @@ function Registration() {
         phoneNumber: data.phoneNumber,
         residenceRegion: data.residenceRegion,
         residenceSettlement: data.residenceSettlement,
+        settlementType: data.settlementType,
         educationalInstitution: data.educationalInstitution,
         institutionAddress: data.institutionAddress,
         postalAddress: data.postalAddress,
@@ -320,13 +323,18 @@ function Registration() {
             {/* Средняя колонка */}
             <section className="space-y-4 sm:space-y-6 lg:space-y-4">
               <div className="flex flex-col gap-1">
-                <Input
-                  type="text"
-                  placeholder="Регион проживания"
+                <Select
                   {...register("residenceRegion", {
                     required: "Обязательное поле",
                   })}
-                />
+                >
+                  <option value="">Выберите регион проживания</option>
+                  {regions.map((region, index) => (
+                    <option key={index} value={region}>
+                      {region}
+                    </option>
+                  ))}
+                </Select>
                 {errors.residenceRegion && (
                   <m.p
                     className="text-sm text-red-500"
@@ -355,6 +363,78 @@ function Registration() {
                     animate="visible"
                   >
                     {errors.residenceSettlement.message}
+                  </m.p>
+                )}
+              </div>
+
+              {/* Radio button для выбора типа населенного пункта */}
+              <div className="flex flex-col gap-3">
+                <label
+                  className={cn("text-md font-medium", {
+                    "text-white": isDarkMode,
+                    "text-gray-700": !isDarkMode,
+                  })}
+                >
+                  Тип населенного пункта:
+                </label>
+                <div className="flex gap-6">
+                  <label
+                    className={cn("flex cursor-pointer items-center gap-2", {
+                      "text-white": isDarkMode,
+                      "text-gray-700": !isDarkMode,
+                    })}
+                  >
+                    <input
+                      type="radio"
+                      value="Город(ПГТ)"
+                      {...register("settlementType", {
+                        required: "Выберите тип населенного пункта",
+                      })}
+                      className={cn(
+                        "h-4 w-4 border-2 focus:ring-2 focus:ring-offset-2",
+                        {
+                          "border-blue-500 text-blue-600 focus:ring-blue-500":
+                            !isDarkMode,
+                          "border-blue-400 text-blue-400 focus:ring-blue-400":
+                            isDarkMode,
+                        },
+                      )}
+                    />
+                    <span>Город(ПГТ)</span>
+                  </label>
+                  <label
+                    className={cn("flex cursor-pointer items-center gap-2", {
+                      "text-white": isDarkMode,
+                      "text-gray-700": !isDarkMode,
+                    })}
+                  >
+                    <input
+                      type="radio"
+                      value="Иное"
+                      {...register("settlementType", {
+                        required: "Выберите тип населенного пункта",
+                      })}
+                      className={cn(
+                        "h-4 w-4 border-2 focus:ring-2 focus:ring-offset-2",
+                        {
+                          "border-blue-500 text-blue-600 focus:ring-blue-500":
+                            !isDarkMode,
+                          "border-blue-400 text-blue-400 focus:ring-blue-400":
+                            isDarkMode,
+                        },
+                      )}
+                    />
+                    <span>Иное</span>
+                  </label>
+                </div>
+                {errors.settlementType && (
+                  <m.p
+                    className="text-sm text-red-500"
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {errors.settlementType.message}
                   </m.p>
                 )}
               </div>
