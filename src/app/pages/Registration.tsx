@@ -247,9 +247,6 @@ function Registration() {
                     validate: validateBirthDate,
                   })}
                 />
-                <span className="pointer-events-none absolute top-3 left-3 mt-8 text-gray-400 transition-all peer-valid:hidden peer-focus:hidden md:hidden">
-                  Дата рождения
-                </span>
                 {errors.birthDate && (
                   <m.p
                     className="text-sm text-red-500"

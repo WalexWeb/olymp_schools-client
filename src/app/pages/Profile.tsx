@@ -80,6 +80,7 @@ export default function Profile() {
           },
         });
 
+        console.log(response.data);
         setUserData(response.data);
 
         // Извлекаем названия выбранных олимпиад и создаём Set
@@ -478,12 +479,12 @@ export default function Profile() {
                           "border-gray-300 bg-white": !isDarkMode,
                         })}
                       >
-                        <option value="М">Мужской</option>
-                        <option value="Ж">Женский</option>
+                        <option value="MALE">Мужской</option>
+                        <option value="FEMALE">Женский</option>
                       </Select>
                     ) : (
                       <p className="mt-1 text-xl">
-                        {userData.gender === "МALE" ? "Мужской" : "Женский"}
+                        {userData.gender === "MALE" ? "Мужской" : "Женский"}
                       </p>
                     )}
                   </div>
