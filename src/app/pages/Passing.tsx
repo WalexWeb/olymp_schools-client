@@ -73,23 +73,26 @@ function Passing() {
 
               <p className="mb-4">
                 После регистрации на сайте и подтверждения профиля олимпиады вам
-                на указанную почту в течении <b>двух рабочих дней</b> будет
-                выслан логин и пароль для прохождения тестирования <br /> Данные
-                будут отправлены с данной электронной почты:{" "}
-                <a
-                  href="mailto:olimpiada.mosu@mail.ru"
-                  className={cn("font-medium", {
-                    "text-blue-400": isDarkMode,
-                    "text-blue-600": !isDarkMode,
-                  })}
-                >
-                  olimpiada.mosu@mail.ru
-                </a>
+                в <b>личном кабинете</b> будут отображены логин и пароль для
+                прохождения тестирования
               </p>
               <p className="mb-4">
-                Доступ к тестовым заданиям откроется в 00:00 14 октября 2025
+                Доступ к тестовым заданиям откроется в 00:00 24 октября 2025
                 года на платформе. <br />
               </p>
+              {isAuthenticated && (
+                <p className="mb-4">
+                  Для прохождения Отборочного этапа олимпиады{" "}
+                  <a
+                    className="font-bold text-blue-500 underline"
+                    href="https://moodle.mosu-mvd.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    перейдите по ссылке
+                  </a>
+                </p>
+              )}
             </div>
 
             <div className="flex justify-center">

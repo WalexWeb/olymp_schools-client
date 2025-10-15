@@ -376,7 +376,7 @@ export default function Profile() {
                       "text-gray-500": !isDarkMode,
                     })}
                   >
-                    Почта
+                    Электронная почта
                   </h3>
                   {isEditing ? (
                     <Input
