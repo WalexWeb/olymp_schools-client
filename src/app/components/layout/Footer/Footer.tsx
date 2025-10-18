@@ -24,7 +24,7 @@ function Footer() {
         <br />
         почта: olimpiada.mosu@mail.ru
         <br />
-        тел.: +7 499 789-67-47, +7 499 745-91-46
+        тел.: +7 499 789-67-47
       </section>
     </footer>
   );

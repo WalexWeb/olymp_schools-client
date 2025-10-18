@@ -6,14 +6,10 @@ import { fadeUp } from "../components/animations/fadeUp";
 import { m } from "framer-motion";
 import { useThemeStore } from "../stores/themeStore";
 import cn from "clsx";
-import { Button } from "../components/ui/Button";
-import Input from "../components/ui/Input";
-import Select from "../components/ui/Select";
 import { useAuthStore } from "../stores/authStore";
 import axios from "axios";
 import { getCustomToastStyle } from "../components/ui/toastStyles";
 import { toast, ToastContainer } from "react-toastify";
-import { IOlympiad } from "../types/IOlympiads.type";
 
 interface SelectedOlympiad {
   name: string;
@@ -43,7 +39,6 @@ export default function Profile() {
   const API_URL = import.meta.env.VITE_API_URL;
   const { isDarkMode } = useThemeStore();
   const { token } = useAuthStore();
-  const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserData>({
     firstName: "",
@@ -61,14 +56,6 @@ export default function Profile() {
     gender: "",
     classCourse: "",
   });
-  const [olympiads, setOlympiads] = useState<IOlympiad[]>([]);
-  const [selectedOlympiadNames, setSelectedOlympiadNames] = useState<
-    Set<string>
-  >(new Set());
-  const [olympiadsLoading, setOlympiadsLoading] = useState(true);
-  const [isSubmittingOlympiads, setIsSubmittingOlympiads] = useState(false);
-  const [initialSelectedOlympiadNames, setInitialSelectedOlympiadNames] =
-    useState<Set<string>>(new Set());
 
   // Загрузка данных профиля
   useEffect(() => {
@@ -82,13 +69,6 @@ export default function Profile() {
 
         console.log(response.data);
         setUserData(response.data);
-
-        // Извлекаем названия выбранных олимпиад и создаём Set
-        const selectedNames = new Set(
-          response.data.selectedOlympiads?.map((item) => item.name) ?? [],
-        );
-        setSelectedOlympiadNames(selectedNames);
-        setInitialSelectedOlympiadNames(new Set(selectedNames));
       } catch (error) {
         if (axios.isAxiosError(error)) {
           toast.error(
@@ -107,100 +87,6 @@ export default function Profile() {
     }
   }, [token, isDarkMode]);
 
-  // Загрузка списка олимпиад
-  useEffect(() => {
-    const fetchOlympiads = async () => {
-      if (!token) return;
-      try {
-        setOlympiadsLoading(true);
-        const response = await axios.get<IOlympiad[]>(`${API_URL}/olympiads`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setOlympiads(response.data);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          toast.error(
-            "Не удалось загрузить список олимпиад",
-            getCustomToastStyle(isDarkMode),
-          );
-        }
-        console.error("Failed to fetch olympiads:", error);
-      } finally {
-        setOlympiadsLoading(false);
-      }
-    };
-
-    fetchOlympiads();
-  }, [token, isDarkMode]);
-
-  // Обработчики изменений полей
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
-    setUserData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleOlympiadChange = (name: string) => {
-    setSelectedOlympiadNames((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(name)) {
-        newSet.delete(name);
-      } else {
-        newSet.add(name);
-      }
-      return newSet;
-    });
-  };
-
-  // Сохранение изменений профиля
-  const handleSave = async () => {
-    setIsLoading(true);
-    try {
-      await axios.put(
-        `${API_URL}/profile`,
-        {
-          email: userData.email,
-          firstName: userData.firstName,
-          middleName: userData.middleName,
-          lastName: userData.lastName,
-          birthDate: userData.birthDate,
-          phoneNumber: userData.phoneNumber,
-          residenceRegion: userData.residenceRegion,
-          residenceSettlement: userData.residenceSettlement,
-          educationalInstitution: userData.educationalInstitution,
-          institutionAddress: userData.institutionAddress,
-          postalAddress: userData.postalAddress,
-          snils: userData.snils,
-          gender: userData.gender,
-          classCourse: userData.classCourse,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      toast.success(
-        "Профиль успешно обновлен!",
-        getCustomToastStyle(isDarkMode),
-      );
-      setIsEditing(false);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(
-          "Ошибка обновления профиля",
-          getCustomToastStyle(isDarkMode),
-        );
-      }
-      console.error("Failed to update profile:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   if (isLoading) {
     return (
       <div
@@ -217,65 +103,6 @@ export default function Profile() {
     );
   }
 
-  // Отправка выбранных олимпиад
-  const submitSelectedOlympiads = async () => {
-    if (!token) return;
-
-    const currentSelected = Array.from(selectedOlympiadNames);
-    const initialSelected = Array.from(initialSelectedOlympiadNames);
-
-    // Олимпиады, которые нужно УДАЛИТЬ (были, но теперь нет)
-    const toDelete = initialSelected.filter(
-      (name) => !selectedOlympiadNames.has(name),
-    );
-
-    // Олимпиады, которые нужно ДОБАВИТЬ (новые)
-    const toAdd = currentSelected.filter(
-      (name) => !initialSelectedOlympiadNames.has(name),
-    );
-
-    setIsSubmittingOlympiads(true);
-
-    try {
-      // Сначала удаляем снятые
-      const deletePromises = toDelete.map((name) =>
-        axios.delete(
-          `${API_URL}/profile/olympiads/${encodeURIComponent(name)}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        ),
-      );
-
-      await Promise.all(deletePromises);
-
-      // Затем добавляем новые
-      if (toAdd.length > 0) {
-        await axios.post(`${API_URL}/profile/olympiads/select`, toAdd, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
-
-      toast.success(
-        "Выбор олимпиад успешно обновлён!",
-        getCustomToastStyle(isDarkMode),
-      );
-
-      // Обновляем изначальное состояние после успешного сохранения
-      setInitialSelectedOlympiadNames(new Set(selectedOlympiadNames));
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(
-          "Ошибка при обновлении выбора олимпиад",
-          getCustomToastStyle(isDarkMode),
-        );
-      }
-      console.error("Failed to submit olympiads:", error);
-    } finally {
-      setIsSubmittingOlympiads(false);
-    }
-  };
-
   return (
     <div
       className={cn("min-h-screen w-screen font-sans", {
@@ -286,7 +113,52 @@ export default function Profile() {
       <BackgroundBlobs />
       <Navbar />
       <ToastContainer />
-
+      {/* Плашка с предупреждением */}
+      <m.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className={cn("w-full border-b px-4 py-3", {
+          "border-yellow-600/30 bg-yellow-500/20 text-yellow-200": isDarkMode,
+          "border-yellow-300 bg-yellow-100 text-yellow-800": !isDarkMode,
+        })}
+      >
+        <div className="mx-auto">
+          <div className="flex items-center justify-center gap-3">
+            <svg
+              className={cn("flex-shrink-0", {
+                "text-yellow-400": isDarkMode,
+                "text-yellow-600": !isDarkMode,
+              })}
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+            </svg>
+            <span className="text-center text-sm font-medium sm:text-base">
+              В случае если вы допустили ошибку в учетных данных, просьба
+              направить письмо на электронную почту{" "}
+              <a
+                href="mailto:olimpiada.mosu@mail.ru"
+                className={cn("font-medium", {
+                  "text-blue-400": isDarkMode,
+                  "text-blue-600": !isDarkMode,
+                })}
+              >
+                olimpiada.mosu@mail.ru
+              </a>{" "}
+              указав в теме письма: «Личный кабинет»
+            </span>
+          </div>
+        </div>
+      </m.div>
       {/* Основной блок с профилем */}
       <section
         className={cn("relative min-h-[80vh] px-6 py-12", {
@@ -328,45 +200,10 @@ export default function Profile() {
                   >
                     ФИО
                   </h3>
-                  {isEditing ? (
-                    <div className="mt-2 grid grid-cols-1 gap-4">
-                      <Input
-                        name="lastName"
-                        value={userData.lastName}
-                        onChange={handleInputChange}
-                        placeholder="Фамилия"
-                        className={cn({
-                          "border-blue-700 bg-[#1e293b]": isDarkMode,
-                          "border-gray-300 bg-white": !isDarkMode,
-                        })}
-                      />
-                      <Input
-                        name="firstName"
-                        value={userData.firstName}
-                        onChange={handleInputChange}
-                        placeholder="Имя"
-                        className={cn({
-                          "border-blue-700 bg-[#1e293b]": isDarkMode,
-                          "border-gray-300 bg-white": !isDarkMode,
-                        })}
-                      />
-                      <Input
-                        name="middleName"
-                        value={userData.middleName}
-                        onChange={handleInputChange}
-                        placeholder="Отчество"
-                        className={cn({
-                          "border-blue-700 bg-[#1e293b]": isDarkMode,
-                          "border-gray-300 bg-white": !isDarkMode,
-                        })}
-                      />
-                    </div>
-                  ) : (
-                    <p className="mt-1 text-xl">
-                      {userData.lastName} {userData.firstName}{" "}
-                      {userData.middleName}
-                    </p>
-                  )}
+                  <p className="mt-1 text-xl">
+                    {userData.lastName} {userData.firstName}{" "}
+                    {userData.middleName}
+                  </p>
                 </div>
 
                 <div>
@@ -378,21 +215,7 @@ export default function Profile() {
                   >
                     Электронная почта
                   </h3>
-                  {isEditing ? (
-                    <Input
-                      name="email"
-                      value={userData.email}
-                      onChange={handleInputChange}
-                      placeholder="Email"
-                      className={cn("mt-2", {
-                        "border-blue-700 bg-[#1e293b]": isDarkMode,
-                        "border-gray-300 bg-white": !isDarkMode,
-                      })}
-                      disabled
-                    />
-                  ) : (
-                    <p className="mt-1 text-xl">{userData.email}</p>
-                  )}
+                  <p className="mt-1 text-xl">{userData.email}</p>
                 </div>
               </div>
             </m.div>
@@ -409,7 +232,7 @@ export default function Profile() {
                 },
               )}
             >
-              <div className="mb-6 flex items-center justify-between">
+              <div className="mb-6">
                 <h2
                   className={cn("text-2xl font-bold", {
                     "text-blue-300": isDarkMode,
@@ -418,18 +241,6 @@ export default function Profile() {
                 >
                   Общая информация
                 </h2>
-                {!isEditing && (
-                  <Button
-                    onClick={() => setIsEditing(true)}
-                    className={cn("px-4 py-2", {
-                      "bg-blue-600 hover:bg-blue-500": isDarkMode,
-                      "bg-blue-500 hover:bg-blue-400": !isDarkMode,
-                    })}
-                    disabled={isLoading}
-                  >
-                    Редактировать профиль
-                  </Button>
-                )}
               </div>
 
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -444,20 +255,7 @@ export default function Profile() {
                     >
                       Дата рождения
                     </h3>
-                    {isEditing ? (
-                      <Input
-                        type="date"
-                        name="birthDate"
-                        value={userData.birthDate}
-                        onChange={handleInputChange}
-                        className={cn({
-                          "border-blue-700 bg-[#1e293b]": isDarkMode,
-                          "border-gray-300 bg-white": !isDarkMode,
-                        })}
-                      />
-                    ) : (
-                      <p className="mt-1 text-xl">{userData.birthDate}</p>
-                    )}
+                    <p className="mt-1 text-xl">{userData.birthDate}</p>
                   </div>
 
                   <div>
@@ -469,24 +267,9 @@ export default function Profile() {
                     >
                       Пол
                     </h3>
-                    {isEditing ? (
-                      <Select
-                        name="gender"
-                        value={userData.gender}
-                        onChange={handleInputChange}
-                        className={cn("input-size w-full", {
-                          "border-blue-700 bg-[#1e293b]": isDarkMode,
-                          "border-gray-300 bg-white": !isDarkMode,
-                        })}
-                      >
-                        <option value="MALE">Мужской</option>
-                        <option value="FEMALE">Женский</option>
-                      </Select>
-                    ) : (
-                      <p className="mt-1 text-xl">
-                        {userData.gender === "MALE" ? "Мужской" : "Женский"}
-                      </p>
-                    )}
+                    <p className="mt-1 text-xl">
+                      {userData.gender === "MALE" ? "Мужской" : "Женский"}
+                    </p>
                   </div>
 
                   <div>
@@ -498,24 +281,7 @@ export default function Profile() {
                     >
                       Класс/Курс
                     </h3>
-                    {isEditing ? (
-                      <Select
-                        name="classCourse"
-                        value={userData.classCourse}
-                        onChange={handleInputChange}
-                        className={cn("input-size w-full", {
-                          "border-blue-700 bg-[#1e293b]": isDarkMode,
-                          "border-gray-300 bg-white": !isDarkMode,
-                        })}
-                      >
-                        <option value="10 класс">10 класс</option>
-                        <option value="11 класс">11 класс</option>
-                        <option value="1 курс">1 курс</option>
-                        <option value="2 курс">2 курс</option>
-                      </Select>
-                    ) : (
-                      <p className="mt-1 text-xl">{userData.classCourse}</p>
-                    )}
+                    <p className="mt-1 text-xl">{userData.classCourse}</p>
                   </div>
 
                   <div>
@@ -527,19 +293,7 @@ export default function Profile() {
                     >
                       Телефон
                     </h3>
-                    {isEditing ? (
-                      <Input
-                        name="phoneNumber"
-                        value={userData.phoneNumber}
-                        onChange={handleInputChange}
-                        className={cn({
-                          "border-blue-700 bg-[#1e293b]": isDarkMode,
-                          "border-gray-300 bg-white": !isDarkMode,
-                        })}
-                      />
-                    ) : (
-                      <p className="mt-1 text-xl">{userData.phoneNumber}</p>
-                    )}
+                    <p className="mt-1 text-xl">{userData.phoneNumber}</p>
                   </div>
 
                   <div>
@@ -551,19 +305,7 @@ export default function Profile() {
                     >
                       Почтовый адрес
                     </h3>
-                    {isEditing ? (
-                      <Input
-                        name="postalAddress"
-                        value={userData.postalAddress}
-                        onChange={handleInputChange}
-                        className={cn({
-                          "border-blue-700 bg-[#1e293b]": isDarkMode,
-                          "border-gray-300 bg-white": !isDarkMode,
-                        })}
-                      />
-                    ) : (
-                      <p className="mt-1 text-xl">{userData.postalAddress}</p>
-                    )}
+                    <p className="mt-1 text-xl">{userData.postalAddress}</p>
                   </div>
                 </div>
 
@@ -578,21 +320,9 @@ export default function Profile() {
                     >
                       Учебное заведение
                     </h3>
-                    {isEditing ? (
-                      <Input
-                        name="educationalInstitution"
-                        value={userData.educationalInstitution}
-                        onChange={handleInputChange}
-                        className={cn({
-                          "border-blue-700 bg-[#1e293b]": isDarkMode,
-                          "border-gray-300 bg-white": !isDarkMode,
-                        })}
-                      />
-                    ) : (
-                      <p className="mt-1 text-xl">
-                        {userData.educationalInstitution}
-                      </p>
-                    )}
+                    <p className="mt-1 text-xl">
+                      {userData.educationalInstitution}
+                    </p>
                   </div>
 
                   <div>
@@ -604,21 +334,9 @@ export default function Profile() {
                     >
                       Регион организации
                     </h3>
-                    {isEditing ? (
-                      <Input
-                        name="institutionAddress"
-                        value={userData.institutionAddress}
-                        onChange={handleInputChange}
-                        className={cn({
-                          "border-blue-700 bg-[#1e293b]": isDarkMode,
-                          "border-gray-300 bg-white": !isDarkMode,
-                        })}
-                      />
-                    ) : (
-                      <p className="mt-1 text-xl">
-                        {userData.institutionAddress}
-                      </p>
-                    )}
+                    <p className="mt-1 text-xl">
+                      {userData.institutionAddress}
+                    </p>
                   </div>
 
                   <div>
@@ -630,22 +348,7 @@ export default function Profile() {
                     >
                       Регион проживания
                     </h3>
-                    {isEditing ? (
-                      <Select
-                        name="residenceRegion"
-                        value={userData.residenceRegion}
-                        onChange={handleInputChange}
-                        className={cn("input-size w-full", {
-                          "border-blue-700 bg-[#1e293b]": isDarkMode,
-                          "border-gray-300 bg-white": !isDarkMode,
-                        })}
-                      >
-                        <option value="Москва">Москва</option>
-                        <option value="СПб">Санкт-Петербург</option>
-                      </Select>
-                    ) : (
-                      <p className="mt-1 text-xl">{userData.residenceRegion}</p>
-                    )}
+                    <p className="mt-1 text-xl">{userData.residenceRegion}</p>
                   </div>
 
                   <div>
@@ -657,21 +360,9 @@ export default function Profile() {
                     >
                       Населенный пункт
                     </h3>
-                    {isEditing ? (
-                      <Input
-                        name="residenceSettlement"
-                        value={userData.residenceSettlement}
-                        onChange={handleInputChange}
-                        className={cn({
-                          "border-blue-700 bg-[#1e293b]": isDarkMode,
-                          "border-gray-300 bg-white": !isDarkMode,
-                        })}
-                      />
-                    ) : (
-                      <p className="mt-1 text-xl">
-                        {userData.residenceSettlement}
-                      </p>
-                    )}
+                    <p className="mt-1 text-xl">
+                      {userData.residenceSettlement}
+                    </p>
                   </div>
 
                   <div>
@@ -683,162 +374,82 @@ export default function Profile() {
                     >
                       СНИЛС
                     </h3>
-                    {isEditing ? (
-                      <Input
-                        name="snils"
-                        value={userData.snils}
-                        onChange={handleInputChange}
-                        className={cn({
-                          "border-blue-700 bg-[#1e293b]": isDarkMode,
-                          "border-gray-300 bg-white": !isDarkMode,
-                        })}
-                      />
-                    ) : (
-                      <p className="mt-1 text-xl">{userData.snils}</p>
-                    )}
+                    <p className="mt-1 text-xl">{userData.snils}</p>
                   </div>
                 </div>
               </div>
 
-              {/* Блок выбора олимпиад */}
-              {/* Блок выбора олимпиад */}
-              <div className="mt-8">
-                <h3
-                  className={cn("mb-4 text-xl font-bold", {
-                    "text-blue-300": isDarkMode,
-                    "text-blue-600": !isDarkMode,
-                  })}
-                >
-                  Выберите профиль олимпиады
-                </h3>
+              {/* Блок выбранных олимпиад */}
+              {userData.selectedOlympiads &&
+                userData.selectedOlympiads.length > 0 && (
+                  <div className="mt-8">
+                    <h3
+                      className={cn("mb-4 text-xl font-bold", {
+                        "text-blue-300": isDarkMode,
+                        "text-blue-600": !isDarkMode,
+                      })}
+                    >
+                      Выбранные профили олимпиад
+                    </h3>
 
-                {olympiadsLoading ? (
-                  <p className="text-center text-gray-500">
-                    Загрузка олимпиад...
-                  </p>
-                ) : olympiads.length === 0 ? (
-                  <p className="text-center text-gray-500">
-                    Нет доступных олимпиад
-                  </p>
-                ) : (
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    {olympiads.map((olympiad, index) => {
-                      const isSelected = selectedOlympiadNames.has(
-                        olympiad.name,
-                      );
-                      return (
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      {userData.selectedOlympiads.map((olympiad, index) => (
                         <div
                           key={index}
-                          className={cn(
-                            "group cursor-pointer rounded-lg border-2 p-4 transition-all hover:shadow-md",
-                            {
-                              "border-blue-500 bg-blue-500/10": isSelected,
-                              "border-gray-300 hover:border-blue-300":
-                                !isSelected && !isDarkMode,
-                              "border-gray-700 hover:border-blue-500":
-                                !isSelected && isDarkMode,
-                            },
-                          )}
-                          onClick={() => handleOlympiadChange(olympiad.name)}
+                          className={cn("rounded-lg border-2 p-4", {
+                            "border-blue-500 bg-blue-500/10": isDarkMode,
+                            "border-blue-400 bg-blue-50": !isDarkMode,
+                          })}
                         >
                           <div className="flex items-start">
                             <div
                               className={cn(
-                                "mt-1 mr-3 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all",
+                                "mt-1 mr-3 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2",
                                 {
                                   "border-blue-500 bg-blue-500 text-white":
-                                    isSelected,
-                                  "border-gray-400 group-hover:border-blue-400":
-                                    !isSelected && !isDarkMode,
-                                  "border-gray-500 group-hover:border-blue-500":
-                                    !isSelected && isDarkMode,
+                                    isDarkMode,
+                                  "border-blue-400 bg-blue-400 text-white":
+                                    !isDarkMode,
                                 },
                               )}
                             >
-                              {isSelected && (
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 20 20"
-                                  fill="currentColor"
-                                  className="h-3 w-3"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
-                              )}
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                className="h-3 w-3"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
                             </div>
                             <div className="flex-1">
                               <h3 className="text-lg font-semibold">
                                 {olympiad.name}
                               </h3>
-                              <p
-                                className={cn("mt-2 text-sm", {
-                                  "text-gray-600": !isDarkMode,
-                                  "text-gray-300": isDarkMode,
-                                })}
-                              >
-                                {olympiad.description}
-                              </p>
-                              {isSelected && (
-                                <div className="mt-2 text-sm font-medium text-blue-500">
-                                  Выбрано
-                                </div>
+                              {olympiad.description && (
+                                <p
+                                  className={cn("mt-2 text-sm", {
+                                    "text-gray-600": !isDarkMode,
+                                    "text-gray-300": isDarkMode,
+                                  })}
+                                >
+                                  {olympiad.description}
+                                </p>
                               )}
+                              <div className="mt-2 text-sm font-medium text-blue-500">
+                                Выбрано
+                              </div>
                             </div>
                           </div>
                         </div>
-                      );
-                    })}
+                      ))}
+                    </div>
                   </div>
                 )}
-
-                {/* Кнопка подтверждения */}
-                {selectedOlympiadNames.size > 0 && (
-                  <div className="mt-6 flex justify-end">
-                    <Button
-                      onClick={submitSelectedOlympiads}
-                      disabled={isSubmittingOlympiads}
-                      className={cn("px-6 py-2", {
-                        "bg-green-600 hover:bg-green-500": isDarkMode,
-                        "bg-green-500 hover:bg-green-400": !isDarkMode,
-                      })}
-                    >
-                      {isSubmittingOlympiads
-                        ? "Отправка..."
-                        : "Подтвердить выбор"}
-                    </Button>
-                  </div>
-                )}
-              </div>
-
-              {isEditing && (
-                <div className="mt-8 flex justify-end space-x-4">
-                  <Button
-                    onClick={() => setIsEditing(false)}
-                    className={cn("px-6 py-2", {
-                      "bg-gray-600 hover:bg-gray-500": isDarkMode,
-                      "bg-gray-200 text-gray-800 hover:bg-gray-300":
-                        !isDarkMode,
-                    })}
-                    disabled={isLoading}
-                  >
-                    Отмена
-                  </Button>
-                  <Button
-                    onClick={handleSave}
-                    className={cn("px-6 py-2", {
-                      "bg-blue-600 hover:bg-blue-500": isDarkMode,
-                      "bg-blue-500 hover:bg-blue-400": !isDarkMode,
-                    })}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Сохранение..." : "Сохранить изменения"}
-                  </Button>
-                </div>
-              )}
             </div>
           </div>
         </div>
