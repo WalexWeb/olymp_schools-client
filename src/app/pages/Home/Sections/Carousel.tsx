@@ -22,8 +22,10 @@ function InfiniteCarousel() {
         const response = await axios.get(`${API_URL}/carousel/images`);
 
         if (response.data && Array.isArray(response.data)) {
-          // Дублируем изображения для бесшовной прокрутки
-          setImages([...response.data, ...response.data]);
+          // Берем оригинальный массив и дублируем его
+          const originalImages = response.data;
+          // Дублируем массив для бесшовной прокрутки
+          setImages([...originalImages, ...originalImages]);
         } else {
           throw new Error("Некорректный формат данных");
         }
@@ -68,6 +70,14 @@ function InfiniteCarousel() {
     }
   }, [images]);
 
+  // Функция для получения правильного индекса (с конца)
+  const getReversedIndex = (index: number, totalImages: number) => {
+    const originalCount = totalImages / 2;
+    const positionInArray = index % originalCount;
+    // Вычисляем индекс с конца: последний элемент становится первым
+    return originalCount - 1 - positionInArray;
+  };
+
   return (
     <section
       className={cn("p-8 text-center", {
@@ -111,27 +121,32 @@ function InfiniteCarousel() {
               </p>
             </div>
           ) : images.length > 0 ? (
-            images.map((imageUrl, index) => (
-              <div
-                key={index}
-                className={cn("relative shrink-0 rounded-lg shadow-lg", {
-                  "bg-gray-800": isDarkMode,
-                  "bg-gray-100": !isDarkMode,
-                })}
-              >
-                <img
-                  src={`${STATIC_URL}${imageUrl}`}
-                  alt={`Галерея ${(index % (images.length / 2)) + 1}`}
-                  crossOrigin="anonymous"
-                  className="h-60 w-auto rounded-lg object-cover"
-                  loading="lazy"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = "none";
-                  }}
-                />
-              </div>
-            ))
+            images.map((_imageUrl, index) => {
+              const reversedIndex = getReversedIndex(index, images.length);
+              const originalImageUrl = images[reversedIndex];
+
+              return (
+                <div
+                  key={index}
+                  className={cn("relative shrink-0 rounded-lg shadow-lg", {
+                    "bg-gray-800": isDarkMode,
+                    "bg-gray-100": !isDarkMode,
+                  })}
+                >
+                  <img
+                    src={`${STATIC_URL}${originalImageUrl}`}
+                    alt={`Галерея ${reversedIndex + 1}`}
+                    crossOrigin="anonymous"
+                    className="h-60 w-auto rounded-lg object-cover"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = "none";
+                    }}
+                  />
+                </div>
+              );
+            })
           ) : (
             <div className="flex h-60 w-full items-center justify-center">
               <p
