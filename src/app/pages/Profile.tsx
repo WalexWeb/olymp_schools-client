@@ -144,7 +144,7 @@ export default function Profile() {
             </svg>
             <span className="text-center text-sm font-medium sm:text-base">
               В случае если вы допустили ошибку в учетных данных, просьба
-              направить письмо на электронную почту{" "}
+              направить письмо с описанием проблемы на электронную почту{" "}
               <a
                 href="mailto:olimpiada.mosu@mail.ru"
                 className={cn("font-medium", {
@@ -153,8 +153,8 @@ export default function Profile() {
                 })}
               >
                 olimpiada.mosu@mail.ru
-              </a>{" "}
-              указав в теме письма: «Личный кабинет»
+              </a>,{" "}
+               указав в теме письма: «Личный кабинет»
             </span>
           </div>
         </div>
