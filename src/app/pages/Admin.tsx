@@ -46,6 +46,11 @@ const Admin = () => {
     description: "",
   });
 
+  // Состояния для пролистывания новостей
+  const [currentNewsPage, setCurrentNewsPage] = useState(0);
+  const [newsPerPage] = useState(5); // Количество новостей на странице
+  const [newsContainerHeight] = useState("350px"); // Высота контейнера новостей
+
   const navigate = useNavigate();
 
   // Проверка роли администратора
@@ -178,6 +183,7 @@ const Admin = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["news"] });
       setNewsFormData({ title: "", description: "", newsDate: "" });
+      setCurrentNewsPage(0); // Сбрасываем на первую страницу при добавлении новой новости
     },
   });
 
@@ -191,6 +197,14 @@ const Admin = () => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["news"] });
+      // Если после удаления текущая страница стала пустой, переходим на предыдущую
+      if (
+        news &&
+        currentNewsPage > 0 &&
+        (news.length - 1) % newsPerPage === 0
+      ) {
+        setCurrentNewsPage(currentNewsPage - 1);
+      }
     },
   });
 
@@ -318,6 +332,27 @@ const Admin = () => {
       });
     };
   }, [localImages]);
+
+  // Функции для пагинации новостей
+  const totalNewsPages = news ? Math.ceil(news.length / newsPerPage) : 0;
+  const currentNews = news
+    ? news.slice(
+        currentNewsPage * newsPerPage,
+        (currentNewsPage + 1) * newsPerPage,
+      )
+    : [];
+
+  const handleNextNewsPage = () => {
+    if (currentNewsPage < totalNewsPages - 1) {
+      setCurrentNewsPage(currentNewsPage + 1);
+    }
+  };
+
+  const handlePrevNewsPage = () => {
+    if (currentNewsPage > 0) {
+      setCurrentNewsPage(currentNewsPage - 1);
+    }
+  };
 
   if (isNewsLoading) return <div>Загрузка...</div>;
   if (newsError)
@@ -468,34 +503,71 @@ const Admin = () => {
                   <p className="text-center">Новостей нет</p>
                 ) : (
                   <div className="space-y-4">
-                    {news?.map((item) => (
-                      <div
-                        key={item.id}
-                        className={cn("rounded-lg border p-4", {
-                          "border-gray-700": isDarkMode,
-                          "border-gray-200": !isDarkMode,
-                        })}
-                      >
-                        <h5 className="mb-2 text-lg font-bold">{item.title}</h5>
-                        <p className="mb-2 text-sm text-gray-500">
-                          Дата:{" "}
-                          {new Date(item.newsDate).toLocaleDateString("ru-RU")}
-                        </p>
-                        <p className="mb-3">{item.description}</p>
-                        <div>
-                          <Button
-                            size="sm"
-                            onClick={() => deleteNewsMutation.mutate(item.id)}
-                            disabled={deleteNewsMutation.isPending}
-                            className="bg-red-500 hover:bg-red-600"
+                    {/* Контейнер новостей с фиксированной высотой */}
+                    <div
+                      className="overflow-y-auto"
+                      style={{ height: newsContainerHeight }}
+                    >
+                      <div className="space-y-4 pr-2">
+                        {currentNews.map((item) => (
+                          <div
+                            key={item.id}
+                            className={cn("rounded-lg border p-4", {
+                              "border-gray-700": isDarkMode,
+                              "border-gray-200": !isDarkMode,
+                            })}
                           >
-                            {deleteNewsMutation.isPending
-                              ? "Удаление..."
-                              : "Удалить"}
-                          </Button>
-                        </div>
+                            <h5 className="mb-2 text-lg font-bold">
+                              {item.title}
+                            </h5>
+                            <p className="mb-2 text-sm text-gray-500">
+                              Дата:{" "}
+                              {new Date(item.newsDate).toLocaleDateString(
+                                "ru-RU",
+                              )}
+                            </p>
+                            <p className="mb-3">{item.description}</p>
+                            <div>
+                              <Button
+                                size="sm"
+                                onClick={() =>
+                                  deleteNewsMutation.mutate(item.id)
+                                }
+                                disabled={deleteNewsMutation.isPending}
+                                className="bg-red-500 hover:bg-red-600"
+                              >
+                                {deleteNewsMutation.isPending
+                                  ? "Удаление..."
+                                  : "Удалить"}
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
+
+                    {/* Пагинация */}
+                    {totalNewsPages > 1 && (
+                      <div className="flex items-center justify-between pt-4">
+                        <Button
+                          onClick={handlePrevNewsPage}
+                          disabled={currentNewsPage === 0}
+                        >
+                          Назад
+                        </Button>
+
+                        <span className="text-sm">
+                          Страница {currentNewsPage + 1} из {totalNewsPages}
+                        </span>
+
+                        <Button
+                          onClick={handleNextNewsPage}
+                          disabled={currentNewsPage === totalNewsPages - 1}
+                        >
+                          Вперед
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
