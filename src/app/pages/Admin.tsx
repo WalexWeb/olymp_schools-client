@@ -232,7 +232,7 @@ const Admin = () => {
   // Функция для выгрузки пользователей в Excel
   const exportUsersToExcel = async () => {
     try {
-      const response = await axios.get(`${API_URL}/admin/export-users`, {
+      const response = await axios.get(`${API_URL}/admin/export-users-simple`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
