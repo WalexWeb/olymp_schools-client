@@ -14,6 +14,7 @@ import Partners from "./pages/Partners";
 import Archive from "./pages/Archive";
 import NotFound from "./pages/NotFound";
 import OlympiadProfile from "./pages/OlympiadProfile";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/consent" element={<Consent />} />
         <Route path="/partners" element={<Partners />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/archive" element={<Archive />} />
         <Route path="/olympiad" element={<OlympiadProfile />} />
         <Route path="/*" element={<NotFound />} />

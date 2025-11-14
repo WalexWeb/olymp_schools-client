@@ -65,7 +65,7 @@ function OlympiadProfile() {
             initial="hidden"
             animate="visible"
             className="space-y-8"
-          >
+          > 
             {/* Заголовок профиля */}
             <div className="text-center">
               <div className="mb-4 flex items-center justify-center gap-4">

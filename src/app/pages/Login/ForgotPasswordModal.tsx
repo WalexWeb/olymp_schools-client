@@ -6,6 +6,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import cn from "clsx";
 import { useRef, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface IForgotPasswordModalProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ export const ForgotPasswordModal = ({
   const [isLoading, setIsLoading] = useState(false);
   const [serverMessage, setServerMessage] = useState<string>("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<IPasswordResetForm> = async (data) => {
     setIsLoading(true);
@@ -34,13 +36,29 @@ export const ForgotPasswordModal = ({
     setIsSuccess(false);
 
     try {
-      await axios.post(`${API_URL}/auth/forgot-password`, {
+      const res = await axios.post(`${API_URL}/auth/forgot-password`, {
         email: data.email,
       });
 
+      // Ожидаем, что сервер вернёт token или resetLink для тестирования/локального перехода
+      const token =
+        res.data?.token ||
+        res.data?.resetToken ||
+        (res.data?.resetLink
+          ? new URL(res.data.resetLink).searchParams.get("token")
+          : null);
+
+      if (token) {
+        navigate(`/reset-password?token=${encodeURIComponent(token)}`);
+        onClose();
+        reset();
+        return;
+      }
+
+      // Если токена нет — показываем сообщение о том, что письмо отправлено
       setIsSuccess(true);
       setServerMessage(
-        "Ссылка для восстановления пароля отправлена на вашу почту",
+        "Ссылка для восстановления пароля отправлена на вашу почту. Проверьте почту.",
       );
 
       setTimeout(() => {
@@ -76,7 +94,6 @@ export const ForgotPasswordModal = ({
 
   return (
     <>
-      {/* Затемнение фона */}
       <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
