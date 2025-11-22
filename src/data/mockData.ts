@@ -16,8 +16,8 @@ interface IRankings {
   firstName: string;
   middleName: string;
   region: string;
-  grade: number | string;
-  score: number;
+  grade: number | string | null;
+  score: number | null;
   status:
     | "Победитель"
     | "Призер II степени"
@@ -28,7 +28,65 @@ interface IRankings {
 
 export const rankings2023: IRankings[] = [
   {
-    id: 231,
+    id: 6,
+    lastName: "Черноглазов",
+    firstName: "Илья",
+    middleName: "Александрович",
+    region: "Владимирская область",
+    grade: 10,
+    score: null,
+    status: "Победитель",
+    details: "/public/Chernoglazov.pdf",
+  },
+  {
+    id: 7,
+    lastName: "Журавкин",
+    firstName: "Даниил",
+    middleName: "Сергеевич",
+    region: "Донецкая Народная Республика",
+    grade: 11,
+    score: null,
+    status: "Призер II степени",
+    details: "/public/Zhuravkin.pdf",
+  },
+  {
+    id: 8,
+    lastName: "Александрова",
+    firstName: "Евгения",
+    middleName: "Юрьевна",
+    region: "Москва",
+    grade: 10,
+    score: null,
+    status: "Призер II степени",
+    details: "/public/Aleksandrova.pdf",
+  },
+  {
+    id: 9,
+    lastName: "Щукин",
+    firstName: "Алексей",
+    middleName: "Александрович",
+    region: "Москва",
+    grade: null,
+    score: null,
+    status: "Призер III степени",
+    details: "/public/Shchukin.pdf",
+  },
+  {
+    id: 10,
+    lastName: "Пахневский",
+    firstName: "Гордей",
+    middleName: "Михайлович",
+    region: "Новосибирская область",
+    grade: null,
+    score: null,
+    status: "Призер III степени",
+    details: "/public/Pakhnevskiy.pdf",
+  },
+];
+
+export const rankings2024: IRankings[] = [
+  {
+    id: 1,
     lastName: "Мурзин",
     firstName: "Дмитрий",
     middleName: "Константинович",
@@ -40,7 +98,7 @@ export const rankings2023: IRankings[] = [
       "https://mvd.ru/upload/site116/folder_page/047/644/342/Murzin_D.K.pdf",
   },
   {
-    id: 1001,
+    id: 2,
     lastName: "Пахневский",
     firstName: "Гордей",
     middleName: "Михайлович",
@@ -52,7 +110,7 @@ export const rankings2023: IRankings[] = [
       "https://mvd.ru/upload/site116/folder_page/047/644/342/Pakhnevskiy_G.M.pdf",
   },
   {
-    id: 228,
+    id: 3,
     lastName: "Чечеткин",
     firstName: "Алексей",
     middleName: "Викторович",
@@ -64,7 +122,7 @@ export const rankings2023: IRankings[] = [
       "https://mvd.ru/upload/site116/folder_page/047/644/342/Chechetkin_A.V.pdf",
   },
   {
-    id: 90,
+    id: 4,
     lastName: "Зайцева",
     firstName: "Снежана",
     middleName: "Александровна",
@@ -76,7 +134,7 @@ export const rankings2023: IRankings[] = [
       "https://mvd.ru/upload/site116/folder_page/047/644/342/Zaytseva_S.A.pdf",
   },
   {
-    id: 519,
+    id: 5,
     lastName: "Черкасов",
     firstName: "Артём",
     middleName: "Александрович",

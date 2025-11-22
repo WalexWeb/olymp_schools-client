@@ -8,15 +8,16 @@ import { fadeUp } from "../components/animations/fadeUp";
 import { Button } from "../components/ui/Button";
 import { Link } from "react-router-dom";
 import Footer from "../components/layout/Footer/Footer";
-import zadachi from "/public/zadachi.pdf";
+import zadachiInfoSec from "/public/zadachiInfoSec.pdf";
+import zadachiSociety from "/public/zadachiSociety.pdf";
 import { rankings2023 } from "../../data/mockData";
+import { rankings2024 } from "../../data/mockData";
 
 type AcademicYear = "2023-2024" | "2024-2025";
 
 interface TaskItem {
   id: number;
   title: string;
-  description: string;
   fileUrl: string;
   fileSize: string;
 }
@@ -37,9 +38,14 @@ function Archive() {
         {
           id: 1,
           title: "Задания по информационной безопасности",
-          description: "Отборочный этап 2023-2024 учебного года",
-          fileUrl: zadachi,
+          fileUrl: zadachiInfoSec,
           fileSize: "2.4 MB",
+        },
+        {
+          id: 2,
+          title: "Задания по обществознанию",
+          fileUrl: zadachiSociety,
+          fileSize: "1.8 MB",
         },
       ],
       winners: rankings2023,
@@ -49,12 +55,17 @@ function Archive() {
         {
           id: 1,
           title: "Задания по информационной безопасности",
-          description: "Отборочный этап 2024-2025 учебного года",
-          fileUrl: zadachi,
+          fileUrl: zadachiInfoSec,
           fileSize: "2.7 MB",
         },
+        {
+          id: 2,
+          title: "Задания по обществознанию",
+          fileUrl: zadachiSociety,
+          fileSize: "2.1 MB",
+        },
       ],
-      winners: rankings2023,
+      winners: rankings2024,
     },
   };
 
@@ -137,7 +148,7 @@ function Archive() {
                 </div>
               </div>
 
-              {/* Задания отборочного этапа */}
+              {/* Примеры заданий отборочного этапа */}
               <div className="mb-12">
                 <h3
                   className={cn("mb-6 text-center text-2xl font-semibold", {
@@ -145,7 +156,7 @@ function Archive() {
                     "text-blue-600": !isDarkMode,
                   })}
                 >
-                  Задания отборочного этапа {selectedYear} учебного года
+                  Примеры заданий отборочного этапа
                 </h3>
 
                 <div className="grid gap-6">
@@ -176,14 +187,6 @@ function Archive() {
                             {task.title}
                           </h4>
                           <p
-                            className={cn("mb-3", {
-                              "text-gray-300": isDarkMode,
-                              "text-gray-600": !isDarkMode,
-                            })}
-                          >
-                            {task.description}
-                          </p>
-                          <p
                             className={cn("text-sm", {
                               "text-gray-400": isDarkMode,
                               "text-gray-500": !isDarkMode,
@@ -192,21 +195,23 @@ function Archive() {
                             Размер файла: {task.fileSize}
                           </p>
                         </div>
-                        <a
-                          href={task.fileUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ml-4"
-                        >
-                          <Button
-                            className={cn("whitespace-nowrap", {
-                              "bg-blue-600 hover:bg-blue-700": isDarkMode,
-                              "bg-blue-500 hover:bg-blue-600": !isDarkMode,
-                            })}
+                        <div className="ml-4 flex gap-2">
+                          {/* Кнопка для открытия */}
+                          <a
+                            href={task.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
                           >
-                            Просмотреть
-                          </Button>
-                        </a>
+                            <Button
+                              className={cn("whitespace-nowrap", {
+                                "bg-blue-600 hover:bg-blue-700": isDarkMode,
+                                "bg-blue-500 hover:bg-blue-600": !isDarkMode,
+                              })}
+                            >
+                              Просмотреть
+                            </Button>
+                          </a>
+                        </div>
                       </div>
                     </m.div>
                   ))}

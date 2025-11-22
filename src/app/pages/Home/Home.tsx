@@ -231,7 +231,7 @@ export default function Home() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      <span className="relative z-10 flex items-center justify-center gap-2">
+                      <span className="relative z-10 flex cursor-pointer items-center justify-center gap-2">
                         <svg
                           className="h-5 w-5"
                           fill="none"
