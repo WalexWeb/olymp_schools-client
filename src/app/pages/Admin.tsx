@@ -51,6 +51,9 @@ const Admin = () => {
   const [newsPerPage] = useState(5); // Количество новостей на странице
   const [newsContainerHeight] = useState("350px"); // Высота контейнера новостей
 
+  // Состояние для анимации загрузки выгрузки пользователей
+  const [isExportingUsers, setIsExportingUsers] = useState(false);
+
   const navigate = useNavigate();
 
   // Проверка роли администратора
@@ -231,6 +234,7 @@ const Admin = () => {
 
   // Функция для выгрузки пользователей в Excel
   const exportUsersToExcel = async () => {
+    setIsExportingUsers(true);
     try {
       const response = await axios.get(`${API_URL}/admin/export-users`, {
         headers: {
@@ -249,6 +253,8 @@ const Admin = () => {
     } catch (error) {
       console.error("Ошибка выгрузки:", error);
       alert("Не удалось выгрузить файл");
+    } finally {
+      setIsExportingUsers(false);
     }
   };
 
@@ -394,8 +400,19 @@ const Admin = () => {
         {/* Кнопка выгрузки пользователей */}
         <div className="mb-8 flex justify-center">
           <m.div variants={fadeUp} initial="hidden" animate="visible">
-            <Button onClick={exportUsersToExcel} className="px-6 py-3">
-              Выгрузить пользователей в таблицу Excel
+            <Button
+              onClick={exportUsersToExcel}
+              disabled={isExportingUsers}
+              className="relative min-w-[200px] px-6 py-3"
+            >
+              {isExportingUsers ? (
+                <div className="flex items-center justify-center">
+                  <div className="mr-2 h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
+                  Выгрузка...
+                </div>
+              ) : (
+                "Выгрузить пользователей в таблицу Excel"
+              )}
             </Button>
           </m.div>
         </div>
