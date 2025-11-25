@@ -8,6 +8,7 @@ import methodologySociety from "/public/methodologySociety.pdf";
 import chartSociety from "/public/chartSociety.pdf";
 import regulationsInfoSec from "/public/regulationsInfoSec.pdf";
 import chartInfoSec from "/public/chartInfoSec.pdf";
+import methodologyInfoSec from "/public/methodologyInfoSec.pdf";
 
 function Docs() {
   const { isDarkMode } = useThemeStore();
@@ -68,7 +69,7 @@ function Docs() {
             Регламент
           </m.div>
         </a>
-        <a href="#" target="_blank" rel="noopener noreferrer">
+        <a href={methodologyInfoSec} target="_blank" rel="noopener noreferrer">
           <m.div
             variants={fadeUp}
             initial="hidden"

@@ -40,6 +40,11 @@ const partners = [
     size: "h-38",
   },
   {
+    logo: "/migrats.png",
+    name: "Федеральная миграционная служба",
+    size: "h-38",
+  },
+  {
     logo: "/consplus_logo.png",
     name: "Консультант Плюс",
     size: "h-32",
