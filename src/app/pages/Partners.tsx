@@ -44,9 +44,14 @@ const partners = [
     name: "Миграционная служба МВД России",
     size: "h-36",
   },
-    {
-    logo: "/legalDepartment_logo.svg",
+  {
+    logo: "/dpd_logo.png",
     name: "Договорно-правовой департамент МВД России",
+    size: "h-38",
+  },
+  {
+    logo: "/interpol_logo.png",
+    name: "Национальное центральное бюро Интерпола МВД России",
     size: "h-36",
   },
   {
