@@ -82,6 +82,16 @@ const partners = [
     name: "Лаборатория Касперского",
     size: "h-72",
   },
+  {
+    logo: "/elcomsoft_logo.png",
+    name: "Элкомсофт",
+    size: "h-72",
+  },
+  {
+    logo: "/apeksvuz_logo.png",
+    name: "Апекс-ВУЗ",
+    size: "h-68",
+  },
 ];
 
 const containerVariants = {
