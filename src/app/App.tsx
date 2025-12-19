@@ -5,7 +5,7 @@ import Login from "./pages/Login/Login";
 // import Rankings from "./pages/Rankings";
 import Profile from "./pages/Profile";
 import Passing from "./pages/Passing";
-// import QualifyingResults from "./pages/QualifyingResults";
+import QualifyingResults from "./pages/QualifyingResults";
 import AboutOlympiad from "./pages/AboutOlympiad/AboutOlympiad";
 import Consent from "./pages/Consent";
 import Admin from "./pages/Admin";
@@ -25,7 +25,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         {/* <Route path="/ranking" element={<Rankings />} /> */}
-        {/* <Route path="/qualification" element={<QualifyingResults />} /> */}
+        <Route path="/qualification" element={<QualifyingResults />} />
         <Route path="/passing" element={<Passing />} />
         <Route path="/about" element={<AboutOlympiad />} />
         <Route path="/consent" element={<Consent />} />
