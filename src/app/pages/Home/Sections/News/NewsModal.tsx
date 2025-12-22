@@ -4,6 +4,16 @@ import { useThemeStore } from "../../../../stores/themeStore";
 import { useRef } from "react";
 import { INewsModalProps } from "../../../../types/INews.type";
 
+/**
+ * Парсит ссылки вида [[текст|url]] в HTML <a>
+ */
+const parseLinks = (text: string) => {
+  return text.replace(
+    /\[\[(.+?)\|(.+?)\]\]/g,
+    `<a href="$2" target="_blank" rel="noopener noreferrer" class="news-link">$1</a>`,
+  );
+};
+
 function NewsModal({ isOpen, onClose, text, desc, date }: INewsModalProps) {
   const { isDarkMode } = useThemeStore();
   const modalRef = useRef<HTMLDivElement>(null);
@@ -17,7 +27,7 @@ function NewsModal({ isOpen, onClose, text, desc, date }: INewsModalProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-40 h-full w-full bg-black/10 backdrop-blur-xs"
+        className="fixed inset-0 z-40 bg-black/10 backdrop-blur-xs"
       />
 
       {/* Контейнер модального окна */}
@@ -28,7 +38,7 @@ function NewsModal({ isOpen, onClose, text, desc, date }: INewsModalProps) {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           className={cn(
-            "h-xl relative w-full max-w-xl rounded-2xl border border-blue-800 bg-gradient-to-br p-8 shadow-md transition-all",
+            "relative w-full max-w-xl rounded-2xl border border-blue-800 bg-gradient-to-br p-8 shadow-md transition-all",
             {
               "from-[#142441] to-[#15213e] text-white": isDarkMode,
               "from-white to-blue-200 text-gray-800": !isDarkMode,
@@ -39,7 +49,7 @@ function NewsModal({ isOpen, onClose, text, desc, date }: INewsModalProps) {
           <button
             onClick={onClose}
             className={cn(
-              "absolute top-4 right-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors",
+              "absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full transition-colors",
               {
                 "hover:bg-blue-700/30": isDarkMode,
                 "hover:bg-blue-200": !isDarkMode,
@@ -66,6 +76,8 @@ function NewsModal({ isOpen, onClose, text, desc, date }: INewsModalProps) {
               />
             </svg>
           </button>
+
+          {/* Заголовок */}
           <h3
             className={cn("mb-6 text-center text-3xl font-semibold", {
               "text-white": isDarkMode,
@@ -74,15 +86,24 @@ function NewsModal({ isOpen, onClose, text, desc, date }: INewsModalProps) {
           >
             {text}
           </h3>
+
+          {/* Дата */}
           <p
-            className={cn("mb-2 text-start text-lg", {
+            className={cn("mb-4 text-lg", {
               "text-blue-400": isDarkMode,
               "text-blue-500": !isDarkMode,
             })}
           >
             {date}
           </p>
-          <p className="text-lg">{desc}</p>
+
+          {/* Текст новости со встроенными ссылками */}
+          <p
+            className="text-lg leading-relaxed whitespace-pre-line"
+            dangerouslySetInnerHTML={{
+              __html: parseLinks(desc),
+            }}
+          />
         </m.div>
       </div>
     </>

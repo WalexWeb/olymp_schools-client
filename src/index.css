@@ -7,3 +7,13 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+.news-link {
+  color: #2563eb;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.news-link:hover {
+  color: #1d4ed8;
+}
