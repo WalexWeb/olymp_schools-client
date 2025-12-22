@@ -1,0 +1,104 @@
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /partners
+Allow: /qualification
+Allow: /archive
+Allow: /olympiad
+Allow: /registration
+Allow: /login
+Allow: /passing
+Allow: /consent
+
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /profile
+Disallow: /profile/*
+Disallow: /reset-password
+Disallow: /reset-password/*
+
+User-agent: yandex
+Allow: /
+Allow: /about
+Allow: /partners
+Allow: /qualification
+Allow: /archive
+Allow: /olympiad
+Allow: /registration
+Allow: /login
+Allow: /passing
+Allow: /consent
+Disallow: /admin
+Disallow: /admin/
+Disallow: /profile
+Disallow: /profile/
+Disallow: /reset-password
+Disallow: /reset-password/
+Crawl-delay: 1
+
+User-agent: Googlebot
+Allow: /
+Allow: /about
+Allow: /partners
+Allow: /qualification
+Allow: /archive
+Allow: /olympiad
+Allow: /registration
+Allow: /login
+Allow: /passing
+Allow: /consent
+Disallow: /admin
+Disallow: /admin/
+Disallow: /profile
+Disallow: /profile/
+Disallow: /reset-password
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-Agent: DISCo Pump
+Disallow: /
+
+User-Agent: Wget
+Disallow: /
+
+User-Agent: WebZIP
+Disallow: /
+
+User-Agent: Teleport Pro
+Disallow: /
+
+User-Agent: WebSnake
+Disallow: /
+
+User-Agent: Offline Explorer
+Disallow: /
+
+User-Agent: Web-By-Mail
+Disallow: /
+
+User-agent: psbot
+Disallow: /
+
+User-agent: gigabot
+Disallow: /
+
+User-agent: Twiceler
+Disallow: /
+
+User-agent: NetinfoBot
+Disallow: /
+
+User-agent: ia_archiver
+Disallow: /
+
+Sitemap: https://олимпиада-мосу.рф/sitemap.xml
