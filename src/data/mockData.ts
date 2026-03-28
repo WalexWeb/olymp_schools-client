@@ -16,7 +16,7 @@ interface IRankings {
   firstName: string;
   middleName: string;
   region: string;
-  grade: number | string | null;
+  grade?: number | string | null;
   score: number | null;
   status:
     | "Победитель"
@@ -24,6 +24,7 @@ interface IRankings {
     | "Призер III степени"
     | "Участник";
   details: string;
+  discipline?: "society" | "infoSec";
 }
 
 export const rankings2023: IRankings[] = [
@@ -145,6 +146,88 @@ export const rankings2024: IRankings[] = [
     details:
       "https://mvd.ru/upload/site116/folder_page/047/644/342/Cherkasov_A.A.pdf",
   },
+];
+
+export const rankings2026: IRankings[] = [
+  {
+    id: 1,
+    lastName: "Андреянов",
+    firstName: "Никита",
+    middleName: "Сергеевич",
+    region: "Новосибирская область",
+    score: 463,
+    status: "Победитель",
+    details: "/public/Andreyanov_N.S.pdf", // уже локальный
+    discipline: "infoSec",
+  },
+  {
+    id: 2,
+    lastName: "Невская",
+    firstName: "София",
+    middleName: "Станиславовна",
+    region: "Орловская область",
+    score: 416,
+    status: "Призер II степени",
+    details: "/public/Nevskaya_S.S.pdf", // исправлено
+    discipline: "infoSec",
+  },
+  {
+    id: 3,
+    lastName: "Железнаяков",
+    firstName: "Артём",
+    middleName: "Евгеньевич",
+    region: "Санкт-Петербург",
+    score: 409,
+    status: "Призер II степени",
+    details: "/public/Zheleznyakov_A.E.pdf", // исправлено
+    discipline: "infoSec",
+  },
+  {
+    id: 4,
+    lastName: "Баширов",
+    firstName: "Эрик",
+    middleName: "Рустамович",
+    region: "Санкт-Петербург",
+    score: 408,
+    status: "Призер III степени",
+    details: "/public/Bashirov_E.R.pdf", // исправлено
+    discipline: "infoSec",
+  },
+  {
+    id: 5,
+    lastName: "Волынцев",
+    firstName: "Антон",
+    middleName: "Александрович",
+    region: "Москва",
+    score: 407,
+    status: "Призер III степени",
+    details: "/public/Volyntsev_A.A.pdf", // исправлено
+    discipline: "infoSec",
+  },
+  // {
+  //   id: 6,
+  //   lastName: "Пахневский",
+  //   firstName: "Гордей",
+  //   middleName: "Михайлович",
+  //   region: "Новосибирская область",
+  //   score: 423,
+  //   status: "Призер II степени",
+  //   details:
+  //     "https://mvd.ru/upload/site116/folder_page/047/644/342/Pakhnevskiy_G.M.pdf",
+  //   discipline: "society",
+  // },
+  // {
+  //   id: 7,
+  //   lastName: "Зайцева",
+  //   firstName: "Снежана",
+  //   middleName: "Александровна",
+  //   region: "Кемеровская область",
+  //   score: 414,
+  //   status: "Призер III степени",
+  //   details:
+  //     "https://mvd.ru/upload/site116/folder_page/047/644/342/Zaytseva_S.A.pdf",
+  //   discipline: "society",
+  // },
 ];
 
 // Список регионов России

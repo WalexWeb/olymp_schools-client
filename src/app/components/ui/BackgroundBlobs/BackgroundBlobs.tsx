@@ -1,15 +1,15 @@
 import { m } from "framer-motion";
 import { Blob } from "./Blob";
-import Snowfall from "react-snowfall";
+// import Snowfall from "react-snowfall";
 
 export const BackgroundBlobs = () => {
   return (
     <m.div
-      initial={{ opacity: 0 }}
+      initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }}
       className="pointer-events-none fixed inset-0 overflow-hidden"
     >
-      <Snowfall />
+      {/* <Snowfall /> */}
       <Blob
         type="rotating"
         className="absolute -top-60 left-1/4 h-[500px] w-[500px] rounded-full bg-gradient-to-r from-blue-900/10 to-purple-900/10 blur-[100px]"
