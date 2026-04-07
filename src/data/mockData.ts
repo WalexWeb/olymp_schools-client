@@ -173,7 +173,7 @@ export const rankings2026: IRankings[] = [
   },
   {
     id: 3,
-    lastName: "Железнаяков",
+    lastName: "Железняков",
     firstName: "Артём",
     middleName: "Евгеньевич",
     region: "Санкт-Петербург",
