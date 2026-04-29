@@ -69,6 +69,19 @@ function Rankings() {
             >
               Информация представлена отдельно по каждому профилю
             </div>
+
+            <div className="mt-6 flex justify-center">
+              <Link to="/archive">
+                <Button
+                  className={cn("px-6 py-2.5 text-base", {
+                    "bg-blue-700 hover:bg-blue-800": isDarkMode,
+                    "bg-blue-600 hover:bg-blue-700": !isDarkMode,
+                  })}
+                >
+                  Смотреть сборник олимпиадных заданий прошлых лет
+                </Button>
+              </Link>
+            </div>
           </m.div>
 
           {/* Профили — теперь вертикальный список */}
@@ -148,10 +161,6 @@ function Rankings() {
                             <p className="text-md opacity-80">
                               {winner.region}
                             </p>
-
-                            {/* <p className="my-2 font-bold">
-                              {winner.score} баллов
-                            </p> */}
 
                             {winner.details ? (
                               <a

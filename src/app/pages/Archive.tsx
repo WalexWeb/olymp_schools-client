@@ -12,6 +12,7 @@ import zadachiInfoSec from "/public/zadachiInfoSec.pdf";
 import zadachiSociety from "/public/zadachiSociety.pdf";
 import { rankings2023 } from "../../data/mockData";
 import { rankings2024 } from "../../data/mockData";
+import sbornikInfoSec from "/public/sbornikInfoSec.pdf";
 
 type AcademicYear = "2023-2024" | "2024-2025";
 
@@ -105,6 +106,54 @@ function Archive() {
               Архив заданий
             </h2>
 
+            {/* Блок "Сборник олимпиадных заданий" */}
+            <m.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <div
+                className={cn(
+                  "rounded-xl border-2 p-6 transition-all hover:shadow-lg",
+                  {
+                    "border-blue-600 bg-blue-900/10 hover:bg-blue-900/30":
+                      isDarkMode,
+                    "border-blue-400 bg-blue-50 hover:bg-blue-100": !isDarkMode,
+                  },
+                )}
+              >
+                <div className="flex justify-center">
+                  <div className="flex-1">
+                    <h3
+                      className={cn("mt-1 text-xl font-bold", {
+                        "text-blue-300": isDarkMode,
+                        "text-blue-700": !isDarkMode,
+                      })}
+                    >
+                      Сборник олимпиадных заданий по профилю «Информационная
+                      безопасность»
+                    </h3>
+                  </div>
+                  <a
+                    href={sbornikInfoSec}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0"
+                  >
+                    <Button
+                      className={cn("whitespace-nowrap", {
+                        "bg-blue-600 hover:bg-blue-700": isDarkMode,
+                        "bg-blue-500 hover:bg-blue-600": !isDarkMode,
+                      })}
+                    >
+                      Просмотреть
+                    </Button>
+                  </a>
+                </div>
+              </div>
+            </m.div>
+
+            {/* Основная карточка с выбором года, заданиями и победителями */}
             <div
               className={cn("rounded-2xl p-8 text-lg", {
                 "bg-[#0b0f1a] outline-2 outline-blue-900": isDarkMode,
@@ -196,7 +245,6 @@ function Archive() {
                           </p>
                         </div>
                         <div className="ml-4 flex gap-2">
-                          {/* Кнопка для открытия */}
                           <a
                             href={task.fileUrl}
                             target="_blank"
@@ -229,7 +277,6 @@ function Archive() {
                   Победители и призеры {selectedYear} учебного года
                 </h3>
 
-                {/* Блок с работами победителей */}
                 {winners.length > 0 && (
                   <m.div
                     initial={{ opacity: 0, y: 20 }}
