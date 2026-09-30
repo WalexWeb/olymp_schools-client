@@ -11,7 +11,7 @@ import { useState } from "react";
 import { ForgotPasswordModal } from "./ForgotPasswordModal";
 import { toast, ToastContainer } from "react-toastify";
 import { getCustomToastStyle } from "../../components/ui/toastStyles";
-import axios from "axios";
+import { api } from "../../services/api";
 import { useAuthStore } from "../../stores/authStore";
 import { useNavigate } from "react-router-dom";
 
@@ -21,9 +21,8 @@ interface ILoginForm {
 }
 
 function Login() {
-  const API_URL = import.meta.env.VITE_API_URL;
   const { isDarkMode } = useThemeStore();
-  const { setToken, setUserData } = useAuthStore();
+  const { setTokens, setUserData } = useAuthStore();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,28 +36,32 @@ function Login() {
   const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
     setIsLoading(true);
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, {
+      const response = await api.post("/auth/login", {
         email: data.email,
         password: data.password,
       });
 
-      setToken(response.data.token);
-      setUserData(response.data);
+      const { accessToken, refreshToken } = response.data;
+      setTokens({ accessToken, refreshToken });
+
+      // role is not returned by /login; fetch it from /users/me
+      const me = await api.get("/users/me");
+      const role: string = me.data.role || "STUDENT";
+      setUserData({ role });
 
       toast.success("Вход выполнен успешно!", getCustomToastStyle(isDarkMode));
 
-      if (response.data.role === "ADMIN") {
+      if (role === "ADMIN" || role === "PDN_ADMIN") {
         navigate("/admin");
       } else {
         navigate("/profile");
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message || "Ошибка входа";
-        toast.error(errorMessage, getCustomToastStyle(isDarkMode));
-      } else {
-        toast.error("Неизвестная ошибка", getCustomToastStyle(isDarkMode));
-      }
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Ошибка входа";
+      toast.error(errorMessage, getCustomToastStyle(isDarkMode));
       console.error(error);
     } finally {
       setIsLoading(false);

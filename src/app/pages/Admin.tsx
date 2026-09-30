@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "../services/api";
 import Navbar from "../components/layout/Navbar/Navbar";
 import { BackgroundBlobs } from "../components/ui/BackgroundBlobs/BackgroundBlobs";
 import { useThemeStore } from "../stores/themeStore";
@@ -21,9 +21,8 @@ interface LocalImage {
 }
 
 const Admin = () => {
-  const API_URL = import.meta.env.VITE_API_URL;
-  const STATIC_URL = import.meta.env.VITE_STATIC_URL;
-  const { token, userData, setUserData } = useAuthStore();
+  const STATIC_URL = import.meta.env.VITE_STATIC_URL || "";
+  const { accessToken, userData, setUserData } = useAuthStore();
   const { isDarkMode } = useThemeStore();
   const queryClient = useQueryClient();
 
@@ -47,9 +46,6 @@ const Admin = () => {
   });
 
   // Состояния для пролистывания новостей
-  const [currentNewsPage, setCurrentNewsPage] = useState(0);
-  const [newsPerPage] = useState(5); // Количество новостей на странице
-  const [newsContainerHeight] = useState("350px"); // Высота контейнера новостей
 
   // Состояние для анимации загрузки выгрузки пользователей
   const [isExportingUsers, setIsExportingUsers] = useState(false);
@@ -60,13 +56,13 @@ const Admin = () => {
   useEffect(() => {
     const checkAdminRole = async () => {
       // Если нет токена — редирект на логин
-      if (!token) {
+      if (!accessToken) {
         navigate("/login");
         return;
       }
 
       // Если данные пользователя уже есть и роль не ADMIN — редирект
-      if (userData && userData.role !== "ADMIN") {
+      if (userData && userData.role !== "ADMIN" && userData.role !== "PDN_ADMIN") {
         navigate("/");
         return;
       }
@@ -74,11 +70,7 @@ const Admin = () => {
       // Если данных нет — загружаем профиль
       if (!userData) {
         try {
-          const response = await axios.get(`${API_URL}/profile`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          const response = await api.get("/users/me");
 
           const profileData = {
             role: response.data.role,
@@ -87,7 +79,7 @@ const Admin = () => {
           setUserData(profileData);
 
           // Проверяем роль после загрузки
-          if (profileData.role !== "ADMIN") {
+          if (profileData.role !== "ADMIN" && profileData.role !== "PDN_ADMIN") {
             navigate("/");
           }
         } catch (error) {
@@ -98,7 +90,7 @@ const Admin = () => {
     };
 
     checkAdminRole();
-  }, [token, userData, navigate, API_URL, setUserData]);
+  }, [accessToken, userData, navigate, setUserData]);
 
   // Получение списка олимпиад
   const {
@@ -108,11 +100,7 @@ const Admin = () => {
   } = useQuery<IOlympiad[]>({
     queryKey: ["olympiads"],
     queryFn: async () => {
-      const response = await axios.get(`${API_URL}/olympiads`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.get("/olympiads");
       return response.data;
     },
   });
@@ -120,11 +108,7 @@ const Admin = () => {
   // Создание олимпиады
   const createOlympiadMutation = useMutation({
     mutationFn: (newOlympiad: Omit<IOlympiad, "id">) =>
-      axios.post(`${API_URL}/admin/olympiads`, newOlympiad, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
+      api.post("/admin/olympiads", newOlympiad),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["olympiads"] });
       setOlympiadFormData({ name: "", date: "", description: "" });
@@ -134,11 +118,7 @@ const Admin = () => {
   // Удаление олимпиады
   const deleteOlympiadMutation = useMutation({
     mutationFn: (name: string) =>
-      axios.delete(`${API_URL}/admin/olympiads/${name}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
+      api.delete(`/admin/olympiads/${encodeURIComponent(name)}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["olympiads"] });
     },
@@ -152,11 +132,7 @@ const Admin = () => {
   } = useQuery<INewsItem[]>({
     queryKey: ["news"],
     queryFn: async () => {
-      const response = await axios.get(`${API_URL}/news`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.get("/news");
       return response.data;
     },
   });
@@ -170,7 +146,7 @@ const Admin = () => {
   } = useQuery<string[]>({
     queryKey: ["images"],
     queryFn: async () => {
-      const response = await axios.get(`${API_URL}/carousel/images`);
+      const response = await api.get("/carousel/images");
       return response.data;
     },
   });
@@ -178,36 +154,21 @@ const Admin = () => {
   // Создание новости
   const createNewsMutation = useMutation({
     mutationFn: (newNews: Omit<INewsItem, "id">) =>
-      axios.post(`${API_URL}/admin/news`, newNews, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["news"] });
+      api.post("/admin/news", newNews),
+    onSuccess: async () => {
+      // refetch (не invalidate) — гарантирует перезапрос списка сразу,
+      // чтобы новая новость появилась без ручного обновления.
+      await queryClient.refetchQueries({ queryKey: ["news"] });
       setNewsFormData({ title: "", description: "", newsDate: "" });
-      setCurrentNewsPage(0); // Сбрасываем на первую страницу при добавлении новой новости
     },
   });
 
   // Удаление новости
   const deleteNewsMutation = useMutation({
-    mutationFn: (id: number) =>
-      axios.delete(`${API_URL}/admin/news/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
+    mutationFn: (id: string) => api.delete(`/admin/news/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["news"] });
       // Если после удаления текущая страница стала пустой, переходим на предыдущую
-      if (
-        news &&
-        currentNewsPage > 0 &&
-        (news.length - 1) % newsPerPage === 0
-      ) {
-        setCurrentNewsPage(currentNewsPage - 1);
-      }
     },
   });
 
@@ -221,11 +182,7 @@ const Admin = () => {
         throw new Error("Неверный формат URL изображения");
       }
 
-      await axios.delete(`${API_URL}/admin/carousel/${uploadPath}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.delete(`/admin/carousel/${uploadPath}`);
     },
     onSuccess: () => {
       refetchImages();
@@ -236,10 +193,7 @@ const Admin = () => {
   const exportUsersToExcel = async () => {
     setIsExportingUsers(true);
     try {
-      const response = await axios.get(`${API_URL}/admin/export-users`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await api.get("/admin/export-users", {
         responseType: "blob",
       });
 
@@ -303,18 +257,17 @@ const Admin = () => {
     setUploadError(null);
 
     try {
-      const formData = new FormData();
-      localImages.forEach((image) => {
-        formData.append("files", image.file);
-      });
-
-      await axios.post(`${API_URL}/admin/carousel/upload`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // One HTTP request per file: backend stores one Media + one
+      // CarouselImage per upload. Send `file` (singular), never `files`.
+      for (const image of localImages) {
+        const formData = new FormData();
+        formData.append("file", image.file);
+        await api.post("/admin/carousel/upload", formData);
+      }
 
       await refetchImages();
+
+      localImages.forEach((img) => URL.revokeObjectURL(img.previewUrl));
       setLocalImages([]);
     } catch (error) {
       console.error("Ошибка загрузки изображений:", error);
@@ -340,25 +293,12 @@ const Admin = () => {
   }, [localImages]);
 
   // Функции для пагинации новостей
-  const totalNewsPages = news ? Math.ceil(news.length / newsPerPage) : 0;
-  const currentNews = news
-    ? news.slice(
-        currentNewsPage * newsPerPage,
-        (currentNewsPage + 1) * newsPerPage,
+  const sortedNews = news
+    ? [...news].sort(
+        (a, b) =>
+          new Date(b.newsDate).getTime() - new Date(a.newsDate).getTime(),
       )
     : [];
-
-  const handleNextNewsPage = () => {
-    if (currentNewsPage < totalNewsPages - 1) {
-      setCurrentNewsPage(currentNewsPage + 1);
-    }
-  };
-
-  const handlePrevNewsPage = () => {
-    if (currentNewsPage > 0) {
-      setCurrentNewsPage(currentNewsPage - 1);
-    }
-  };
 
   if (isNewsLoading) return <div>Загрузка...</div>;
   if (newsError)
@@ -520,13 +460,19 @@ const Admin = () => {
                   <p className="text-center">Новостей нет</p>
                 ) : (
                   <div className="space-y-4">
-                    {/* Контейнер новостей с фиксированной высотой */}
-                    <div
-                      className="overflow-y-auto"
-                      style={{ height: newsContainerHeight }}
+                  <div
+                      tabIndex={0}
+                      style={{
+                        height: 480,
+                        overflowY: "scroll",
+                        overflowX: "hidden",
+                        WebkitOverflowScrolling: "touch",
+                        scrollbarWidth: "thin",
+                      }}
+                      onWheel={(e) => e.stopPropagation()}
                     >
-                      <div className="space-y-4 pr-2">
-                        {currentNews.map((item) => (
+                      <div className="space-y-4">
+                        {sortedNews.map((item) => (
                           <div
                             key={item.id}
                             className={cn("rounded-lg border p-4", {
@@ -548,7 +494,7 @@ const Admin = () => {
                               <Button
                                 size="sm"
                                 onClick={() =>
-                                  deleteNewsMutation.mutate(item.id)
+                                  deleteNewsMutation.mutate(String(item.id))
                                 }
                                 disabled={deleteNewsMutation.isPending}
                                 className="bg-red-500 hover:bg-red-600"
@@ -562,29 +508,6 @@ const Admin = () => {
                         ))}
                       </div>
                     </div>
-
-                    {/* Пагинация */}
-                    {totalNewsPages > 1 && (
-                      <div className="flex items-center justify-between pt-4">
-                        <Button
-                          onClick={handlePrevNewsPage}
-                          disabled={currentNewsPage === 0}
-                        >
-                          Назад
-                        </Button>
-
-                        <span className="text-sm">
-                          Страница {currentNewsPage + 1} из {totalNewsPages}
-                        </span>
-
-                        <Button
-                          onClick={handleNextNewsPage}
-                          disabled={currentNewsPage === totalNewsPages - 1}
-                        >
-                          Вперед
-                        </Button>
-                      </div>
-                    )}
                   </div>
                 )}
               </div>

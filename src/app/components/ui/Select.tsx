@@ -19,7 +19,7 @@ function Select({ children, ...props }: SelectProps) {
       animate="visible"
       {...props}
       className={cn(
-        "rounded-lg border-solid border-blue-500 px-6 py-2 text-lg outline-2 outline-offset-2 outline-blue-500 outline-solid",
+        "h-12 w-full rounded-lg border border-blue-500 px-4 text-base outline-2 outline-offset-2 outline-blue-500 outline-solid transition-shadow focus-visible:shadow-md focus-visible:shadow-blue-500/20",
         { "bg-blue-200/55": !isDarkMode },
       )}
     >

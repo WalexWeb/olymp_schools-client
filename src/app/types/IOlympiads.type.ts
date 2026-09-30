@@ -1,5 +1,5 @@
 export interface IOlympiad {
-  id: number;
+  id: string;
   name: string;
   date: string;
   description: string;

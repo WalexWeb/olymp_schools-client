@@ -9,13 +9,13 @@ import { Menu, X } from "lucide-react";
 
 function Navbar() {
   const { isDarkMode, toggleTheme } = useThemeStore();
-  const { isAuthenticated, userData, clearToken } = useAuthStore();
+  const { isAuthenticated, userData, clearTokens } = useAuthStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    clearToken();
+    clearTokens();
     navigate("/");
     setMobileMenuOpen(false);
   };
@@ -107,7 +107,7 @@ function Navbar() {
 
           {isAuthenticated ? (
             <div className="hidden items-center gap-4 md:flex">
-              {userData?.role === "ADMIN" && (
+              {(userData?.role === "ADMIN" || userData?.role === "PDN_ADMIN") && (
                 <Link to="/admin">
                   <Button>Админ-панель</Button>
                 </Link>
@@ -187,7 +187,7 @@ function Navbar() {
 
               {isAuthenticated ? (
                 <div className="flex flex-col gap-4 pt-4">
-                  {userData?.role === "ADMIN" && (
+                  {(userData?.role === "ADMIN" || userData?.role === "PDN_ADMIN") && (
                     <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
                       <Button className="w-full">Админ-панель</Button>
                     </Link>

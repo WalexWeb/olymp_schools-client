@@ -119,7 +119,7 @@ function Docs() {
           "text-blue-600": !isDarkMode,
         })}
       >
-        Обществознание
+        Основы российской государственности
       </m.h3>
       <section className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <a href={regulationsSociety} target="_blank" rel="noopener noreferrer">

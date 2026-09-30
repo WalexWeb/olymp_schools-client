@@ -5,7 +5,7 @@ import { useThemeStore } from "../../../stores/themeStore";
 
 function InfiniteCarousel() {
   const API_URL = import.meta.env.VITE_API_URL;
-  const STATIC_URL = import.meta.env.VITE_STATIC_URL;
+  const STATIC_URL = import.meta.env.VITE_STATIC_URL || "";
   const { isDarkMode } = useThemeStore();
   const [images, setImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);

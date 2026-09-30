@@ -10,11 +10,10 @@ import { Link } from "react-router-dom";
 import Footer from "../components/layout/Footer/Footer";
 import zadachiInfoSec from "/public/zadachiInfoSec.pdf";
 import zadachiSociety from "/public/zadachiSociety.pdf";
-import { rankings2023 } from "../../data/mockData";
-import { rankings2024 } from "../../data/mockData";
+import { rankings2023, rankings2024, rankings2026 } from "../../data/mockData";
 import sbornikInfoSec from "/public/sbornikInfoSec.pdf";
 
-type AcademicYear = "2023-2024" | "2024-2025";
+type AcademicYear = "2023-2024" | "2024-2025" | "2025-2026";
 
 interface TaskItem {
   id: number;
@@ -30,7 +29,7 @@ interface YearData {
 
 function Archive() {
   const { isDarkMode } = useThemeStore();
-  const [selectedYear, setSelectedYear] = useState<AcademicYear>("2024-2025");
+  const [selectedYear, setSelectedYear] = useState<AcademicYear>("2025-2026");
 
   // Данные с заданиями и победителями
   const archiveData: Record<AcademicYear, YearData> = {
@@ -67,6 +66,23 @@ function Archive() {
         },
       ],
       winners: rankings2024,
+    },
+    "2025-2026": {
+      tasks: [
+        {
+          id: 1,
+          title: "Задания по информационной безопасности",
+          fileUrl: zadachiInfoSec,
+          fileSize: "2.7 MB",
+        },
+        {
+          id: 2,
+          title: "Задания по обществознанию",
+          fileUrl: zadachiSociety,
+          fileSize: "2.1 MB",
+        },
+      ],
+      winners: rankings2026,
     },
   };
 
@@ -191,6 +207,7 @@ function Archive() {
                       },
                     )}
                   >
+                    <option value="2025-2026">2025-2026</option>
                     <option value="2024-2025">2024-2025</option>
                     <option value="2023-2024">2023-2024</option>
                   </select>

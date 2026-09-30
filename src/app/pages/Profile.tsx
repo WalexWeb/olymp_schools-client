@@ -7,7 +7,7 @@ import { m } from "framer-motion";
 import { useThemeStore } from "../stores/themeStore";
 import cn from "clsx";
 import { useAuthStore } from "../stores/authStore";
-import axios from "axios";
+import { api } from "../services/api";
 import { getCustomToastStyle } from "../components/ui/toastStyles";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -36,9 +36,8 @@ interface UserData {
 }
 
 export default function Profile() {
-  const API_URL = import.meta.env.VITE_API_URL;
   const { isDarkMode } = useThemeStore();
-  const { token } = useAuthStore();
+  const { accessToken } = useAuthStore();
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserData>({
     firstName: "",
@@ -61,31 +60,20 @@ export default function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get<UserData>(`${API_URL}/profile`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        console.log(response.data);
+        const response = await api.get<UserData>("/users/me");
         setUserData(response.data);
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          toast.error(
-            "Ошибка загрузки профиля",
-            getCustomToastStyle(isDarkMode),
-          );
-        }
+        toast.error("Ошибка загрузки профиля", getCustomToastStyle(isDarkMode));
         console.error("Failed to fetch profile:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (token) {
+    if (accessToken) {
       fetchProfile();
     }
-  }, [token, isDarkMode]);
+  }, [accessToken, isDarkMode]);
 
   if (isLoading) {
     return (
