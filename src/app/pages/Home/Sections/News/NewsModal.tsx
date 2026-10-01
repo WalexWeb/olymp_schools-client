@@ -60,9 +60,10 @@ function NewsModal({ isOpen, onClose, text, desc, date }: INewsModalProps) {
             <button
               onClick={onClose}
               className={cn(
-                "-mr-2 -mt-2 flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors",
+                "-mt-2 -mr-2 flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors",
                 {
-                  "text-slate-300 hover:bg-white/10 hover:text-white": isDarkMode,
+                  "text-slate-300 hover:bg-white/10 hover:text-white":
+                    isDarkMode,
                   "text-slate-500 hover:bg-slate-100 hover:text-slate-900":
                     !isDarkMode,
                 },
@@ -74,10 +75,13 @@ function NewsModal({ isOpen, onClose, text, desc, date }: INewsModalProps) {
           </div>
 
           <h3
-            className={cn("mt-5 text-left text-2xl leading-tight font-semibold sm:text-3xl", {
-              "text-white": isDarkMode,
-              "text-slate-950": !isDarkMode,
-            })}
+            className={cn(
+              "mt-5 text-left text-2xl leading-tight font-semibold sm:text-3xl",
+              {
+                "text-white": isDarkMode,
+                "text-slate-950": !isDarkMode,
+              },
+            )}
           >
             {text}
           </h3>
@@ -97,8 +101,7 @@ function NewsModal({ isOpen, onClose, text, desc, date }: INewsModalProps) {
           />
         </m.div>
       </div>
-    </>
-    ,
+    </>,
     document.body,
   );
 }

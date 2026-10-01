@@ -9,8 +9,6 @@ import { toast } from "react-toastify";
 import { getCustomToastStyle } from "../../../../components/ui/toastStyles";
 import { INewsItem } from "../../../../types/INews.type";
 
-
-
 function News() {
   const API_URL = import.meta.env.VITE_API_URL;
   const [selectedNewsIndex, setSelectedNewsIndex] = useState<number | null>(
