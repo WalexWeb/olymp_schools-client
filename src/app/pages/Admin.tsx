@@ -13,6 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { INewsItem } from "../types/INews.type";
 import { IOlympiad } from "../types/IOlympiads.type";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface LocalImage {
   id: string;
@@ -46,6 +47,7 @@ const Admin = () => {
   });
 
   // Состояния для пролистывания новостей
+  const [newsPage, setNewsPage] = useState(0);
 
   // Состояние для анимации загрузки выгрузки пользователей
   const [isExportingUsers, setIsExportingUsers] = useState(false);
@@ -62,7 +64,11 @@ const Admin = () => {
       }
 
       // Если данные пользователя уже есть и роль не ADMIN — редирект
-      if (userData && userData.role !== "ADMIN" && userData.role !== "PDN_ADMIN") {
+      if (
+        userData &&
+        userData.role !== "ADMIN" &&
+        userData.role !== "PDN_ADMIN"
+      ) {
         navigate("/");
         return;
       }
@@ -79,7 +85,10 @@ const Admin = () => {
           setUserData(profileData);
 
           // Проверяем роль после загрузки
-          if (profileData.role !== "ADMIN" && profileData.role !== "PDN_ADMIN") {
+          if (
+            profileData.role !== "ADMIN" &&
+            profileData.role !== "PDN_ADMIN"
+          ) {
             navigate("/");
           }
         } catch (error) {
@@ -299,6 +308,12 @@ const Admin = () => {
           new Date(b.newsDate).getTime() - new Date(a.newsDate).getTime(),
       )
     : [];
+  const newsPageCount = Math.max(1, Math.ceil(sortedNews.length / 3));
+  const currentNewsPage = Math.min(newsPage, newsPageCount - 1);
+  const paginatedNews = sortedNews.slice(
+    currentNewsPage * 3,
+    currentNewsPage * 3 + 3,
+  );
 
   if (isNewsLoading) return <div>Загрузка...</div>;
   if (newsError)
@@ -460,54 +475,71 @@ const Admin = () => {
                   <p className="text-center">Новостей нет</p>
                 ) : (
                   <div className="space-y-4">
-                  <div
-                      tabIndex={0}
-                      style={{
-                        height: 480,
-                        overflowY: "scroll",
-                        overflowX: "hidden",
-                        WebkitOverflowScrolling: "touch",
-                        scrollbarWidth: "thin",
-                      }}
-                      onWheel={(e) => e.stopPropagation()}
-                    >
-                      <div className="space-y-4">
-                        {sortedNews.map((item) => (
-                          <div
-                            key={item.id}
-                            className={cn("rounded-lg border p-4", {
-                              "border-gray-700": isDarkMode,
-                              "border-gray-200": !isDarkMode,
-                            })}
-                          >
-                            <h5 className="mb-2 text-lg font-bold">
-                              {item.title}
-                            </h5>
-                            <p className="mb-2 text-sm text-gray-500">
-                              Дата:{" "}
-                              {new Date(item.newsDate).toLocaleDateString(
-                                "ru-RU",
-                              )}
-                            </p>
-                            <p className="mb-3">{item.description}</p>
-                            <div>
-                              <Button
-                                size="sm"
-                                onClick={() =>
-                                  deleteNewsMutation.mutate(String(item.id))
-                                }
-                                disabled={deleteNewsMutation.isPending}
-                                className="bg-red-500 hover:bg-red-600"
-                              >
-                                {deleteNewsMutation.isPending
-                                  ? "Удаление..."
-                                  : "Удалить"}
-                              </Button>
-                            </div>
+                    <div className="space-y-4">
+                      {paginatedNews.map((item) => (
+                        <div
+                          key={item.id}
+                          className={cn("rounded-lg border p-4", {
+                            "border-gray-700": isDarkMode,
+                            "border-gray-200": !isDarkMode,
+                          })}
+                        >
+                          <h5 className="mb-2 text-lg font-bold">
+                            {item.title}
+                          </h5>
+                          <p className="mb-2 text-sm text-gray-500">
+                            Дата:{" "}
+                            {new Date(item.newsDate).toLocaleDateString(
+                              "ru-RU",
+                            )}
+                          </p>
+                          <p className="mb-3">{item.description}</p>
+                          <div>
+                            <Button
+                              size="sm"
+                              onClick={() =>
+                                deleteNewsMutation.mutate(String(item.id))
+                              }
+                              disabled={deleteNewsMutation.isPending}
+                              className="bg-red-500 hover:bg-red-600"
+                            >
+                              {deleteNewsMutation.isPending
+                                ? "Удаление..."
+                                : "Удалить"}
+                            </Button>
                           </div>
-                        ))}
-                      </div>
+                        </div>
+                      ))}
                     </div>
+                    {sortedNews.length > 3 && (
+                      <div className="flex items-center justify-center gap-4">
+                        <Button
+                          size="sm"
+                          aria-label="Предыдущие новости"
+                          onClick={() =>
+                            setNewsPage((page) => Math.max(0, page - 1))
+                          }
+                          disabled={currentNewsPage === 0}
+                        >
+                          <ChevronLeft aria-hidden="true" />
+                        </Button>
+                        <span className="text-sm" aria-live="polite">
+                          {currentNewsPage + 1} / {newsPageCount}
+                        </span>
+                        <Button
+                          size="sm"
+                          aria-label="Следующие новости"
+                          onClick={() =>
+                            setNewsPage((page) =>
+                              Math.min(newsPageCount - 1, page + 1),
+                            )
+                          }
+                          disabled={currentNewsPage === newsPageCount - 1}
+                        >
+                          <ChevronRight aria-hidden="true" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

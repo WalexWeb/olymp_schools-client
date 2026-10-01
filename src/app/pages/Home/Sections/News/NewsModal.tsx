@@ -3,6 +3,8 @@ import cn from "clsx";
 import { useThemeStore } from "../../../../stores/themeStore";
 import { useRef } from "react";
 import { INewsModalProps } from "../../../../types/INews.type";
+import { X } from "lucide-react";
+import { createPortal } from "react-dom";
 
 /**
  * Парсит ссылки вида [[текст|url]] в HTML <a>
@@ -20,86 +22,75 @@ function NewsModal({ isOpen, onClose, text, desc, date }: INewsModalProps) {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <>
       {/* Затемнение фона */}
       <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-40 bg-black/10 backdrop-blur-xs"
+        className="fixed inset-0 z-40 bg-black/45 backdrop-blur-sm"
       />
 
       {/* Контейнер модального окна */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
         <m.div
           ref={modalRef}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 280, damping: 28 }}
           className={cn(
-            "relative w-full max-w-xl rounded-2xl border border-blue-800 bg-gradient-to-br p-8 shadow-md transition-all",
+            "news-scroll relative max-h-[70dvh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-xl border p-6 shadow-2xl sm:p-9",
             {
-              "from-[#142441] to-[#15213e] text-white": isDarkMode,
-              "from-white to-blue-200 text-gray-800": !isDarkMode,
+              "border-slate-700 bg-[#111a2b] text-slate-100": isDarkMode,
+              "border-slate-200 bg-white text-slate-800": !isDarkMode,
             },
           )}
         >
-          {/* Кнопка закрытия */}
-          <button
-            onClick={onClose}
-            className={cn(
-              "absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full transition-colors",
-              {
-                "hover:bg-blue-700/30": isDarkMode,
-                "hover:bg-blue-200": !isDarkMode,
-              },
-            )}
-            aria-label="Закрыть окно"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className={cn({
-                "text-blue-300": isDarkMode,
-                "text-blue-600": !isDarkMode,
+          <div className="flex items-start justify-between gap-4">
+            <span
+              className={cn("rounded-md px-3 py-1 text-sm font-medium", {
+                "bg-blue-400/10 text-blue-300": isDarkMode,
+                "bg-blue-50 text-blue-700": !isDarkMode,
               })}
             >
-              <path
-                d="M12 4L4 12M4 4L12 12"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
+              {date}
+            </span>
+            <button
+              onClick={onClose}
+              className={cn(
+                "-mr-2 -mt-2 flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors",
+                {
+                  "text-slate-300 hover:bg-white/10 hover:text-white": isDarkMode,
+                  "text-slate-500 hover:bg-slate-100 hover:text-slate-900":
+                    !isDarkMode,
+                },
+              )}
+              aria-label="Закрыть окно"
+            >
+              <X size={20} aria-hidden="true" />
+            </button>
+          </div>
 
-          {/* Заголовок */}
           <h3
-            className={cn("mb-6 text-center text-3xl font-semibold", {
+            className={cn("mt-5 text-left text-2xl leading-tight font-semibold sm:text-3xl", {
               "text-white": isDarkMode,
-              "text-gray-900": !isDarkMode,
+              "text-slate-950": !isDarkMode,
             })}
           >
             {text}
           </h3>
 
-          {/* Дата */}
-          <p
-            className={cn("mb-4 text-lg", {
-              "text-blue-400": isDarkMode,
-              "text-blue-500": !isDarkMode,
+          <div
+            className={cn("my-6 h-px", {
+              "bg-slate-700": isDarkMode,
+              "bg-slate-200": !isDarkMode,
             })}
-          >
-            {date}
-          </p>
+          />
 
-          {/* Текст новости со встроенными ссылками */}
-          <p
-            className="text-lg leading-relaxed whitespace-pre-line"
+          <div
+            className="text-base leading-8 whitespace-pre-line sm:text-lg"
             dangerouslySetInnerHTML={{
               __html: parseLinks(desc),
             }}
@@ -107,6 +98,8 @@ function NewsModal({ isOpen, onClose, text, desc, date }: INewsModalProps) {
         </m.div>
       </div>
     </>
+    ,
+    document.body,
   );
 }
 

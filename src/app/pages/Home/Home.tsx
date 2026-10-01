@@ -310,46 +310,71 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 mx-auto max-w-5xl px-6 py-14">
-        <h2
-          className={cn("mb-8 text-center text-3xl font-bold", {
-            "text-white": isDarkMode,
-            "text-gray-900": !isDarkMode,
-          })}
-        >
-          Часто задаваемые вопросы
-        </h2>
+      <m.section
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.55, ease: "easeOut" }}
+        className="relative z-10 mx-auto max-w-5xl px-6 py-14"
+      >
+        <div className="mb-8 text-center">
+          <h2
+            className={cn("text-center text-3xl font-bold", {
+              "text-white": isDarkMode,
+              "text-gray-900": !isDarkMode,
+            })}
+          >
+            Часто задаваемые вопросы
+          </h2>
+        </div>
 
         <div
-          className={cn("divide-y rounded-2xl border px-6", {
-            "divide-gray-700 border-gray-700 bg-[#161b22]/70": isDarkMode,
-            "divide-gray-200 border-gray-200 bg-white/90": !isDarkMode,
-          })}
+          className={cn(
+            "rounded-2xl border px-4 py-2 shadow-xl backdrop-blur-md sm:px-7",
+            {
+              "border-white/10 bg-slate-950/35 shadow-black/10": isDarkMode,
+              "border-white/70 bg-white/55 shadow-slate-900/5": !isDarkMode,
+            },
+          )}
         >
           {faqItems.map((item, index) => {
             const isOpen = openFaqIndex === index;
             const answerId = `faq-answer-${index}`;
 
             return (
-              <div key={item.question}>
+              <m.div
+                key={item.question}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.35, delay: index * 0.06 }}
+                className={cn(
+                  "border-b last:border-b-0",
+                  isDarkMode ? "border-white/10" : "border-slate-300/50",
+                )}
+              >
                 <button
                   type="button"
                   aria-expanded={isOpen}
                   aria-controls={answerId}
                   onClick={() => setOpenFaqIndex(isOpen ? null : index)}
                   className={cn(
-                    "flex w-full items-center justify-between gap-4 py-5 text-left text-lg font-semibold transition-colors",
+                    "group flex w-full items-center justify-between gap-4 rounded-xl px-3 py-5 text-left text-base font-semibold transition-all duration-200 sm:text-lg",
                     {
-                      "text-white hover:text-blue-300": isDarkMode,
-                      "text-gray-900 hover:text-blue-600": !isDarkMode,
+                      "text-white hover:bg-white/5 hover:text-blue-200":
+                        isDarkMode,
+                      "text-slate-900 hover:bg-white/55 hover:text-blue-700":
+                        !isDarkMode,
                     },
                   )}
                 >
-                  <span>{item.question}</span>
+                  <span className="flex min-w-0 items-start gap-3">
+                    <span>{item.question}</span>
+                  </span>
                   <ChevronDown
                     aria-hidden="true"
                     className={cn(
-                      "h-5 w-5 flex-shrink-0 transition-transform duration-200",
+                      "h-5 w-5 flex-shrink-0 rounded-full transition-transform duration-300 group-hover:scale-110",
                       isOpen && "rotate-180",
                       isDarkMode ? "text-blue-300" : "text-blue-600",
                     )}
@@ -364,13 +389,13 @@ export default function Home() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
+                      transition={{ duration: 0.28, ease: "easeInOut" }}
                       className="overflow-hidden"
                     >
                       {Array.isArray(item.answer) ? (
                         <ul
                           className={cn(
-                            "list-disc space-y-2 pb-5 pl-5 leading-relaxed",
+                            "list-disc space-y-2 leading-relaxed",
                             isDarkMode ? "text-gray-300" : "text-gray-600",
                           )}
                         >
@@ -381,7 +406,7 @@ export default function Home() {
                       ) : (
                         <p
                           className={cn(
-                            "pb-5 leading-relaxed",
+                            "pb-5 pl-3 leading-relaxed",
                             isDarkMode ? "text-gray-300" : "text-gray-600",
                           )}
                         >
@@ -391,13 +416,13 @@ export default function Home() {
                     </m.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </m.div>
             );
           })}
         </div>
 
         <p
-          className={cn("mt-6 leading-relaxed", {
+          className={cn("z-10 mt-6 leading-relaxed", {
             "text-gray-300": isDarkMode,
             "text-gray-600": !isDarkMode,
           })}
@@ -415,7 +440,7 @@ export default function Home() {
           </Link>
           , задайте его в письме на электронный адрес организационного комитета.
         </p>
-      </section>
+      </m.section>
 
       {/* Карусель */}
       <Carousel />
