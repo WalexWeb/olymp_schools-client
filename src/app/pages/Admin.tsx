@@ -400,6 +400,12 @@ const Admin = () => {
                   Создание новости
                 </h4>
 
+                <p className="text-md mb-4 w-full text-center text-blue-400">
+                  Для добавление ссылки на стороннюю информацию, добавляйте в
+                  текст новости ссылку в формате <br />
+                  [[Текст|полная ссылка на необходимую информацию]]
+                </p>
+
                 <form onSubmit={handleNewsSubmit} className="space-y-4">
                   <div>
                     <label className="mb-2 block font-medium">Заголовок</label>
