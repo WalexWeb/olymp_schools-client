@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home/Home";
-import Registration from "./pages/Registration";
+// import Registration from "./pages/Registration";
 import Login from "./pages/Login/Login";
 import Profile from "./pages/Profile";
 import Passing from "./pages/Passing";
@@ -13,6 +13,7 @@ import Archive from "./pages/Archive";
 import NotFound from "./pages/NotFound";
 import OlympiadProfile from "./pages/OlympiadProfile";
 import ResetPassword from "./pages/ResetPassword";
+import RegistrationClosed from "./pages/RegistrationClosed";
 // import Rankings from "./pages/Rankings";
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/registration" element={<Registration />} />
+        <Route path="/registration" element={<RegistrationClosed />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         {/* <Route path="/rankings" element={<Rankings />} /> */}
