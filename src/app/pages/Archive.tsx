@@ -37,13 +37,13 @@ function Archive() {
       tasks: [
         {
           id: 1,
-          title: "Задания по информационной безопасности",
+          title: "Типовые задания по информационной безопасности",
           fileUrl: zadachiInfoSec,
           fileSize: "2.4 MB",
         },
         {
           id: 2,
-          title: "Задания по обществознанию",
+          title: "Типовые задания по основам российской государственности",
           fileUrl: zadachiSociety,
           fileSize: "1.8 MB",
         },
@@ -54,13 +54,13 @@ function Archive() {
       tasks: [
         {
           id: 1,
-          title: "Задания по информационной безопасности",
+          title: "Типовые задания по информационной безопасности",
           fileUrl: zadachiInfoSec,
           fileSize: "2.7 MB",
         },
         {
           id: 2,
-          title: "Задания по обществознанию",
+          title: "Типовые задания по основам российской государственности",
           fileUrl: zadachiSociety,
           fileSize: "2.1 MB",
         },
@@ -77,7 +77,7 @@ function Archive() {
         },
         {
           id: 2,
-          title: "Задания по обществознанию",
+          title: "Задания по основам российской государственности",
           fileUrl: zadachiSociety,
           fileSize: "2.1 MB",
         },
@@ -87,7 +87,7 @@ function Archive() {
   };
 
   const currentData = archiveData[selectedYear];
-  const currentTasks = currentData.tasks;
+  const currentTasks = archiveData["2025-2026"].tasks;
   const currentWinners = currentData.winners;
 
   // Фильтр победителей (исключаем участников без статуса победителя/призера)
@@ -119,101 +119,16 @@ function Archive() {
                 "text-gray-900": !isDarkMode,
               })}
             >
-              Архив заданий
+              Олимпиады прошлых лет
             </h2>
 
-            {/* Блок "Сборник олимпиадных заданий" */}
-            <m.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              <div
-                className={cn(
-                  "rounded-xl border-2 p-6 transition-all hover:shadow-lg",
-                  {
-                    "border-blue-600 bg-blue-900/10 hover:bg-blue-900/30":
-                      isDarkMode,
-                    "border-blue-400 bg-blue-50 hover:bg-blue-100": !isDarkMode,
-                  },
-                )}
-              >
-                <div className="flex justify-center">
-                  <div className="flex-1">
-                    <h3
-                      className={cn("mt-1 text-xl font-bold", {
-                        "text-blue-300": isDarkMode,
-                        "text-blue-700": !isDarkMode,
-                      })}
-                    >
-                      Сборник олимпиадных заданий по профилю «Информационная
-                      безопасность»
-                    </h3>
-                  </div>
-                  <a
-                    href={sbornikInfoSec}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="shrink-0"
-                  >
-                    <Button
-                      className={cn("whitespace-nowrap", {
-                        "bg-blue-600 hover:bg-blue-700": isDarkMode,
-                        "bg-blue-500 hover:bg-blue-600": !isDarkMode,
-                      })}
-                    >
-                      Просмотреть
-                    </Button>
-                  </a>
-                </div>
-              </div>
-            </m.div>
-
-            {/* Основная карточка с выбором года, заданиями и победителями */}
+            {/* Основная карточка с примерами заданий, описанием, сборником и победителями */}
             <div
               className={cn("rounded-2xl p-8 text-lg", {
                 "bg-[#0b0f1a] outline-2 outline-blue-900": isDarkMode,
                 "bg-white shadow-md outline-2 outline-blue-500": !isDarkMode,
               })}
             >
-              <p className="mb-6 text-center">
-                На этой странице вы можете ознакомиться с заданиями отборочного
-                этапа Олимпиады школьников «Университет цифровой полиции» за
-                предыдущие годы.
-              </p>
-
-              {/* Выбор учебного года */}
-              <div className="mb-8">
-                <label
-                  htmlFor="year-select"
-                  className="text-md mb-3 block text-center font-medium"
-                >
-                  Выберите учебный год:
-                </label>
-                <div className="flex justify-center">
-                  <select
-                    id="year-select"
-                    value={selectedYear}
-                    onChange={(e) =>
-                      setSelectedYear(e.target.value as AcademicYear)
-                    }
-                    className={cn(
-                      "w-full max-w-xs rounded-lg border px-4 py-3 text-base focus:ring-2 focus:outline-none",
-                      {
-                        "border-blue-700 bg-gray-800 text-white focus:ring-blue-500":
-                          isDarkMode,
-                        "border-blue-300 bg-white text-gray-900 focus:ring-blue-400":
-                          !isDarkMode,
-                      },
-                    )}
-                  >
-                    <option value="2025-2026">2025-2026</option>
-                    <option value="2024-2025">2024-2025</option>
-                    <option value="2023-2024">2023-2024</option>
-                  </select>
-                </div>
-              </div>
-
               {/* Примеры заданий отборочного этапа */}
               <div className="mb-12">
                 <h3
@@ -222,7 +137,7 @@ function Archive() {
                     "text-blue-600": !isDarkMode,
                   })}
                 >
-                  Примеры заданий отборочного этапа
+                  Типовые задания отборочного этапа Олимпиады
                 </h3>
 
                 <div className="grid gap-6">
@@ -283,8 +198,111 @@ function Archive() {
                 </div>
               </div>
 
+              {/* Информационное сообщение
+              <div
+                className={cn("rounded-lg p-4 text-center", {
+                  "bg-blue-900/20": isDarkMode,
+                  "bg-blue-100": !isDarkMode,
+                })}
+              >
+                <p
+                  className={cn("font-medium", {
+                    "text-blue-300": isDarkMode,
+                    "text-blue-700": !isDarkMode,
+                  })}
+                >
+                  Все задания представлены в формате PDF
+                </p>
+              </div> */}
+
+              <p className="mb-6 text-center">
+                На этой странице вы можете ознакомиться с типовыми заданиями
+                отборочного этапа Олимпиады школьников «Университет цифровой
+                полиции».
+              </p>
+
+              {/* Блок "Сборник олимпиадных заданий" */}
+              <m.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="mb-8"
+              >
+                <div
+                  className={cn(
+                    "rounded-xl border-2 p-6 transition-all hover:shadow-lg",
+                    {
+                      "border-blue-600 bg-blue-900/10 hover:bg-blue-900/30":
+                        isDarkMode,
+                      "border-blue-400 bg-blue-50 hover:bg-blue-100":
+                        !isDarkMode,
+                    },
+                  )}
+                >
+                  <div className="flex justify-center">
+                    <div className="flex-1">
+                      <h3
+                        className={cn("mt-1 text-xl font-bold", {
+                          "text-blue-300": isDarkMode,
+                          "text-blue-700": !isDarkMode,
+                        })}
+                      >
+                        Сборник олимпиадных заданий по профилю «Информационная
+                        безопасность»
+                      </h3>
+                    </div>
+                    <a
+                      href={sbornikInfoSec}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="shrink-0"
+                    >
+                      <Button
+                        className={cn("whitespace-nowrap", {
+                          "bg-blue-600 hover:bg-blue-700": isDarkMode,
+                          "bg-blue-500 hover:bg-blue-600": !isDarkMode,
+                        })}
+                      >
+                        Просмотреть
+                      </Button>
+                    </a>
+                  </div>
+                </div>
+              </m.div>
+
               {/* Победители и призеры */}
               <div className="mb-8">
+                <div className="mb-4">
+                  <label
+                    htmlFor="winner-year-select"
+                    className="text-md mb-3 block text-center font-medium"
+                  >
+                    Выберите учебный год:
+                  </label>
+                  <div className="flex justify-center">
+                    <select
+                      id="winner-year-select"
+                      value={selectedYear}
+                      onChange={(e) =>
+                        setSelectedYear(e.target.value as AcademicYear)
+                      }
+                      className={cn(
+                        "w-full max-w-xs rounded-lg border px-4 py-3 text-base focus:ring-2 focus:outline-none",
+                        {
+                          "border-blue-700 bg-gray-800 text-white focus:ring-blue-500":
+                            isDarkMode,
+                          "border-blue-300 bg-white text-gray-900 focus:ring-blue-400":
+                            !isDarkMode,
+                        },
+                      )}
+                    >
+                      <option value="2025-2026">2025-2026</option>
+                      <option value="2024-2025">2024-2025</option>
+                      <option value="2023-2024">2023-2024</option>
+                    </select>
+                  </div>
+                </div>
+
                 <h3
                   className={cn("mb-6 text-center text-2xl font-semibold", {
                     "text-white": isDarkMode,
@@ -337,7 +355,6 @@ function Archive() {
                             {winner.lastName} {winner.firstName}{" "}
                             {winner.middleName}
                           </h5>
-                          <p className="text-md opacity-80">{winner.region}</p>
                           <p className="my-2 font-bold">
                             {winner.score} баллов
                           </p>
@@ -368,23 +385,6 @@ function Archive() {
                     </div>
                   </m.div>
                 )}
-              </div>
-
-              {/* Информационное сообщение */}
-              <div
-                className={cn("rounded-lg p-4 text-center", {
-                  "bg-blue-900/20": isDarkMode,
-                  "bg-blue-100": !isDarkMode,
-                })}
-              >
-                <p
-                  className={cn("font-medium", {
-                    "text-blue-300": isDarkMode,
-                    "text-blue-700": !isDarkMode,
-                  })}
-                >
-                  Все задания представлены в формате PDF
-                </p>
               </div>
             </div>
 
