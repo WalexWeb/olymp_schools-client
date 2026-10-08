@@ -97,24 +97,8 @@ function RegistrationClosed() {
                   })}
                 >
                   Регистрация участников на Олимпиаду «Университет цифровой
-                  полиции» 2025-2026 закрыта
+                  полиции» 2026-2027 откроется 10 октября 2026 года
                 </h3>
-
-                <m.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
-                  className="space-y-4"
-                >
-                  <p
-                    className={cn("text-xl md:text-2xl", {
-                      "text-blue-400": isDarkMode,
-                      "text-blue-600": !isDarkMode,
-                    })}
-                  >
-                    Ждём Вас в следующем году!
-                  </p>
-                </m.div>
               </div>
             </div>
 

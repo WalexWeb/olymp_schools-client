@@ -46,7 +46,7 @@ function AboutOlympiad() {
       number: "3",
       title: "Заключительный этап",
       period:
-        "Информационная безопасность: 1 февраля - 13 марта 2027 года\n\n Основы российской государственности: 1 февраля - 20 марта 2027 года",
+        "Информационная безопасность: 1 февраля - 13 марта 2027 года\nОсновы российской государственности: 1 февраля - 20 марта 2027 года",
       description:
         "Очный этап на базе Московского ордена Почета университета МВД России имени В.Я. Кикотя",
     },
@@ -278,10 +278,13 @@ function AboutOlympiad() {
                           {item.title}
                         </h4>
                         <p
-                          className={cn("text-md mb-3 font-medium", {
-                            "text-blue-300": isDarkMode,
-                            "text-blue-600": !isDarkMode,
-                          })}
+                          className={cn(
+                            "text-md mb-3 font-medium whitespace-pre-line",
+                            {
+                              "text-blue-300": isDarkMode,
+                              "text-blue-600": !isDarkMode,
+                            },
+                          )}
                         >
                           {item.period}
                         </p>
@@ -310,8 +313,14 @@ function AboutOlympiad() {
                   className="text-center"
                 >
                   <p className="text-lg font-medium">
-                    Для прохождения Олимпиады необходимо пройти процедуру
-                    регистрации в личном кабинете на сайте.
+                    Для прохождения Олимпиады необходимо пройти процедуру{" "}
+                    <Link
+                      to="/registration"
+                      className="text-blue-600 underline underline-offset-4 hover:opacity-80 dark:text-blue-400"
+                    >
+                      регистрации
+                    </Link>
+                    .
                   </p>
                 </m.div>
               </div>

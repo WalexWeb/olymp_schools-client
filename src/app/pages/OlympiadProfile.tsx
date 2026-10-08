@@ -132,7 +132,7 @@ function OlympiadProfile() {
                       О профиле
                     </h2>
                   </div>
-                  <p className="text-lg leading-relaxed whitespace-pre-line">
+                  <p className="text-justify text-lg leading-relaxed whitespace-pre-line">
                     {profile.fullDescription}
                   </p>
                 </div>
