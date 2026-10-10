@@ -71,6 +71,8 @@ const initialValues: RegistrationForm = {
   isRepeat: false,
 };
 
+const supportedEmailDomainPattern = /@(yandex\.ru|rambler\.ru|mail\.ru)$/i;
+
 function Registration() {
   const { isDarkMode } = useThemeStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -91,6 +93,14 @@ function Registration() {
   const olympiadSocialStudies = watch("olympiadSocialStudies");
 
   const onSubmit: SubmitHandler<RegistrationForm> = async (data) => {
+    if (!supportedEmailDomainPattern.test(data.email.trim())) {
+      toast.warn(
+        "Для отправки необходимо использовать российские почтовые сервисы (Yandex, Mail, Rambler).",
+        getCustomToastStyle(isDarkMode),
+      );
+      return;
+    }
+
     // Хотя бы одна олимпиада должна быть выбрана
     if (!data.olympiadInfosec && !data.olympiadSocialStudies) {
       toast.warn(
